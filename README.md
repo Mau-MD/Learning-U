@@ -2,11 +2,25 @@
 Meta U Web Track Capstone Project.
 User Stories							        
 
+---
+
+*I want to learn an specific technology*
+
+Problems someone may face:
+- Don't know where to start
+- A lot of content
+- After watching basic tutorials, you don't know what to do next (tutorial hell)
+
+---
+
+
+
 ## User Roles
-**User:** Someone that wants to be motivated and finish their personal projects successfully
+**Software Engineer:** Someone that wants to learn new technologies in an organized way and without getting stuck on `tutorial hell`
+
 
 ## User Personas
-**The Beginner:** Someone that is starting to create projects. It doesn’t really know how to structure them. He is interested in learning as much as he can. He may not like to be limited about how many tasks he is supposed to do each day, he just wants to do as many things as possible. 
+**Software Engineer Student:** Someone that is starting to create projects. It doesn’t really know how to structure them. He is interested in learning as much as he can. He may not like to be limited about how many tasks he is supposed to do each day, he just wants to do as many things as possible. 
 
 **The Veteran:** Someone that already knows how to structure projects. This guy is not interested in learning basic technologies, but he is always eager to try challenging concepts. This person would use the app to avoid overwhelming itself by doing so much stuff at the same time.
 
