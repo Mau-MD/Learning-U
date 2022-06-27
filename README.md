@@ -1,4 +1,4 @@
-# Project-U
+# Learning-U
 Meta U Web Track Capstone Project.
 User Stories							        
 
