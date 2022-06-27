@@ -20,33 +20,25 @@ Problems someone may face:
 
 
 ## User Personas
-**Software Engineer Student:** Someone that is starting to create projects. It doesn’t really know how to structure them. He is interested in learning as much as he can. He may not like to be limited about how many tasks he is supposed to do each day, he just wants to do as many things as possible. 
+**Software Engineer Student:** Someone that is starting in tech and wants to learn a lot of new technologies. He doesn't know where to start, as there is a lot of content everywhere, some of them good, and some of them bad. Also this user feels that after watching a few videos, he forgets everything he learned. The main motivation of using this app is that he would be able to have an organized way of learning, and he will not be stucked on `tutorial hell`
 
-**The Veteran:** Someone that already knows how to structure projects. This guy is not interested in learning basic technologies, but he is always eager to try challenging concepts. This person would use the app to avoid overwhelming itself by doing so much stuff at the same time.
+**Visual Learner**: Someone that likes to watch videos to learn about something new, he doesn't like to read that much. This person thinks that is better to follow what other people do. Also, it still believes that documentation is a good way to learn about new stuff.
+
+**Reading Learner**: Someone that loves to read. This person always tries to dig into the documentation first before watching any type of video. 
+
+
 
 ## User Stories
 
-- As a user, I want to have a project dashboard, so that I can access all my projects with ease.
+- As a Software Engineer Student, I want to be able to register, so that I can save my progress and access it accross multiple devices.
+- As a Software Engineer Student, I want to have a dashboard where I can see the progress of my multiple courses.
+- As a Software Engineer Student, I want to add new learning courses with ease, so that I can focus more in the content.
+- As a Software Engineer Student, I want to have `topic recommendations` so I can decide which new technology and want to learn.
+- As a Software Engineer Student, I want to track my progress of my courses, so I see how far away I'm from finish the course.
+- As a Software Engineer Student, I want to be able to divide the courses into 3 different sections: Begineer, Intermideate and Advanced, so that I have an organized way of learning.
+- As a visual learner, I want to have more video tutorials than written content, so that I can learn faster.
+- As a visual learner, I want to get good video recommendations that are relevant to this age, so that I don't waste time learning legacy technologies.
+- As a reading learner, I want to have more written content than video tutorials, so that I can learn faster.
 
-- As a user, I want to create a profile, so that I can manage my projects from different devices.
-
-- As a user, I want to structure my project in milestones, so that I can focus on basic goals first, and then stretch ones.
-
-- As a user, I want to add tasks to each milestone so that I can know which tasks I should do first.
-
-- As a user, I want to know which tasks I should focus on only one day, so that I don’t get overwhelmed.
-
-- As a user, I want to be able to do more tasks than the recommended, so that I can keep working if I’m feeling motivated.
-
-
-- As a user, I want to be able to get video recommendations related to what specific technologies I want to learn, so that I can implement them into my project.
-
-- As a user, I want to be able to let the app know how skilled I am in certain technologies, so the video recommendations match my skill set. 
-
-- As a user, I want to follow other people so I can see what project they are currently working on.
-
-- As a user, I want to be able to take breaks and not let the app disturb me for an entire day, so I can relax and not get overwhelmed.
-
-- As a user, I want to be able to link my github repo to the project, so that I can easily access my code.
 
 
