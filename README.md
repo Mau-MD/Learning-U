@@ -72,6 +72,7 @@ Problems someone may face:
 | ----------- | ------- | ---------------------------- |
 | id          | integer | primary key                  |
 | name        | text    | user name                    |
+| preference  | 'reader', 'visual'| wheter the user prefers to read documentation or watch videos | 
 | email       | text    | user email                   |
 | passowrd    | text    | hashed password              |
 | token       | text    | password reset token         |
