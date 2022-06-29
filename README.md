@@ -3,14 +3,13 @@
 Meta U Web Track Capstone Project.
 User Stories
 
-| Table of contents |
-| ----------------- |
-| [User Roles](#user-roles) |
+| Table of contents               |
+| ------------------------------- |
+| [User Roles](#user-roles)       |
 | [User Personas](#user-personas) |
-| [User Stories](#user-stories) |
-| [Endpoints](#endpoints) |
-
-
+| [User Stories](#user-stories)   |
+| [Endpoints](#endpoints)         |
+| [Models](#models)               |
 
 ---
 
@@ -62,3 +61,55 @@ Problems someone may face:
 | PUT       | resources/updateStatus/:resourceId | Changes the status of a resource                                     | 5            |
 | GET       | resources/byCourse/:courseId       | Gets all resources from an specific course based on the courseId     | 5, 8         |
 | POST      | resources/feedback/:resourceId     | Adds feedback to an specific resources (wheter it was useful or not) | 5, 8         |
+
+## Models
+
+### Users
+
+| Column Name | Type    | Description                  |
+| ----------- | ------- | ---------------------------- |
+| id          | integer | primary key                  |
+| name        | text    | user name                    |
+| email       | text    | user email                   |
+| passowrd    | text    | hashed password              |
+| token       | text    | password reset token         |
+| createdAt   | date    | date the account was created |
+
+### Courses
+
+| Column Name | Type    | Description |
+| ----------- | ------- | ----------- |
+| id          | integer | primary key |
+| name        | text    | course name |
+
+### Resource
+
+| Column Name | Type                                      | Description                                                                        |
+| ----------- | ----------------------------------------- | ---------------------------------------------------------------------------------- |
+| id          | integer                                   | primary key                                                                        |
+| type        | 'video', 'website'                        | resource type that will display in the frontend                                    |
+| status      | 'not started', 'in progress', 'completed' | resource status                                                                    |
+| url         | text                                      | url that will redirect the user when clicking on it                                |
+| level       | 1, 2, 3                                   | what difficulty that resource corresponds in (1: beginner, 2: medium, 3: advanced) |
+| feedback    | integer                                   | wheter the users think this resource is useful or not (ranking system)             |
+
+### User_Course
+
+| Column Name | Type    | Description |
+| ----------- | ------- | ----------- |
+| id_user     | integer | user id     |
+| id_course   | integer | course id   |
+
+### Course_Resource
+
+| Column Name | Type    | Description |
+| ----------- | ------- | ----------- |
+| id_course   | integer | course id   |
+| id_resource | integer | resource id |
+
+### Following
+
+| Column Name  | Type    | Description                       |
+| ------------ | ------- | --------------------------------- |
+| id_user      | integer | user id                           |
+| id_following | integer | user id that the user is follwing |
