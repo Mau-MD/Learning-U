@@ -2,7 +2,7 @@ import express from 'express'
 const app = express();
 
 app.get("/", (req, res) => {
-  res.send("hi")
+  res.status(200).send("Server Working!")
 })
 
 
