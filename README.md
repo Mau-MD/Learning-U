@@ -3,6 +3,8 @@
 Meta U Web Track Capstone Project.
 User Stories
 
+[Project Plan](https://docs.google.com/document/d/15nU1ppWMZnbKwyfSjMI_07Ed7dZSl1sCKwV56W5l01Y/edit?usp=sharing)
+
 | Table of contents               |
 | ------------------------------- |
 | [User Roles](#user-roles)       |
