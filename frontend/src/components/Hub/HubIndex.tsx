@@ -17,7 +17,7 @@ const HubIndex = () => {
       <Container maxW={"container.xl"} mt="2rem">
         <Box display="flex" alignItems="center" justifyContent="space-between">
           <Box>
-            <Heading as="h1" fontWeight="bold" fontSize="4xl">
+            <Heading as="h1" fontWeight="bold" fontSize="4xl" id="title">
               React
             </Heading>
             <Badge>Beginner</Badge>
