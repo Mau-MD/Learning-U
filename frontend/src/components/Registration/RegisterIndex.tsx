@@ -9,6 +9,7 @@ import {
   Input,
 } from "@chakra-ui/react";
 import React from "react";
+import { Link } from "react-router-dom";
 import useThemeColor from "../../hooks/useThemeColor";
 
 const RegisterIndex = () => {
@@ -41,7 +42,9 @@ const RegisterIndex = () => {
           </FormControl>
         </Flex>
         <Flex flexDir="column" gap={5}>
-          <Button variant="link">Already have an account? Login here</Button>
+          <Button variant="link">
+            <Link to="/login">Already have an account? Login here</Link>
+          </Button>
           <Button>Register</Button>
         </Flex>
       </Flex>
