@@ -10,6 +10,7 @@ import {
 import React from "react";
 import { HashLink } from "react-router-hash-link";
 import useThemeColor from "../../hooks/useThemeColor";
+import { scrollWithOffset } from "../../utils/scrollWithOffset";
 
 interface Props {
   title: string;
@@ -47,7 +48,11 @@ const DifficultyCard = ({
             {title} Course
           </Heading>
           <Text>{phrase}</Text>
-          <HashLink to="/courses/hub/3#title" smooth>
+          <HashLink
+            to="/courses/hub/3#title"
+            smooth
+            scroll={(el) => scrollWithOffset(el)}
+          >
             <Button w="fit-content">
               {started ? "Continue Learning" : "Start Course"}
             </Button>
