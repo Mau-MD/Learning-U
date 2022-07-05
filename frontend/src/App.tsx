@@ -1,7 +1,8 @@
-import { Button } from "@chakra-ui/react";
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import DifficultyIndex from "./components/Difficulty/DifficultyIndex";
 import Home from "./components/Home";
+import HubIndex from "./components/Hub/HubIndex";
 import Navbar from "./components/Navbar";
 
 function App() {
@@ -9,7 +10,12 @@ function App() {
     <BrowserRouter>
       <Navbar />
       <Routes>
+        <Route path="*" element={<div>Not found</div>} />
         <Route path="/" element={<Home />} />
+        <Route path="courses">
+          <Route path="difficulty/:id" element={<DifficultyIndex />} />
+          <Route path="hub/:id" element={<HubIndex />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
