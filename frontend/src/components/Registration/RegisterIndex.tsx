@@ -19,8 +19,8 @@ const RegisterIndex = () => {
         backgroundColor={backgroundColor}
         borderColor={borderColor}
         borderWidth={1}
-        h="60%"
-        w="30%"
+        h={{ base: "70%", md: "60%" }}
+        w={{ base: "90%", md: "30%" }}
         p={10}
         flexDir="column"
         justifyContent="space-between"
@@ -28,7 +28,11 @@ const RegisterIndex = () => {
         <Flex flexDir="column" gap={4}>
           <Heading as="h1">Join Learning U!</Heading>
           <FormControl>
-            <FormLabel>Username or email</FormLabel>
+            <FormLabel>Username</FormLabel>
+            <Input />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Email</FormLabel>
             <Input />
           </FormControl>
           <FormControl>
