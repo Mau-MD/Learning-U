@@ -9,6 +9,7 @@ jobs:
         with:
           node-version: "14"
       - name: "Run Cypress Frontend Tests"
-      - working-directory: ./frontend
-      - run: npm install
-      - run: npm run e2e:headless
+        working-directory: ./frontend
+        run: |
+        npm install
+        npm run e2e:headless
