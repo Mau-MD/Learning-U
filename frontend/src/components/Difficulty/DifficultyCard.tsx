@@ -3,7 +3,9 @@ import {
   Button,
   CircularProgress,
   CircularProgressLabel,
+  Flex,
   Heading,
+  HStack,
   Image,
   Text,
 } from "@chakra-ui/react";
@@ -35,7 +37,7 @@ const DifficultyCard = ({
       borderWidth={1}
       borderColor={borderColor}
       w="100%"
-      h={{ base: "40vh", sm: "30vh", lg: "20vh" }}
+      h={{ base: "45vh", sm: "30vh", lg: "20vh" }}
       borderRadius="4px"
       display="flex"
       flexDirection={{ base: "column", sm: "row" }}
@@ -54,22 +56,33 @@ const DifficultyCard = ({
         display="flex"
         justifyContent="space-between"
       >
-        <Box display="flex" flexDir="column" justifyContent="space-between">
+        <Box
+          display="flex"
+          flexDir="column"
+          justifyContent="space-between"
+          w="100%"
+          paddingRight={"20px"}
+        >
           <Box>
             <Heading as="h2" size="md">
               {title} Course
             </Heading>
             <Text mt={"1em"}>{phrase}</Text>
           </Box>
-          <HashLink
-            to="/courses/hub/3#title"
-            smooth
-            scroll={(el) => scrollWithOffset(el)}
-          >
-            <Button w="fit-content">
-              {started ? "Continue Learning" : "Start Course"}
+          <Box display="flex" flexDir={{ base: "column", md: "row" }} gap="1em">
+            <HashLink
+              to="/courses/hub/3#title"
+              smooth
+              scroll={(el) => scrollWithOffset(el)}
+            >
+              <Button w={{ base: "100%", sm: "fit-content" }}>
+                {started ? "Continue Learning" : "Start Course"}
+              </Button>
+            </HashLink>
+            <Button w={{ base: "100%", sm: "fit-content" }}>
+              Refresh Resources
             </Button>
-          </HashLink>
+          </Box>
         </Box>
         <Box display="flex" alignItems="center">
           <CircularProgress value={progress} size="60px">
