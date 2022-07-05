@@ -35,19 +35,32 @@ const DifficultyCard = ({
       borderWidth={1}
       borderColor={borderColor}
       w="100%"
-      h={["40vh", "40vh", "30vh", "20vh"]}
+      h={{ base: "40vh", sm: "30vh", lg: "20vh" }}
       borderRadius="4px"
       display="flex"
+      flexDirection={{ base: "column", sm: "row" }}
     >
-      <Box w="30%" display="flex">
+      <Box
+        w={{ base: "100%", sm: "30%" }}
+        h={{ base: "20vh", sm: "100%" }}
+        display="flex"
+      >
         <Image src={src} fit="cover" w="100%" h="100%" />
       </Box>
-      <Box w="70%" p="2rem" display="flex" justifyContent="space-between">
+      <Box
+        h="100%"
+        w={{ base: "100%", sm: "70%" }}
+        p={{ base: "1rem", sm: "2rem" }}
+        display="flex"
+        justifyContent="space-between"
+      >
         <Box display="flex" flexDir="column" justifyContent="space-between">
-          <Heading as="h2" size="md">
-            {title} Course
-          </Heading>
-          <Text>{phrase}</Text>
+          <Box>
+            <Heading as="h2" size="md">
+              {title} Course
+            </Heading>
+            <Text mt={"1em"}>{phrase}</Text>
+          </Box>
           <HashLink
             to="/courses/hub/3#title"
             smooth
