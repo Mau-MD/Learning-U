@@ -13,6 +13,10 @@ Parse.serverURL = process.env.PARSE_SERVER_URL;
 
 const app = express();
 
+// Middleware
+app.use(express.json());
+
+// Routes
 app.use("/auth", auth);
 
 app.get("/", async (req, res) => {
