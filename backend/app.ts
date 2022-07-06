@@ -1,12 +1,18 @@
 import express from "express";
 import dotenv from "dotenv";
 import Parse from "parse/node";
+
+// Import Routes
+import auth from "./routes/auth";
+
 dotenv.config();
 
 Parse.initialize(process.env.PARSE_APP_ID, process.env.PARSE_JAVASCRIPT_KEY);
 Parse.serverURL = process.env.PARSE_SERVER_URL;
 
 const app = express();
+
+app.use("/auth", auth);
 
 app.get("/", async (req, res) => {
   const testObject = new Parse.Object("test");
