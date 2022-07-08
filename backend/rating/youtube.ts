@@ -1,3 +1,5 @@
+import { readFileSync } from "fs";
+import path from "path";
 import youtube from "../utils/gapi";
 
 export const getVideosByQuery = async (query: string, limit: number) => {
@@ -17,4 +19,9 @@ export const getVideoDetailByIds = async (ids: string[], limit: number) => {
     maxResults: limit,
   });
   return result;
+};
+
+export const getVideoDataFromJson = () => {
+  const jsonPath = path.join(__dirname, "youtube-data.json");
+  return JSON.parse(readFileSync(jsonPath, { encoding: "utf-8" }));
 };

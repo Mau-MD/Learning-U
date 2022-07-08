@@ -1,5 +1,9 @@
 import express, { Request } from "express";
-import { getVideoDetailByIds, getVideosByQuery } from "../rating/youtube";
+import {
+  getVideoDataFromJson,
+  getVideoDetailByIds,
+  getVideosByQuery,
+} from "../rating/youtube";
 import { BadRequestError } from "../utils/errors";
 
 const debug = express.Router();
@@ -26,4 +30,7 @@ debug.post("/", async (req, res, next) => {
   res.send(videosDetailed.data.items);
 });
 
+debug.get("/json", (req, res, next) => {
+  res.send(getVideoDataFromJson());
+});
 export default debug;
