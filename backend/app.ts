@@ -4,6 +4,7 @@ import Parse from "parse/node";
 
 import auth from "./routes/auth";
 import { NotFoundError } from "./utils/errors";
+import debug from "./routes/debug";
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ const app = express();
 app.use(express.json());
 
 app.use("/auth", auth);
+app.use("/debug", debug);
 
 app.get("/", async (req, res) => {
   const testObject = new Parse.Object("test");
