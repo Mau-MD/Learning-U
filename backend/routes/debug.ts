@@ -1,4 +1,5 @@
 import express, { Request } from "express";
+import { getExternalRanking } from "../rating/ranking";
 import {
   getVideoDataFromJson,
   getVideoDetailByIds,
@@ -31,6 +32,8 @@ debug.post("/", async (req, res, next) => {
 });
 
 debug.get("/json", (req, res, next) => {
-  res.send(getVideoDataFromJson());
+  const videos = getVideoDataFromJson();
+  getExternalRanking(videos[0]);
+  res.send(videos);
 });
 export default debug;
