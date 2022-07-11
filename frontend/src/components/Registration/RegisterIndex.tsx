@@ -8,11 +8,14 @@ import {
   Heading,
   Input,
 } from "@chakra-ui/react";
-import { ErrorMessage, Field, Form, Formik } from "formik";
+import { Field, Form, Formik } from "formik";
 import React from "react";
 import { Link } from "react-router-dom";
 import useThemeColor from "../../hooks/useThemeColor";
+import { useMutation, useQuery } from "react-query";
+import axios from "axios";
 import * as Yup from "yup";
+import { baseURL } from "../../utils/constants";
 
 interface IRegisterForm {
   username: string;
@@ -32,8 +35,23 @@ const RegisterIndex = () => {
   const { backgroundColor, borderColor } = useThemeColor();
 
   const handleOnSubmit = (values: IRegisterForm) => {
-    console.log(values);
+    handleRegistration.mutate(values);
   };
+
+  const handleRegistration = useMutation(
+    async (values: IRegisterForm) => {
+      const response = await axios.post(`${baseURL}/auth/register`, values);
+      return response.data;
+    },
+    {
+      onSuccess: () => {
+        alert("Registered succesfully");
+      },
+      onError: () => {
+        alert("There was an error with your login");
+      },
+    }
+  );
 
   return (
     <Formik
@@ -48,7 +66,6 @@ const RegisterIndex = () => {
               backgroundColor={backgroundColor}
               borderColor={borderColor}
               borderWidth={1}
-              // h={{ base: "70%", md: "60%" }}
               w={{ base: "90%", md: "30%" }}
               p={10}
               flexDir="column"
@@ -68,7 +85,7 @@ const RegisterIndex = () => {
                 </FormControl>
                 <FormControl isInvalid={!!errors.password}>
                   <FormLabel>Password</FormLabel>
-                  <Field as={Input} name="password" />
+                  <Field as={Input} name="password" type="password" />
                   <FormErrorMessage>{errors.password}</FormErrorMessage>
                 </FormControl>
               </Flex>
@@ -76,7 +93,9 @@ const RegisterIndex = () => {
                 <Button variant="link">
                   <Link to="/login">Already have an account? Login here</Link>
                 </Button>
-                <Button type="submit">Register</Button>
+                <Button type="submit" isLoading={handleRegistration.isLoading}>
+                  Register
+                </Button>
               </Flex>
             </Flex>
           </Center>
