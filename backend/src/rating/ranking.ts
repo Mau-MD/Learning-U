@@ -25,6 +25,7 @@ const WEIGHTS = {
 export const getExternalRanking = (videos: youtube_v3.Schema$Video[]) => {
   if (!ensureWeightsAreCorrect(WEIGHTS)) {
     new ExpressError("Ranking Weights are incorrect", 500);
+    return;
   }
 
   const rawExternalScoreVideos = getRawExternalRanking(videos);
