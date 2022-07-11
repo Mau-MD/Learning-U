@@ -3,11 +3,12 @@ import {
   Center,
   Flex,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Heading,
   Input,
 } from "@chakra-ui/react";
-import { Field, Form, Formik } from "formik";
+import { ErrorMessage, Field, Form, Formik } from "formik";
 import React from "react";
 import { Link } from "react-router-dom";
 import useThemeColor from "../../hooks/useThemeColor";
@@ -40,32 +41,35 @@ const RegisterIndex = () => {
       onSubmit={handleOnSubmit}
       validationSchema={schema}
     >
-      {() => (
+      {({ errors }) => (
         <Form>
           <Center h="90vh">
             <Flex
               backgroundColor={backgroundColor}
               borderColor={borderColor}
               borderWidth={1}
-              h={{ base: "70%", md: "60%" }}
+              // h={{ base: "70%", md: "60%" }}
               w={{ base: "90%", md: "30%" }}
               p={10}
               flexDir="column"
               justifyContent="space-between"
             >
-              <Flex flexDir="column" gap={4}>
+              <Flex flexDir="column" gap={4} mb={10}>
                 <Heading as="h1">Join Learning U!</Heading>
-                <FormControl>
+                <FormControl isInvalid={!!errors.username}>
                   <FormLabel>Username</FormLabel>
                   <Field as={Input} name="username" />
+                  <FormErrorMessage>{errors.username}</FormErrorMessage>
                 </FormControl>
-                <FormControl>
+                <FormControl isInvalid={!!errors.email}>
                   <FormLabel>Email</FormLabel>
                   <Field as={Input} name="email" />
+                  <FormErrorMessage>{errors.email}</FormErrorMessage>
                 </FormControl>
-                <FormControl>
+                <FormControl isInvalid={!!errors.password}>
                   <FormLabel>Password</FormLabel>
                   <Field as={Input} name="password" />
+                  <FormErrorMessage>{errors.password}</FormErrorMessage>
                 </FormControl>
               </Flex>
               <Flex flexDir="column" gap={5}>
