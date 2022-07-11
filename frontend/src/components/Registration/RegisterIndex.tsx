@@ -11,12 +11,13 @@ import {
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useThemeColor from "../../hooks/useThemeColor";
 import { useMutation, useQuery } from "react-query";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import * as Yup from "yup";
 import { baseURL } from "../../utils/constants";
+import { ErrorType } from "../../types/requests";
 
 interface IRegisterForm {
   username: string;
@@ -34,7 +35,9 @@ const schema = Yup.object({
 
 const RegisterIndex = () => {
   const { backgroundColor, borderColor } = useThemeColor();
+
   const toast = useToast();
+  const navigate = useNavigate();
 
   const handleOnSubmit = (values: IRegisterForm) => {
     handleRegistration.mutate(values);
@@ -54,11 +57,12 @@ const RegisterIndex = () => {
           duration: 5000,
           isClosable: true,
         });
+        navigate("/login");
       },
-      onError: (error) => {
+      onError: (error: AxiosError<ErrorType>) => {
         toast({
           title: "An error ocurred",
-          description: error.response.data.message,
+          description: error.response?.data.message,
           status: "error",
           duration: 5000,
           isClosable: true,
