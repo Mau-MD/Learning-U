@@ -23,7 +23,7 @@ const WEIGHTS = {
 };
 
 export const getExternalRanking = (videos: youtube_v3.Schema$Video[]) => {
-  if (!ensureWeightsAreCorrect()) {
+  if (!ensureWeightsAreCorrect(WEIGHTS)) {
     new ExpressError("Ranking Weights are incorrect", 500);
   }
 
@@ -168,14 +168,14 @@ const getDaysSincePublished = (publishedAt: string) => {
   return daysSincePublished;
 };
 
-const ensureWeightsAreCorrect = () => {
-  if (WEIGHTS.w1 + WEIGHTS.w2 !== 100) {
+const ensureWeightsAreCorrect = (weights: typeof WEIGHTS) => {
+  if (weights.w1 + weights.w2 !== 100) {
     return false;
   }
-  if (WEIGHTS.w3 + WEIGHTS.w4 !== 100) {
+  if (weights.w3 + weights.w4 !== 100) {
     return false;
   }
-  if (WEIGHTS.w4 + WEIGHTS.w6 !== 100) {
+  if (weights.w4 + weights.w6 !== 100) {
     new ExpressError("Weights are incorrect", 500);
     return false;
   }
