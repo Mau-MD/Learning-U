@@ -1,5 +1,6 @@
 import {
   ensureWeightsAreCorrect,
+  getDateScore,
   getDateXLikes,
   getDaysSincePublished,
   getUseOfChapters,
@@ -66,4 +67,10 @@ test("should get the relation between date and views", () => {
   const views2 = 433442;
   const daysSincePublished2 = 433.442;
   expect(getDateXLikes(views2, daysSincePublished2)).toBe(1000);
+});
+
+test("should get a score based on how old a video is", () => {
+  expect(getDateScore(0)).toBe(10);
+  expect(getDateScore(1)).toBe(9.4);
+  expect(getDateScore(4.5)).toBe(2.7102788505282014);
 });
