@@ -56,3 +56,14 @@ test("should get the relation between date and likes", () => {
   const daysSincePublished2 = 433.442;
   expect(getDateXLikes(likes2, daysSincePublished2)).toBe(1000);
 });
+
+test("should get the relation between date and views", () => {
+  const views1 = 5040;
+  const daysSincePublished1 = 10;
+
+  expect(getDateXLikes(views1, daysSincePublished1)).toBe(504);
+
+  const views2 = 433442;
+  const daysSincePublished2 = 433.442;
+  expect(getDateXLikes(views2, daysSincePublished2)).toBe(1000);
+});
