@@ -7,6 +7,7 @@ import {
   FormLabel,
   Heading,
   Input,
+  useToast,
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import React from "react";
@@ -33,6 +34,7 @@ const schema = Yup.object({
 
 const RegisterIndex = () => {
   const { backgroundColor, borderColor } = useThemeColor();
+  const toast = useToast();
 
   const handleOnSubmit = (values: IRegisterForm) => {
     handleRegistration.mutate(values);
@@ -45,10 +47,22 @@ const RegisterIndex = () => {
     },
     {
       onSuccess: () => {
-        alert("Registered succesfully");
+        toast({
+          title: "Account created.",
+          description: "We've created your account for you.",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
       },
-      onError: () => {
-        alert("There was an error with your login");
+      onError: (error) => {
+        toast({
+          title: "An error ocurred",
+          description: error.response.data.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
       },
     }
   );
