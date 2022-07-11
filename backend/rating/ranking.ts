@@ -2,10 +2,11 @@ import type { youtube_v3 } from "googleapis/build/src/apis/youtube/v3";
 import { ExpressError } from "../utils/errors";
 import { parseISO, differenceInCalendarDays } from "date-fns";
 import { normalize } from "../utils/math";
-import { IRawYoutubeVideo } from "../types/youtube";
+import { INormalizedYoutubeVideo, IRawYoutubeVideo } from "../types/youtube";
 
-interface ExternalRankingParams {
-  wwwwww;
+interface IMaxScores {
+  dateXViews: number;
+  dateXLikes: number;
 }
 
 const WEIGHTS = {
@@ -22,7 +23,9 @@ export const getExternalRanking = (videos: youtube_v3.Schema$Video[]) => {
     new ExpressError("Ranking Weights are incorrect", 500);
   }
 
-  return getRawExternalRanking(videos);
+  const rawExternalScoreVideos = getRawExternalRanking(videos);
+  const maxScores = getMaxScores(rawExternalScoreVideos);
+  return getNormalizedExternalRanking(rawExternalScoreVideos, maxScores);
 };
 
 const getRawExternalRanking = (
@@ -55,7 +58,52 @@ const getRawExternalRanking = (
   });
 };
 
-const getNormalizedExternalRanking = (videos: youtube_v3.Schema$Video[]) => {};
+const getNormalizedExternalRanking = (
+  videos: IRawYoutubeVideo[],
+  maxScores: IMaxScores
+): INormalizedYoutubeVideo[] => {
+  return videos.map((video) => {
+    return {
+      ...video,
+      normalized_score: {
+        date: normalize(video.raw_score.date, 0, 10),
+        dateXLikes: normalize(
+          video.raw_score.dateXLikes,
+          0,
+          maxScores.dateXLikes
+        ),
+        dateXViews: normalize(
+          video.raw_score.dateXViews,
+          0,
+          maxScores.dateXViews
+        ),
+        useOfChapters: video.raw_score.useOfChapters,
+      },
+    };
+  });
+};
+
+const getMaxScores = (
+  rawExternalRankingVideos: IRawYoutubeVideo[]
+): IMaxScores => {
+  const maxScore = {
+    dateXViews: 0,
+    dateXLikes: 0,
+  };
+
+  for (const video of rawExternalRankingVideos) {
+    maxScore.dateXViews = Math.max(
+      maxScore.dateXViews,
+      video.raw_score.dateXViews
+    );
+    maxScore.dateXLikes = Math.max(
+      maxScore.dateXLikes,
+      video.raw_score.dateXLikes
+    );
+  }
+
+  return maxScore;
+};
 
 const getDateScore = (yearsSincePublished: number) => {
   // Following the function in https://docs.google.com/document/d/1zxYRyytmbbvfAZkQc8dampD9Vhun0XQtWepKYxWUTKo

@@ -35,6 +35,15 @@ debug.post("/", async (req, res, next) => {
 debug.get("/json", (req, res, next) => {
   const videos = getVideoDataFromJson() as youtube_v3.Schema$Video[];
   const rankedVideos = getExternalRanking(videos);
-  res.send(rankedVideos);
+  res.send(
+    rankedVideos.map((video) => {
+      return {
+        title: video.snippet.title,
+        description: video.snippet.description,
+        raw_score: video.raw_score,
+        normalized_score: video.normalized_score,
+      };
+    })
+  );
 });
 export default debug;
