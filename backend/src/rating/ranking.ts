@@ -178,7 +178,7 @@ export const ensureWeightsAreCorrect = (weights: typeof WEIGHTS) => {
   if (weights.w3 + weights.w4 !== 100) {
     return false;
   }
-  if (weights.w4 + weights.w6 !== 100) {
+  if (weights.w5 + weights.w6 !== 100) {
     new ExpressError("Weights are incorrect", 500);
     return false;
   }
