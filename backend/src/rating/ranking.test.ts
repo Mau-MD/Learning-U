@@ -1,4 +1,4 @@
-import { ensureWeightsAreCorrect } from "./ranking";
+import { ensureWeightsAreCorrect, getDaysSincePublished } from "./ranking";
 
 test("weights should throw an error if weights are incorrect", () => {
   const testWeights1 = {
@@ -22,4 +22,10 @@ test("weights should throw an error if weights are incorrect", () => {
   };
 
   expect(ensureWeightsAreCorrect(testWeights2)).toBe(false);
+});
+
+test("should return the days that have passed since then, given an ISO Date", () => {
+  const publishedAt = "2018-07-16T16:51:44Z";
+  expect(getDaysSincePublished(publishedAt)).toBe(1456);
+  expect(getDaysSincePublished(new Date().toISOString())).toBe(0);
 });
