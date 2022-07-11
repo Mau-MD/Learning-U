@@ -1,4 +1,5 @@
 import express, { Request } from "express";
+import { youtube_v3 } from "googleapis";
 import { getExternalRanking } from "../rating/ranking";
 import {
   getVideoDataFromJson,
@@ -32,8 +33,8 @@ debug.post("/", async (req, res, next) => {
 });
 
 debug.get("/json", (req, res, next) => {
-  const videos = getVideoDataFromJson();
-  getExternalRanking(videos[0]);
-  res.send(videos);
+  const videos = getVideoDataFromJson() as youtube_v3.Schema$Video[];
+  const rankedVideos = getExternalRanking(videos);
+  res.send(rankedVideos);
 });
 export default debug;

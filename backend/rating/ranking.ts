@@ -20,22 +20,36 @@ export const getExternalRanking = (videos: youtube_v3.Schema$Video[]) => {
   if (!ensureWeightsAreCorrect()) {
     new ExpressError("Ranking Weights are incorrect", 500);
   }
+
+  return getRawExternalRanking(videos);
 };
 
 const getRawExternalRanking = (videos: youtube_v3.Schema$Video[]) => {
-  videos.map((video) => {
+  return videos.map((video) => {
     const daysSincePublished = getDaysSincePublished(video.snippet.publishedAt);
     const yearsSincePublished = daysSincePublished / 365;
 
     const rawDateScore = getDateScore(yearsSincePublished);
-    const rawDateXViewsCore = getDateXViewsScore(
+    const rawDateXViewsScore = getDateXViewsScore(
       parseInt(video.statistics.viewCount),
       yearsSincePublished
     );
-    const rawDateXLikes = getDateXLikes(
+    const rawDateXLikesScore = getDateXLikes(
       parseInt(video.statistics.likeCount),
       daysSincePublished
     );
+    const useOfChapters = getUseOfChapters(video.snippet.description);
+
+    return {
+      title: video.snippet.title,
+      description: video.snippet.description,
+      raw_score: {
+        date: rawDateScore,
+        dateXViews: rawDateXViewsScore,
+        dateXLikes: rawDateXLikesScore,
+        useOfChapters,
+      },
+    };
   });
 };
 
@@ -50,6 +64,15 @@ const getDateXViewsScore = (views: number, daysSincePublished: number) => {
 
 const getDateXLikes = (likes: number, daysSincePublished: number) => {
   return likes / daysSincePublished;
+};
+
+const getUseOfChapters = (description: string) => {
+  const usesChapters = description.match("[0-9]:[0-9]");
+  return usesChapters !== null;
+};
+
+const getChannelPopularity = () => {
+  return 1;
 };
 
 const getDaysSincePublished = (publishedAt: string) => {
