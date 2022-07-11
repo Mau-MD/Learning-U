@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import Parse from "parse/node";
 
 import auth from "./routes/auth";
+import cors from "cors";
 import { NotFoundError } from "./utils/errors";
 
 dotenv.config();
@@ -13,6 +14,7 @@ Parse.serverURL = process.env.PARSE_SERVER_URL;
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
 app.use("/auth", auth);
 
