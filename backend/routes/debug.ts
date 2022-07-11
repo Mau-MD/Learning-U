@@ -42,6 +42,8 @@ debug.get("/json", (req, res, next) => {
         description: video.snippet.description,
         raw_score: video.raw_score,
         normalized_score: video.normalized_score,
+        weighted_score: video.weighted_score,
+        final_score: video.final_score,
       };
     })
   );

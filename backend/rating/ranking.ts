@@ -2,7 +2,11 @@ import type { youtube_v3 } from "googleapis/build/src/apis/youtube/v3";
 import { ExpressError } from "../utils/errors";
 import { parseISO, differenceInCalendarDays } from "date-fns";
 import { normalize } from "../utils/math";
-import { INormalizedYoutubeVideo, IRawYoutubeVideo } from "../types/youtube";
+import {
+  INormalizedYoutubeVideo,
+  IRawYoutubeVideo,
+  IWeightedYoutubeVideo,
+} from "../types/youtube";
 
 interface IMaxScores {
   dateXViews: number;
@@ -12,10 +16,10 @@ interface IMaxScores {
 const WEIGHTS = {
   w1: 60,
   w2: 40,
-  w3: 50,
-  w4: 50,
-  w5: 20,
-  w6: 80,
+  w3: 100,
+  w4: 0,
+  w5: 100,
+  w6: 0,
 };
 
 export const getExternalRanking = (videos: youtube_v3.Schema$Video[]) => {
@@ -25,7 +29,11 @@ export const getExternalRanking = (videos: youtube_v3.Schema$Video[]) => {
 
   const rawExternalScoreVideos = getRawExternalRanking(videos);
   const maxScores = getMaxScores(rawExternalScoreVideos);
-  return getNormalizedExternalRanking(rawExternalScoreVideos, maxScores);
+  const normalizedExternalScoreVideos = getNormalizedExternalRanking(
+    rawExternalScoreVideos,
+    maxScores
+  );
+  return getWeightedExternalRanking(normalizedExternalScoreVideos);
 };
 
 const getRawExternalRanking = (
@@ -79,6 +87,30 @@ const getNormalizedExternalRanking = (
         ),
         useOfChapters: video.raw_score.useOfChapters,
       },
+    };
+  });
+};
+
+const getWeightedExternalRanking = (
+  videos: INormalizedYoutubeVideo[]
+): IWeightedYoutubeVideo[] => {
+  return videos.map((video) => {
+    const weighted_score = {
+      date: video.normalized_score.date * WEIGHTS.w1,
+      dateXLikes: video.normalized_score.dateXLikes * WEIGHTS.w2,
+      dateXViews: video.normalized_score.dateXViews * WEIGHTS.w3,
+      useOfChapters: video.normalized_score.useOfChapters * WEIGHTS.w5,
+    };
+
+    const final_score =
+      0.5 * (weighted_score.date + weighted_score.dateXLikes) +
+      0.3 * weighted_score.dateXViews +
+      0.2 * weighted_score.useOfChapters;
+
+    return {
+      ...video,
+      weighted_score,
+      final_score,
     };
   });
 };
