@@ -1,5 +1,6 @@
 import {
   ensureWeightsAreCorrect,
+  getDateXLikes,
   getDaysSincePublished,
   getUseOfChapters,
 } from "./ranking";
@@ -43,4 +44,15 @@ test("should return if a video has chapters or not", () => {
 
   expect(getUseOfChapters(descriptionWithChapters)).toBe(1);
   expect(getUseOfChapters(descriptionWithoutChapters)).toBe(0);
+});
+
+test("should get the relation between date and likes", () => {
+  const likes1 = 50;
+  const daysSincePublished1 = 10;
+
+  expect(getDateXLikes(likes1, daysSincePublished1)).toBe(5);
+
+  const likes2 = 433442;
+  const daysSincePublished2 = 433.442;
+  expect(getDateXLikes(likes2, daysSincePublished2)).toBe(1000);
 });
