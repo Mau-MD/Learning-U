@@ -17,21 +17,31 @@ export const getExternalRanking = (video: youtube_v3.Schema$Video) => {
     new ExpressError("Ranking Weights are incorrect", 500);
   }
 
-  const dateScore = getDateScore(video.snippet.publishedAt);
+  const daysSincePublished = getDaysSincePublished(video.snippet.publishedAt);
+  const yearsSincePublished = daysSincePublished / 365;
+
+  const dateScore = getDateScore(yearsSincePublished);
 };
 
-const getDateScore = (publishedAt: string) => {
+const getDateScore = (yearsSincePublished: number) => {
+  // Following the function in https://docs.google.com/document/d/1zxYRyytmbbvfAZkQc8dampD9Vhun0XQtWepKYxWUTKo
+  const dateScore = Math.max(-Math.pow(1.6, yearsSincePublished) + 11, 0);
+  const normalizedDateScore = normalize(dateScore, 0, 10);
+  return normalizedDateScore;
+};
+
+const getDateXViewsScore = (views: number, yearsSincePublished: number) => {
+  const dateXViewsScore = views / yearsSincePublished;
+  return dateXViewsScore;
+};
+
+const getDaysSincePublished = (publishedAt: string) => {
   const publishedAtDate = parseISO(publishedAt);
   const daysSincePublished = differenceInCalendarDays(
     new Date(),
     publishedAtDate
   );
-  const yearsSincePublished = daysSincePublished / 365;
-
-  // Following the function in https://docs.google.com/document/d/1zxYRyytmbbvfAZkQc8dampD9Vhun0XQtWepKYxWUTKo
-  const dateScore = Math.max(-Math.pow(1.6, yearsSincePublished) + 11, 0);
-  const normalizedDateScore = normalize(dateScore, 0, 10);
-  return normalizedDateScore;
+  return daysSincePublished;
 };
 
 const ensureWeightsAreCorrect = () => {
