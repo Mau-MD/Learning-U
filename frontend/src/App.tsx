@@ -6,6 +6,7 @@ import HubIndex from "./components/Hub/HubIndex";
 import Navbar from "./components/Navbar";
 
 function App() {
+
   return (
     <BrowserRouter>
       <Navbar />
