@@ -36,7 +36,7 @@ export const getExternalRanking = (videos: youtube_v3.Schema$Video[]) => {
   return getWeightedExternalRanking(normalizedExternalScoreVideos);
 };
 
-const getRawExternalRanking = (
+export const getRawExternalRanking = (
   videos: youtube_v3.Schema$Video[]
 ): IRawYoutubeVideo[] => {
   return videos.map((video) => {
@@ -66,7 +66,7 @@ const getRawExternalRanking = (
   });
 };
 
-const getNormalizedExternalRanking = (
+export const getNormalizedExternalRanking = (
   videos: IRawYoutubeVideo[],
   maxScores: IMaxScores
 ): INormalizedYoutubeVideo[] => {
@@ -91,7 +91,7 @@ const getNormalizedExternalRanking = (
   });
 };
 
-const getWeightedExternalRanking = (
+export const getWeightedExternalRanking = (
   videos: INormalizedYoutubeVideo[]
 ): IWeightedYoutubeVideo[] => {
   return videos.map((video) => {
@@ -115,7 +115,7 @@ const getWeightedExternalRanking = (
   });
 };
 
-const getMaxScores = (
+export const getMaxScores = (
   rawExternalRankingVideos: IRawYoutubeVideo[]
 ): IMaxScores => {
   const maxScore = {
@@ -137,20 +137,23 @@ const getMaxScores = (
   return maxScore;
 };
 
-const getDateScore = (yearsSincePublished: number) => {
+export const getDateScore = (yearsSincePublished: number) => {
   // Following the function in https://docs.google.com/document/d/1zxYRyytmbbvfAZkQc8dampD9Vhun0XQtWepKYxWUTKo
   return Math.max(-Math.pow(1.6, yearsSincePublished) + 11, 0);
 };
 
-const getDateXViewsScore = (views: number, daysSincePublished: number) => {
+export const getDateXViewsScore = (
+  views: number,
+  daysSincePublished: number
+) => {
   return views / daysSincePublished;
 };
 
-const getDateXLikes = (likes: number, daysSincePublished: number) => {
+export const getDateXLikes = (likes: number, daysSincePublished: number) => {
   return likes / daysSincePublished;
 };
 
-const getUseOfChapters = (description: string) => {
+export const getUseOfChapters = (description: string) => {
   const usesChapters = description.match("[0-9]:[0-9]");
   return usesChapters !== null ? 1 : 0;
 };
@@ -159,7 +162,7 @@ const getChannelPopularity = () => {
   return 1;
 };
 
-const getDaysSincePublished = (publishedAt: string) => {
+export const getDaysSincePublished = (publishedAt: string) => {
   const publishedAtDate = parseISO(publishedAt);
   const daysSincePublished = differenceInCalendarDays(
     new Date(),
@@ -168,7 +171,7 @@ const getDaysSincePublished = (publishedAt: string) => {
   return daysSincePublished;
 };
 
-const ensureWeightsAreCorrect = (weights: typeof WEIGHTS) => {
+export const ensureWeightsAreCorrect = (weights: typeof WEIGHTS) => {
   if (weights.w1 + weights.w2 !== 100) {
     return false;
   }
