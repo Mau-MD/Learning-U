@@ -2,6 +2,7 @@ import type { youtube_v3 } from "googleapis/build/src/apis/youtube/v3";
 import { ExpressError } from "../utils/errors";
 import { parseISO, differenceInCalendarDays } from "date-fns";
 import { normalize } from "../utils/math";
+import { IRawYoutubeVideo } from "../types/youtube";
 
 interface ExternalRankingParams {
   wwwwww;
@@ -24,7 +25,9 @@ export const getExternalRanking = (videos: youtube_v3.Schema$Video[]) => {
   return getRawExternalRanking(videos);
 };
 
-const getRawExternalRanking = (videos: youtube_v3.Schema$Video[]) => {
+const getRawExternalRanking = (
+  videos: youtube_v3.Schema$Video[]
+): IRawYoutubeVideo[] => {
   return videos.map((video) => {
     const daysSincePublished = getDaysSincePublished(video.snippet.publishedAt);
     const yearsSincePublished = daysSincePublished / 365;
@@ -41,8 +44,7 @@ const getRawExternalRanking = (videos: youtube_v3.Schema$Video[]) => {
     const useOfChapters = getUseOfChapters(video.snippet.description);
 
     return {
-      title: video.snippet.title,
-      description: video.snippet.description,
+      ...video,
       raw_score: {
         date: rawDateScore,
         dateXViews: rawDateXViewsScore,
@@ -52,6 +54,8 @@ const getRawExternalRanking = (videos: youtube_v3.Schema$Video[]) => {
     };
   });
 };
+
+const getNormalizedExternalRanking = (videos: youtube_v3.Schema$Video[]) => {};
 
 const getDateScore = (yearsSincePublished: number) => {
   // Following the function in https://docs.google.com/document/d/1zxYRyytmbbvfAZkQc8dampD9Vhun0XQtWepKYxWUTKo
@@ -68,7 +72,7 @@ const getDateXLikes = (likes: number, daysSincePublished: number) => {
 
 const getUseOfChapters = (description: string) => {
   const usesChapters = description.match("[0-9]:[0-9]");
-  return usesChapters !== null;
+  return usesChapters !== null ? 1 : 0;
 };
 
 const getChannelPopularity = () => {
