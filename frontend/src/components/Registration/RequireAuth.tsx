@@ -6,10 +6,10 @@ interface Props {
   children: JSX.Element;
 }
 const RequireAuth = ({ children }: Props) => {
-  const { isFetching, user } = useSession();
+  const { user } = useSession();
   const location = useLocation();
 
-  if (!isFetching && !user) {
+  if (!user) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 

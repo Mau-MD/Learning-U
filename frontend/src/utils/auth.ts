@@ -17,19 +17,16 @@ export const deleteCachedUser = () => {
 
 export const useSession = () => {
   const [user, setUser] = useState<IUser | null>(null);
-  const [isFetching, setIsFetching] = useState(true);
 
   useEffect(() => {
     fetchUser();
   }, []);
 
   const fetchUser = () => {
-    setIsFetching(true);
     const cachedUser = getCachedUser();
     if (!cachedUser) return;
     setUser(cachedUser);
-    setIsFetching(false);
   };
 
-  return { user, fetchUser, isFetching };
+  return { user, fetchUser };
 };
