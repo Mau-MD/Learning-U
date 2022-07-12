@@ -2,7 +2,7 @@ import React from "react";
 import ReactDom from "react-dom";
 
 interface Props {
-  children: JSX.Element;
+  children: React.ReactNode;
 }
 const PopoverPortal = ({ children }: Props) => {
   return ReactDom.createPortal(children, document.body);
