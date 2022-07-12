@@ -19,25 +19,25 @@ const DashboardIndex = () => {
           Learning Dashboard
         </Heading>
         <Button w="fit-content">I want to learn something new...</Button>
-
-        <Tooltip
-          render={
-            <Popover
-              courseName="React Course"
-              beginnerProgress={50}
-              intermediateProgress={20}
-              advancedProgress={0}
-            />
-          }
-        >
-          <div>hi</div>
-        </Tooltip>
         <Grid
           templateColumns={["1fr", "1fr", "repeat(2, 1fr)", "repeat(3, 1fr)"]}
           gap="1em"
           mt={10}
         >
-          <CourseCard />
+          <Tooltip
+            render={
+              <Popover
+                courseName="React Course"
+                beginnerProgress={50}
+                intermediateProgress={20}
+                advancedProgress={0}
+              />
+            }
+          >
+            <div>
+              <CourseCard />
+            </div>
+          </Tooltip>
           <CourseCard />
           <CourseCard />
         </Grid>
