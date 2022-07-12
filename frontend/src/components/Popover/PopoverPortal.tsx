@@ -1,7 +1,11 @@
 import React from "react";
+import ReactDom from "react-dom";
 
-const PopoverPortal = () => {
-  return <div>PopoverPortal</div>;
+interface Props {
+  children: JSX.Element;
+}
+const PopoverPortal = ({ children }: Props) => {
+  return ReactDom.createPortal(children, document.body);
 };
 
 export default PopoverPortal;
