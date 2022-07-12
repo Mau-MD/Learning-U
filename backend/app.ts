@@ -2,9 +2,9 @@ import express from "express";
 import dotenv from "dotenv";
 import Parse from "parse/node";
 
-import auth from "./routes/auth";
-import { NotFoundError } from "./utils/errors";
-import debug from "./routes/debug";
+import auth from "./src/routes/auth";
+import { NotFoundError } from "./src/utils/errors";
+import debug from "./src/routes/debug";
 
 dotenv.config();
 
