@@ -12,7 +12,7 @@ const getPoint = (element: HTMLElement, ref: HTMLElement) => {
   const rectangle = element.getBoundingClientRect();
   const refRectangle = ref.getBoundingClientRect();
   pt.x = rectangle.left + (rectangle.width - refRectangle.width) / 2;
-  pt.y = rectangle.top - refRectangle.height / 1.2;
+  pt.y = rectangle.top - refRectangle.height + 10;
   return pt;
 };
 
@@ -43,7 +43,7 @@ const Tooltip = ({ children, render }: Props) => {
           position="fixed"
           top={posRef.current.y}
           left={posRef.current.x}
-          opacity={show ? 1 : 0}
+          visibility={show ? "visible" : "hidden"}
           zIndex={999}
           ref={tooltipRef}
         >
