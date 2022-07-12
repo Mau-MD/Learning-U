@@ -6,7 +6,7 @@ export const persistUser = (user: IUser) => {
 };
 
 export const getCachedUser = (): IUser | null => {
-  const userString = localStorage.get("user");
+  const userString = localStorage.getItem("user");
   if (!userString) return null;
   return JSON.parse(userString) as IUser;
 };
