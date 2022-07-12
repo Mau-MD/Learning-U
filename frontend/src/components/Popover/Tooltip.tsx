@@ -1,5 +1,5 @@
 import { Box } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import PopoverPortal from "./PopoverPortal";
 
 interface Props {
@@ -7,11 +7,24 @@ interface Props {
   render: React.ReactElement;
 }
 
+const getPoint = (element: HTMLElement, ref: HTMLElement) => {
+  const pt = { x: 0, y: 0 };
+  const rectangle = element.getBoundingClientRect();
+  const refRectangle = ref.getBoundingClientRect();
+  pt.x = rectangle.left + (rectangle.width - refRectangle.width) / 2;
+  pt.y = rectangle.top - refRectangle.height / 2;
+  return pt;
+};
+
 const Tooltip = ({ children, render }: Props) => {
   const [show, setShow] = useState(false);
 
-  const handleMouseOver = () => {
+  const posRef = useRef({ x: 0, y: 0 });
+  const tooltipRef = useRef();
+
+  const handleMouseOver = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     setShow(true);
+    posRef.current = getPoint(e.currentTarget, tooltipRef.current);
   };
 
   const handleMouseOut = () => {
@@ -25,7 +38,14 @@ const Tooltip = ({ children, render }: Props) => {
         onMouseOut: handleMouseOut,
       })}
       <PopoverPortal>
-        <Box position="fixed" opacity={show ? 1 : 0}>
+        <Box
+          position="fixed"
+          top={posRef.current.y}
+          left={posRef.current.x}
+          opacity={show ? 1 : 0}
+          zIndex={999}
+          ref={tooltipRef}
+        >
           {render}
         </Box>
       </PopoverPortal>
