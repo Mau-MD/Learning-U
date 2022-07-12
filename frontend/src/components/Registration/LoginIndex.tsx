@@ -7,13 +7,17 @@ import {
   FormLabel,
   Heading,
   Input,
+  useToast,
 } from "@chakra-ui/react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { Field, Form, Formik } from "formik";
 import React from "react";
 import { useMutation } from "react-query";
 import { Link } from "react-router-dom";
 import useThemeColor from "../../hooks/useThemeColor";
+import { ErrorType } from "../../types/requests";
+import { IUser } from "../../types/user";
+import { persistUser } from "../../utils/auth";
 import { baseURL } from "../../utils/constants";
 
 interface ILoginForm {
@@ -24,21 +28,29 @@ interface ILoginForm {
 const LoginIndex = () => {
   const { backgroundColor, borderColor } = useThemeColor();
 
+  const toast = useToast();
   const handleOnSubmit = (values: ILoginForm) => {
     handleLogin.mutate(values);
   };
 
   const handleLogin = useMutation(
     async (values: ILoginForm) => {
-      const res = await axios.post(`${baseURL}/auth/login`, values);
+      const res = await axios.post<IUser>(`${baseURL}/auth/login`, values);
       return res.data;
     },
     {
-      onSuccess: (res) => {
-        console.log("Success ", res);
+      onSuccess: (user) => {
+        persistUser(user);
+        window.location.reload();
       },
-      onError: () => {
-        console.log("Error");
+      onError: (error: AxiosError<ErrorType>) => {
+        toast({
+          title: "An error ocurred",
+          description: error.response?.data.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
       },
     }
   );
