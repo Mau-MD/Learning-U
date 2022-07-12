@@ -13,7 +13,7 @@ const RequireAuth = ({ children }: Props) => {
 
   console.log(user, isFetching);
   const handleRender = () => {
-    if (!isFetching)
+    if (isFetching)
       return (
         <Center>
           <Center h="90vh">
