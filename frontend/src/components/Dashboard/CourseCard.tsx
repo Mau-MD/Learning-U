@@ -1,6 +1,7 @@
 import { ChevronDownIcon, HamburgerIcon } from "@chakra-ui/icons";
 import {
   Box,
+  Button,
   Flex,
   Heading,
   IconButton,
@@ -11,6 +12,7 @@ import {
   MenuList,
 } from "@chakra-ui/react";
 import React from "react";
+import { Link } from "react-router-dom";
 import useThemeColor from "../../hooks/useThemeColor";
 import Popover from "../Popover/Popover";
 import Tooltip from "../Popover/Tooltip";
@@ -38,7 +40,6 @@ const CourseCard = ({
       borderWidth={1}
       borderRadius={4}
       w="100%"
-      cursor={"pointer"}
     >
       <Box>
         <Tooltip
@@ -51,7 +52,7 @@ const CourseCard = ({
             />
           }
         >
-          <Image src={src}></Image>
+          <Image src={src} cursor="pointer"></Image>
         </Tooltip>
         <Flex
           padding={4}
@@ -61,17 +62,24 @@ const CourseCard = ({
           <Heading as="h2" fontSize={"md"}>
             {title}
           </Heading>
-          <Menu>
-            <MenuButton
-              as={IconButton}
-              aria-label="Options"
-              icon={<HamburgerIcon />}
-            ></MenuButton>
-            <MenuList>
-              <MenuItem>Share course</MenuItem>
-              <MenuItem>Delete course</MenuItem>
-            </MenuList>
-          </Menu>
+          <Box>
+            <Link to="/courses/difficulty/3">
+              <Button mr={2} colorScheme="blue">
+                Go
+              </Button>
+            </Link>
+            <Menu>
+              <MenuButton
+                as={IconButton}
+                aria-label="Options"
+                icon={<HamburgerIcon />}
+              ></MenuButton>
+              <MenuList>
+                <MenuItem>Share course</MenuItem>
+                <MenuItem>Delete course</MenuItem>
+              </MenuList>
+            </Menu>
+          </Box>
         </Flex>
       </Box>
     </Box>
