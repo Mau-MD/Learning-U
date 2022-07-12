@@ -1,5 +1,13 @@
-import { Button, Container, Flex, Heading, VStack } from "@chakra-ui/react";
+import {
+  Button,
+  Container,
+  Flex,
+  Grid,
+  Heading,
+  VStack,
+} from "@chakra-ui/react";
 import React from "react";
+import CourseCard from "./CourseCard";
 
 const DashboardIndex = () => {
   return (
@@ -9,6 +17,16 @@ const DashboardIndex = () => {
           Learning Dashboard
         </Heading>
         <Button w="fit-content">I want to learn something new...</Button>
+
+        <Grid
+          templateColumns={["1fr", "1fr", "repeat(2, 1fr)", "repeat(3, 1fr)"]}
+          gap="1em"
+          mt={10}
+        >
+          <CourseCard />
+          <CourseCard />
+          <CourseCard />
+        </Grid>
       </Flex>
     </Container>
   );
