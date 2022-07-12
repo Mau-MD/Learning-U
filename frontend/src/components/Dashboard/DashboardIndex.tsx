@@ -8,6 +8,7 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import Popover from "../Popover/Popover";
+import Tooltip from "../Popover/Tooltip";
 import CourseCard from "./CourseCard";
 
 const DashboardIndex = () => {
@@ -19,12 +20,18 @@ const DashboardIndex = () => {
         </Heading>
         <Button w="fit-content">I want to learn something new...</Button>
 
-        <Popover
-          courseName="React Course"
-          beginnerProgress={70}
-          intermediateProgress={10}
-          advancedProgress={0}
-        />
+        <Tooltip
+          render={
+            <Popover
+              courseName="React Course"
+              beginnerProgress={50}
+              intermediateProgress={20}
+              advancedProgress={0}
+            />
+          }
+        >
+          <div>hi</div>
+        </Tooltip>
         <Grid
           templateColumns={["1fr", "1fr", "repeat(2, 1fr)", "repeat(3, 1fr)"]}
           gap="1em"
