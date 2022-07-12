@@ -1,5 +1,6 @@
 import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
+import DashboardIndex from "./components/Dashboard/DashboardIndex";
 import DifficultyIndex from "./components/Difficulty/DifficultyIndex";
 import Home from "./components/Home";
 import HubIndex from "./components/Hub/HubIndex";
@@ -18,6 +19,16 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<RegisterIndex />} />
         <Route path="/login" element={<LoginIndex />} />
+        <Route
+          path="dashboard"
+          element={
+            <RequireAuth>
+              <Outlet />
+            </RequireAuth>
+          }
+        >
+          <Route index element={<DashboardIndex />} />
+        </Route>
         <Route
           path="courses"
           element={
