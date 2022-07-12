@@ -5,7 +5,7 @@ import type { IUser } from "../types/user";
 
 const auth = express.Router();
 
-auth.get("/login", async (req, res, next) => {
+auth.post("/login", async (req, res, next) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
