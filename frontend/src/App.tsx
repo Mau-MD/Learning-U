@@ -9,6 +9,7 @@ import Navbar from "./components/Navbar";
 import LoginIndex from "./components/Registration/LoginIndex";
 import RegisterIndex from "./components/Registration/RegisterIndex";
 import RequireAuth from "./components/Registration/RequireAuth";
+import NewCourseIndex from "./components/NewCourse/NewCourseIndex";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           }
         >
           <Route index element={<DashboardIndex />} />
+          <Route path="new" element={<NewCourseIndex />} />
         </Route>
         <Route
           path="courses"
