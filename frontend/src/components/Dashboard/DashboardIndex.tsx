@@ -7,6 +7,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import React from "react";
+import Popover from "../Popover/Popover";
 import CourseCard from "./CourseCard";
 
 const DashboardIndex = () => {
@@ -18,6 +19,7 @@ const DashboardIndex = () => {
         </Heading>
         <Button w="fit-content">I want to learn something new...</Button>
 
+        <Popover />
         <Grid
           templateColumns={["1fr", "1fr", "repeat(2, 1fr)", "repeat(3, 1fr)"]}
           gap="1em"
