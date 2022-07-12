@@ -19,11 +19,17 @@ import { ErrorType } from "../../types/requests";
 import { IUser } from "../../types/user";
 import { persistUser } from "../../utils/auth";
 import { baseURL } from "../../utils/constants";
+import * as Yup from "yup";
 
 interface ILoginForm {
   username: string;
   password: string;
 }
+
+const schema = Yup.object({
+  username: Yup.string().required("Username is required"),
+  password: Yup.string().required("Password is required"),
+});
 
 const LoginIndex = () => {
   const { backgroundColor, borderColor } = useThemeColor();
@@ -59,6 +65,7 @@ const LoginIndex = () => {
     <Formik
       initialValues={{ username: "", password: "" }}
       onSubmit={handleOnSubmit}
+      validationSchema={schema}
     >
       {({ errors, touched }) => (
         <Form>
