@@ -24,6 +24,7 @@ const CourseCard = () => {
       borderWidth={1}
       borderRadius={4}
       w="100%"
+      cursor={"pointer"}
     >
       <Box>
         <Image src="https://assets-global.website-files.com/61a0a53beeb118af7ddb4c55/61c0ba0267c18ebf1fd19b2f_maxresdefault-1-1-1024x576.jpeg"></Image>
@@ -42,11 +43,8 @@ const CourseCard = () => {
               icon={<HamburgerIcon />}
             ></MenuButton>
             <MenuList>
-              <MenuItem>Download</MenuItem>
-              <MenuItem>Create a Copy</MenuItem>
-              <MenuItem>Mark as Draft</MenuItem>
-              <MenuItem>Delete</MenuItem>
-              <MenuItem>Attend a Workshop</MenuItem>
+              <MenuItem>Share course</MenuItem>
+              <MenuItem>Delete course</MenuItem>
             </MenuList>
           </Menu>
         </Flex>
