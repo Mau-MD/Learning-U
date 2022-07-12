@@ -11,7 +11,6 @@ const RequireAuth = ({ children }: Props) => {
   const { user, isFetching } = useSession();
   const location = useLocation();
 
-  console.log(user, isFetching);
   const handleRender = () => {
     if (isFetching)
       return (
