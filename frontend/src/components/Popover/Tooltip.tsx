@@ -12,7 +12,7 @@ const getPoint = (element: HTMLElement, ref: HTMLElement) => {
   const rectangle = element.getBoundingClientRect();
   const refRectangle = ref.getBoundingClientRect();
   pt.x = rectangle.left + (rectangle.width - refRectangle.width) / 2;
-  pt.y = rectangle.top - refRectangle.height / 2;
+  pt.y = rectangle.top - refRectangle.height / 1.2;
   return pt;
 };
 
@@ -20,10 +20,11 @@ const Tooltip = ({ children, render }: Props) => {
   const [show, setShow] = useState(false);
 
   const posRef = useRef({ x: 0, y: 0 });
-  const tooltipRef = useRef();
+  const tooltipRef = useRef<HTMLDivElement>(null);
 
   const handleMouseOver = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     setShow(true);
+    if (!tooltipRef.current) return;
     posRef.current = getPoint(e.currentTarget, tooltipRef.current);
   };
 
