@@ -1,14 +1,5 @@
-import {
-  Button,
-  Container,
-  Flex,
-  Grid,
-  Heading,
-  VStack,
-} from "@chakra-ui/react";
+import { Button, Container, Flex, Grid, Heading } from "@chakra-ui/react";
 import React from "react";
-import Popover from "../Popover/Popover";
-import Tooltip from "../Popover/Tooltip";
 import CourseCard from "./CourseCard";
 
 const DashboardIndex = () => {
@@ -24,20 +15,7 @@ const DashboardIndex = () => {
           gap="1em"
           mt={10}
         >
-          <Tooltip
-            render={
-              <Popover
-                courseName="React Course"
-                beginnerProgress={50}
-                intermediateProgress={20}
-                advancedProgress={0}
-              />
-            }
-          >
-            <div>
-              <CourseCard />
-            </div>
-          </Tooltip>
+          <CourseCard />
           <CourseCard />
           <CourseCard />
         </Grid>
