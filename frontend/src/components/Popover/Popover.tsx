@@ -10,7 +10,19 @@ import {
 import React from "react";
 import useThemeColor from "../../hooks/useThemeColor";
 
-const Popover = () => {
+interface Props {
+  courseName: string;
+  beginnerProgress: number;
+  intermediateProgress: number;
+  advancedProgress: number;
+}
+
+const Popover = ({
+  courseName,
+  beginnerProgress,
+  intermediateProgress,
+  advancedProgress,
+}: Props) => {
   const { backgroundColor, borderColor } = useThemeColor();
   return (
     <Flex
@@ -23,24 +35,24 @@ const Popover = () => {
       gap={4}
     >
       <Heading as="h3" fontSize="xl">
-        React Course
+        {courseName}
       </Heading>
       <Flex alignItems="center" justifyContent="space-between">
         <Badge colorScheme="green">Beginner</Badge>
-        <CircularProgress value={50} color="green">
-          <CircularProgressLabel>50%</CircularProgressLabel>
+        <CircularProgress value={beginnerProgress} color="green">
+          <CircularProgressLabel>{beginnerProgress}%</CircularProgressLabel>
         </CircularProgress>
       </Flex>
       <Flex alignItems="center" justifyContent="space-between">
         <Badge colorScheme="orange">Intermediate</Badge>
-        <CircularProgress value={70} color="orange">
-          <CircularProgressLabel>70%</CircularProgressLabel>
+        <CircularProgress value={intermediateProgress} color="orange">
+          <CircularProgressLabel>{intermediateProgress}%</CircularProgressLabel>
         </CircularProgress>
       </Flex>
       <Flex alignItems="center" justifyContent="space-between">
         <Badge colorScheme="red">Advanced</Badge>
-        <CircularProgress value={20} color="red">
-          <CircularProgressLabel>20%</CircularProgressLabel>
+        <CircularProgress value={advancedProgress} color="red">
+          <CircularProgressLabel>{advancedProgress}%</CircularProgressLabel>
         </CircularProgress>
       </Flex>
     </Flex>

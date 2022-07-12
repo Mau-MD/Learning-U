@@ -19,7 +19,12 @@ const DashboardIndex = () => {
         </Heading>
         <Button w="fit-content">I want to learn something new...</Button>
 
-        <Popover />
+        <Popover
+          courseName="React Course"
+          beginnerProgress={70}
+          intermediateProgress={10}
+          advancedProgress={0}
+        />
         <Grid
           templateColumns={["1fr", "1fr", "repeat(2, 1fr)", "repeat(3, 1fr)"]}
           gap="1em"
