@@ -8,10 +8,13 @@ import {
   Heading,
   Input,
 } from "@chakra-ui/react";
+import axios from "axios";
 import { Field, Form, Formik } from "formik";
 import React from "react";
+import { useMutation } from "react-query";
 import { Link } from "react-router-dom";
 import useThemeColor from "../../hooks/useThemeColor";
+import { baseURL } from "../../utils/constants";
 
 interface ILoginForm {
   username: string;
@@ -22,8 +25,23 @@ const LoginIndex = () => {
   const { backgroundColor, borderColor } = useThemeColor();
 
   const handleOnSubmit = (values: ILoginForm) => {
-    console.log(values);
+    handleLogin.mutate(values);
   };
+
+  const handleLogin = useMutation(
+    async (values: ILoginForm) => {
+      const res = await axios.post(`${baseURL}/auth/login`, values);
+      return res.data;
+    },
+    {
+      onSuccess: (res) => {
+        console.log("Success ", res);
+      },
+      onError: () => {
+        console.log("Error");
+      },
+    }
+  );
 
   return (
     <Formik
@@ -65,7 +83,9 @@ const LoginIndex = () => {
                     Don{"'"}t have an account yet? Register here!
                   </Link>
                 </Button>
-                <Button type="submit">Login</Button>
+                <Button type="submit" isLoading={handleLogin.isLoading}>
+                  Login
+                </Button>
               </Flex>
             </Flex>
           </Center>
