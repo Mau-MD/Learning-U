@@ -29,7 +29,7 @@ auth.post("/register", async (req, res, next) => {
     return;
   }
 
-  const user = new Parse.User({ username, password, email });
+  const user = new Parse.User<IUser>({ username, password, email });
 
   try {
     await user.signUp();
