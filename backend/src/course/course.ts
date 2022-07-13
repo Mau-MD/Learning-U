@@ -1,5 +1,8 @@
 import { getExternalRanking } from "../rating/ranking";
 import { getVideoDetailByIds, getVideosByQuery } from "../rating/youtube";
+import Parse from "parse/node";
+import { IResource } from "../types/resource";
+import { IWeightedYoutubeVideo } from "../types/youtube";
 
 const VIDEOS_PER_QUERY = 100;
 
@@ -9,10 +12,49 @@ export const createCourse = (name: string) => {
   return Course;
 };
 
+export const createResource = (resource: IResource) => {
+  const Resource: Parse.Object = new Parse.Object("Resource");
+
+  Object.keys(resource).forEach((resourceAttribute) => {
+    Resource.set(resourceAttribute, resource[resourceAttribute]);
+  });
+
+  return Resource;
+};
+
+export const saveResources = async (
+  resources: IWeightedYoutubeVideo[],
+  course: Parse.Object<Parse.Attributes>,
+  level: 1 | 2 | 3
+) => {
+  for (const resource of resources) {
+    const video = createResource({
+      type: "video",
+      level,
+      status: "not started",
+      title: resource.snippet.title,
+      description: resource.snippet.description,
+      url: `https://youtube.com/video/${resource.id}`,
+      thumbnail: resource.snippet.thumbnails.default.url,
+      channel: resource.snippet.channelTitle,
+      feedback: 0,
+      course,
+    });
+
+    await video.save();
+  }
+};
+
 export const generateResources = async (name: string) => {
   const rankedBeginner = await getTop3ByDifficulty(name, "beginner");
   const rankedIntermediate = await getTop3ByDifficulty(name, "intermediate");
   const rankedAdvanced = await getTop3ByDifficulty(name, "advanced");
+
+  return {
+    beginner: rankedBeginner,
+    intermediate: rankedIntermediate,
+    advanced: rankedAdvanced,
+  };
 };
 
 const getTop3ByDifficulty = async (query: string, difficulty: string) => {
