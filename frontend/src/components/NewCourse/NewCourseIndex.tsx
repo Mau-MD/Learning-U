@@ -8,14 +8,18 @@ import {
   FormLabel,
   Heading,
   Input,
+  useToast,
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import React from "react";
 import Banner from "../Hub/Banner";
 import * as Yup from "yup";
 import { useMutation } from "react-query";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { baseURL } from "../../utils/constants";
+import { ErrorType } from "../../types/requests";
+import { useNavigate } from "react-router-dom";
+import { ICourse } from "../../../../types/course";
 
 interface LearnForm {
   name: string;
@@ -26,21 +30,35 @@ const schema = Yup.object({
 });
 
 const NewCourseIndex = () => {
+  const toast = useToast();
+  const navigate = useNavigate();
+
   const handleSubmit = (values: LearnForm) => {
     createCourse.mutate(values.name);
   };
 
   const createCourse = useMutation(
     async (name: string) => {
-      const res = await axios.post(`${baseURL}/course/new`, { name });
+      const res = await axios.post<ICourse>(`${baseURL}/course/new`, { name });
       return res.data;
     },
     {
-      onSuccess: () => {
-        alert("done");
+      onSuccess: (course) => {
+        toast({
+          title: "Course created!",
+          description: "Your custom course was created successfully!",
+          status: "success",
+        });
+        navigate(`/course/difficulty/${course.objectId}`);
       },
-      onError: () => {
-        alert("error");
+      onError: (error: AxiosError<ErrorType>) => {
+        toast({
+          title: "An error ocurred",
+          description: error.response?.data.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
       },
     }
   );

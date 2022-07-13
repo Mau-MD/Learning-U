@@ -23,12 +23,12 @@ course.post("/new", async (req, res, next) => {
 
   try {
     // Save course first
-    await course.save();
+    const courseData = await course.save();
 
     await saveResources(beginner, course, 1);
     await saveResources(advanced, course, 2);
 
-    res.status(201).send("Generated Course!");
+    res.status(201).send(courseData);
   } catch (error) {
     next(new BadRequestError(error));
   }
