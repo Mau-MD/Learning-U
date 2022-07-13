@@ -5,7 +5,7 @@ export type IResource =
   | {
       type: "video";
       status: "not started" | "in progress" | "completed";
-      level: 1 | 2 | 3;
+      level: 1 | 2;
       feedback: number;
       title: string;
       description: string;
@@ -17,7 +17,7 @@ export type IResource =
   | {
       type: "website";
       status: "not started" | "in progress" | "completed";
-      level: 1 | 2 | 3;
+      level: 1 | 2;
       feedback: number;
       title: string;
       url: string;

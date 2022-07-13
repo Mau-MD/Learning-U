@@ -25,7 +25,7 @@ export const createResource = (resource: IResource) => {
 export const saveResources = async (
   resources: IWeightedYoutubeVideo[],
   course: Parse.Object<Parse.Attributes>,
-  level: 1 | 2 | 3
+  level: 1 | 2
 ) => {
   for (const resource of resources) {
     const video = createResource({
@@ -47,12 +47,10 @@ export const saveResources = async (
 
 export const generateResources = async (name: string) => {
   const rankedBeginner = await getTop3ByDifficulty(name, "beginner");
-  const rankedIntermediate = await getTop3ByDifficulty(name, "intermediate");
   const rankedAdvanced = await getTop3ByDifficulty(name, "advanced");
 
   return {
     beginner: rankedBeginner,
-    intermediate: rankedIntermediate,
     advanced: rankedAdvanced,
   };
 };
