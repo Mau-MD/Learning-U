@@ -1,7 +1,8 @@
 import { DbObject } from "./global";
 
-export interface IUser extends DbObject {
+export interface IUser extends Partial<DbObject> {
   username: string;
   email: string;
-  emailVerified: boolean;
+  password: string;
+  emailVerified?: boolean;
 }
