@@ -2,9 +2,11 @@ import express from "express";
 import dotenv from "dotenv";
 import Parse from "parse/node";
 
-import auth from "./routes/auth";
-import { NotFoundError } from "./utils/errors";
-import debug from "./routes/debug";
+import auth from "./src/routes/auth";
+import { NotFoundError } from "./src/utils/errors";
+import debug from "./src/routes/debug";
+import cors from "cors";
+import course from "./src/routes/course";
 
 dotenv.config();
 
@@ -14,9 +16,11 @@ Parse.serverURL = process.env.PARSE_SERVER_URL;
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
 app.use("/auth", auth);
 app.use("/debug", debug);
+app.use("/course", course);
 
 app.get("/", async (req, res) => {
   const testObject = new Parse.Object("test");

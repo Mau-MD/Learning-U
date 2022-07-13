@@ -1,7 +1,8 @@
 import { DbObject } from "./global";
 
-export interface IUser extends DbObject {
+interface IUser extends DbObject {
   username: string;
   email: string;
-  emailVerified: boolean;
+  sessionToken: string;
+  ACL: object;
 }

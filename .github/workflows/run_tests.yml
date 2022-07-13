@@ -1,7 +1,7 @@
 name: testing
 on: [pull_request]
 jobs:
-  e2e-testing:
+  testing:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -13,3 +13,8 @@ jobs:
         run: |
           npm install
           npm run e2e:headless
+      - name: "Run Jest Unit Tests"
+        working-directory: ./backend
+        run: |
+          npm install
+          npm run test
