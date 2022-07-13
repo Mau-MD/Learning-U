@@ -22,10 +22,9 @@ debug.post("/", async (req, res, next) => {
 
   const videos = await getVideosByQuery(query, VIDEOS_PER_QUERY);
 
-  const ids = [];
-  for (const video of videos.data.items) {
-    ids.push(video.id.videoId);
-  }
+  const ids = videos.data.items.map((video) => {
+    return video.id.videoId;
+  });
 
   const videosDetailed = await getVideoDetailByIds(ids, VIDEOS_PER_QUERY);
 
