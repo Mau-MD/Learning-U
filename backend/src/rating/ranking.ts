@@ -14,12 +14,12 @@ interface IMaxScores {
 }
 
 const WEIGHTS = {
-  w1: 60,
-  w2: 40,
-  w3: 100,
-  w4: 0,
-  w5: 100,
-  w6: 0,
+  weight1: 60,
+  weight2: 40,
+  weight3: 100,
+  weight4: 0,
+  weight5: 100,
+  weight6: 0,
 };
 
 export const getExternalRanking = (videos: youtube_v3.Schema$Video[]) => {
@@ -97,10 +97,10 @@ export const getWeightedExternalRanking = (
 ): IWeightedYoutubeVideo[] => {
   return videos.map((video) => {
     const weighted_score = {
-      date: video.normalized_score.date * WEIGHTS.w1,
-      dateXLikes: video.normalized_score.dateXLikes * WEIGHTS.w2,
-      dateXViews: video.normalized_score.dateXViews * WEIGHTS.w3,
-      useOfChapters: video.normalized_score.useOfChapters * WEIGHTS.w5,
+      date: video.normalized_score.date * WEIGHTS.weight1,
+      dateXLikes: video.normalized_score.dateXLikes * WEIGHTS.weight2,
+      dateXViews: video.normalized_score.dateXViews * WEIGHTS.weight3,
+      useOfChapters: video.normalized_score.useOfChapters * WEIGHTS.weight5,
     };
 
     const final_score =
@@ -172,14 +172,16 @@ export const getDaysSincePublished = (publishedAt: string) => {
   return daysSincePublished;
 };
 
-export const ensureWeightsAreCorrect = (weights: typeof WEIGHTS) => {
-  if (weights.w1 + weights.w2 !== 100) {
+const ensureWeightsAreCorrect = (weights: typeof WEIGHTS) => {
+  if (weights.weight1 + weights.weight2 !== 100) {
+    new ExpressError("Weights are incorrect", 500);
     return false;
   }
-  if (weights.w3 + weights.w4 !== 100) {
+  if (weights.weight3 + weights.weight4 !== 100) {
+    new ExpressError("Weights are incorrect", 500);
     return false;
   }
-  if (weights.w5 + weights.w6 !== 100) {
+  if (weights.weight4 + weights.weight6 !== 100) {
     new ExpressError("Weights are incorrect", 500);
     return false;
   }
