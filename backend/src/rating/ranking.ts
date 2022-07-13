@@ -172,7 +172,7 @@ export const getDaysSincePublished = (publishedAt: string) => {
   return daysSincePublished;
 };
 
-const ensureWeightsAreCorrect = (weights: typeof WEIGHTS) => {
+export const ensureWeightsAreCorrect = (weights: typeof WEIGHTS) => {
   if (weights.weight1 + weights.weight2 !== 100) {
     new ExpressError("Weights are incorrect", 500);
     return false;
@@ -181,7 +181,7 @@ const ensureWeightsAreCorrect = (weights: typeof WEIGHTS) => {
     new ExpressError("Weights are incorrect", 500);
     return false;
   }
-  if (weights.weight4 + weights.weight6 !== 100) {
+  if (weights.weight5 + weights.weight6 !== 100) {
     new ExpressError("Weights are incorrect", 500);
     return false;
   }
