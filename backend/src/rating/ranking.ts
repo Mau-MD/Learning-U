@@ -15,16 +15,17 @@ interface IMaxScores {
 
 const WEIGHTS = {
   weight1: 60,
-  weight2: 40,
-  weight3: 100,
-  weight4: 0,
-  weight5: 100,
-  weight6: 0,
+  w2: 40,
+  w3: 100,
+  w4: 0,
+  w5: 100,
+  w6: 0,
 };
 
 export const getExternalRanking = (videos: youtube_v3.Schema$Video[]) => {
-  if (!ensureWeightsAreCorrect()) {
+  if (!ensureWeightsAreCorrect(WEIGHTS)) {
     new ExpressError("Ranking Weights are incorrect", 500);
+    return;
   }
 
   const rawExternalScoreVideos = getRawExternalRanking(videos);
@@ -36,7 +37,7 @@ export const getExternalRanking = (videos: youtube_v3.Schema$Video[]) => {
   return getWeightedExternalRanking(normalizedExternalScoreVideos);
 };
 
-const getRawExternalRanking = (
+export const getRawExternalRanking = (
   videos: youtube_v3.Schema$Video[]
 ): IRawYoutubeVideo[] => {
   return videos.map((video) => {
@@ -66,7 +67,7 @@ const getRawExternalRanking = (
   });
 };
 
-const getNormalizedExternalRanking = (
+export const getNormalizedExternalRanking = (
   videos: IRawYoutubeVideo[],
   maxScores: IMaxScores
 ): INormalizedYoutubeVideo[] => {
@@ -91,15 +92,15 @@ const getNormalizedExternalRanking = (
   });
 };
 
-const getWeightedExternalRanking = (
+export const getWeightedExternalRanking = (
   videos: INormalizedYoutubeVideo[]
 ): IWeightedYoutubeVideo[] => {
   return videos.map((video) => {
     const weighted_score = {
-      date: video.normalized_score.date * WEIGHTS.weight1,
-      dateXLikes: video.normalized_score.dateXLikes * WEIGHTS.weight2,
-      dateXViews: video.normalized_score.dateXViews * WEIGHTS.weight3,
-      useOfChapters: video.normalized_score.useOfChapters * WEIGHTS.weight5,
+      date: video.normalized_score.date * WEIGHTS.w1,
+      dateXLikes: video.normalized_score.dateXLikes * WEIGHTS.w2,
+      dateXViews: video.normalized_score.dateXViews * WEIGHTS.w3,
+      useOfChapters: video.normalized_score.useOfChapters * WEIGHTS.w5,
     };
 
     const final_score =
@@ -115,7 +116,7 @@ const getWeightedExternalRanking = (
   });
 };
 
-const getMaxScores = (
+export const getMaxScores = (
   rawExternalRankingVideos: IRawYoutubeVideo[]
 ): IMaxScores => {
   const maxScore = {
@@ -137,20 +138,23 @@ const getMaxScores = (
   return maxScore;
 };
 
-const getDateScore = (yearsSincePublished: number) => {
+export const getDateScore = (yearsSincePublished: number) => {
   // Following the function in https://docs.google.com/document/d/1zxYRyytmbbvfAZkQc8dampD9Vhun0XQtWepKYxWUTKo
   return Math.max(-Math.pow(1.6, yearsSincePublished) + 11, 0);
 };
 
-const getDateXViewsScore = (views: number, daysSincePublished: number) => {
+export const getDateXViewsScore = (
+  views: number,
+  daysSincePublished: number
+) => {
   return views / daysSincePublished;
 };
 
-const getDateXLikes = (likes: number, daysSincePublished: number) => {
+export const getDateXLikes = (likes: number, daysSincePublished: number) => {
   return likes / daysSincePublished;
 };
 
-const getUseOfChapters = (description: string) => {
+export const getUseOfChapters = (description: string) => {
   const usesChapters = description.match("[0-9]:[0-9]");
   return usesChapters !== null ? 1 : 0;
 };
@@ -159,7 +163,7 @@ const getChannelPopularity = () => {
   return 1;
 };
 
-const getDaysSincePublished = (publishedAt: string) => {
+export const getDaysSincePublished = (publishedAt: string) => {
   const publishedAtDate = parseISO(publishedAt);
   const daysSincePublished = differenceInCalendarDays(
     new Date(),
@@ -168,14 +172,14 @@ const getDaysSincePublished = (publishedAt: string) => {
   return daysSincePublished;
 };
 
-const ensureWeightsAreCorrect = () => {
-  if (WEIGHTS.weight1 + WEIGHTS.weight2 !== 100) {
+export const ensureWeightsAreCorrect = (weights: typeof WEIGHTS) => {
+  if (weights.w1 + weights.w2 !== 100) {
     return false;
   }
-  if (WEIGHTS.weight3 + WEIGHTS.weight4 !== 100) {
+  if (weights.w3 + weights.w4 !== 100) {
     return false;
   }
-  if (WEIGHTS.weight4 + WEIGHTS.weight6 !== 100) {
+  if (weights.w5 + weights.w6 !== 100) {
     new ExpressError("Weights are incorrect", 500);
     return false;
   }
