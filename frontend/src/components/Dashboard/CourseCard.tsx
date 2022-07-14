@@ -18,6 +18,7 @@ import Popover from "../Popover/Popover";
 import Tooltip from "../Popover/Tooltip";
 
 interface Props {
+  link: string;
   title: string;
   src: string;
   beginnerProgress: number;
@@ -27,6 +28,7 @@ interface Props {
 
 const CourseCard = ({
   title,
+  link,
   src,
   beginnerProgress,
   intermediateProgress,
@@ -63,7 +65,7 @@ const CourseCard = ({
             {title}
           </Heading>
           <Box>
-            <Link to="/courses/difficulty/3">
+            <Link to={`/courses/difficulty/${link}`}>
               <Button mr={2} colorScheme="blue">
                 Go
               </Button>

@@ -12,7 +12,7 @@ const DashboardIndex = () => {
   const navigate = useNavigate();
   const { isFetching, user } = useSession();
 
-  const { data: courses, isLoading } = useQuery(
+  const { data: courses } = useQuery(
     "courses",
     async () => {
       if (!user) throw new Error();
@@ -47,6 +47,7 @@ const DashboardIndex = () => {
             courses.map((course) => (
               <CourseCard
                 key={course.objectId}
+                link={course.objectId}
                 title={course.name}
                 src="https://assets-global.website-files.com/61a0a53beeb118af7ddb4c55/61c0ba0267c18ebf1fd19b2f_maxresdefault-1-1-1024x576.jpeg"
                 beginnerProgress={100}
