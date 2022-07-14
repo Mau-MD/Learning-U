@@ -5,28 +5,33 @@ import {
   generateResources,
   saveResources,
 } from "../course/course";
+import { getAuthUser } from "../middleware/getAuthUser";
 import { ICourse } from "../types/course";
+import { RequestWUser } from "../types/user";
 import { BadRequestError } from "../utils/errors";
 
 const course = express.Router();
 
-course.post("/new", async (req, res, next) => {
-  const { name } = req.body;
+course.use(getAuthUser);
 
-  if (!name) {
+course.post("/new", async (req: RequestWUser, res, next) => {
+  const { name } = req.body;
+  const { user } = req;
+
+  if (!name || !user) {
     next(new BadRequestError("Missing attributes"));
     return;
   }
 
-  const course = createCourse(name);
+  const course = createCourse(name, user);
   const { beginner, advanced } = await generateResources(name);
 
   try {
     // Save course first
     const courseData = await course.save();
 
-    await saveResources(beginner, course, 1);
-    await saveResources(advanced, course, 2);
+    await saveResources(beginner, course, 1, user);
+    await saveResources(advanced, course, 2, user);
 
     res.status(201).send(courseData);
   } catch (error) {

@@ -6,9 +6,13 @@ import { IWeightedYoutubeVideo } from "../types/youtube";
 
 const VIDEOS_PER_QUERY = 100;
 
-export const createCourse = (name: string) => {
+export const createCourse = (
+  name: string,
+  user: Parse.Object<Parse.Attributes>
+) => {
   const Course: Parse.Object = new Parse.Object("Course");
   Course.set("name", name);
+  Course.set("user", user);
   return Course;
 };
 
@@ -25,7 +29,8 @@ export const createResource = (resource: IResource) => {
 export const saveResources = async (
   resources: IWeightedYoutubeVideo[],
   course: Parse.Object<Parse.Attributes>,
-  level: 1 | 2
+  level: 1 | 2,
+  user: Parse.User<Parse.Attributes>
 ) => {
   for (const resource of resources) {
     const video = createResource({
@@ -39,6 +44,7 @@ export const saveResources = async (
       channel: resource.snippet.channelTitle,
       feedback: 0,
       course,
+      user,
     });
 
     await video.save();
