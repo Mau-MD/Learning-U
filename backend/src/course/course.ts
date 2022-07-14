@@ -6,6 +6,17 @@ import { IWeightedYoutubeVideo } from "../types/youtube";
 
 const VIDEOS_PER_QUERY = 100;
 
+export const getUserCourses = async (user: Parse.Object<Parse.Attributes>) => {
+  const Course = Parse.Object.extend("Course");
+  const query = new Parse.Query(Course);
+
+  query.equalTo("user", user);
+
+  const courses = await query.findAll();
+
+  return courses;
+};
+
 export const createCourse = (
   name: string,
   user: Parse.Object<Parse.Attributes>
