@@ -13,7 +13,7 @@ interface IMaxScores {
   dateXLikes: number;
 }
 
-const WEIGHTS = {
+export const WEIGHTS = {
   w1: 60,
   w2: 40,
   w3: 100,
@@ -23,11 +23,6 @@ const WEIGHTS = {
 };
 
 export const getExternalRanking = (videos: youtube_v3.Schema$Video[]) => {
-  if (!ensureWeightsAreCorrect(WEIGHTS)) {
-    new ExpressError("Ranking Weights are incorrect", 500);
-    return;
-  }
-
   const rawExternalScoreVideos = getRawExternalRanking(videos);
   const maxScores = getMaxScores(rawExternalScoreVideos);
   const normalizedExternalScoreVideos = getNormalizedExternalRanking(
@@ -159,10 +154,6 @@ export const getUseOfChapters = (description: string) => {
   return usesChapters !== null ? 1 : 0;
 };
 
-const getChannelPopularity = () => {
-  return 1;
-};
-
 export const getDaysSincePublished = (publishedAt: string) => {
   const publishedAtDate = parseISO(publishedAt);
   const daysSincePublished = differenceInCalendarDays(
@@ -170,18 +161,4 @@ export const getDaysSincePublished = (publishedAt: string) => {
     publishedAtDate
   );
   return daysSincePublished;
-};
-
-export const ensureWeightsAreCorrect = (weights: typeof WEIGHTS) => {
-  if (weights.w1 + weights.w2 !== 100) {
-    return false;
-  }
-  if (weights.w3 + weights.w4 !== 100) {
-    return false;
-  }
-  if (weights.w5 + weights.w6 !== 100) {
-    new ExpressError("Weights are incorrect", 500);
-    return false;
-  }
-  return true;
 };
