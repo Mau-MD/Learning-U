@@ -3,6 +3,7 @@ import { getVideoDetailByIds, getVideosByQuery } from "../rating/youtube";
 import Parse from "parse/node";
 import { IResource } from "../types/resource";
 import { IWeightedYoutubeVideo } from "../types/youtube";
+import { createResource } from "../resources/resources";
 
 const VIDEOS_PER_QUERY = 100;
 
@@ -25,16 +26,6 @@ export const createCourse = (
   Course.set("name", name);
   Course.set("user", user);
   return Course;
-};
-
-export const createResource = (resource: IResource) => {
-  const Resource: Parse.Object = new Parse.Object("Resource");
-
-  Object.keys(resource).forEach((resourceAttribute) => {
-    Resource.set(resourceAttribute, resource[resourceAttribute]);
-  });
-
-  return Resource;
 };
 
 export const saveResources = async (
