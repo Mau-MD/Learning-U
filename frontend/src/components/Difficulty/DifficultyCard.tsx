@@ -18,6 +18,7 @@ interface Props {
   title: string;
   progress: number;
   src: string;
+  courseId: string;
   started?: boolean;
   phrase: string;
 }
@@ -25,6 +26,7 @@ interface Props {
 const DifficultyCard = ({
   title,
   progress,
+  courseId,
   src,
   started = false,
   phrase,
@@ -71,7 +73,7 @@ const DifficultyCard = ({
           </Box>
           <Box display="flex" flexDir={{ base: "column", md: "row" }} gap="1em">
             <HashLink
-              to="/courses/hub/3#title"
+              to={`/courses/hub/${courseId}#title`}
               smooth
               scroll={(el) => scrollWithOffset(el)}
             >

@@ -12,7 +12,7 @@ import {
   MenuList,
 } from "@chakra-ui/react";
 import React from "react";
-import { Link } from "react-router-dom";
+import { createSearchParams, Link } from "react-router-dom";
 import useThemeColor from "../../hooks/useThemeColor";
 import Popover from "../Popover/Popover";
 import Tooltip from "../Popover/Tooltip";
@@ -65,7 +65,12 @@ const CourseCard = ({
             {title}
           </Heading>
           <Box>
-            <Link to={`/courses/difficulty/${link}`}>
+            <Link
+              to={{
+                pathname: `/courses/difficulty/${link}`,
+                search: createSearchParams({ name: title }).toString(),
+              }}
+            >
               <Button mr={2} colorScheme="blue">
                 Go
               </Button>
