@@ -13,6 +13,18 @@ interface IMaxScores {
   dateXLikes: number;
 }
 
+/*
+Youtube Video Ranking Algorithm
+For more information: https://docs.google.com/document/d/1zxYRyytmbbvfAZkQc8dampD9Vhun0XQtWepKYxWUTKo/edit?usp=sharing
+
+This algorithm starts at `getExternalRanking` and where it first gets the raw score for each of the videos that were passed in the function. For every `ranking-features` it uses the formula described in 
+the document above.
+
+Then, since we cannot have raw scores, we have to normalize then. Since normalizing requires a minimum and a maximum, we need to find the maximum raw score for each features. `getMaxScores` does that.
+After that, we normalize all `ranking-features` with the information we got before.
+Finally, we apply weights to each `ranking-feature` so it matches the formula proposed before. We sum everything up, and that's our final score that will be used to rank the videos
+*/
+
 export const WEIGHTS = {
   w1: 60,
   w2: 40,
