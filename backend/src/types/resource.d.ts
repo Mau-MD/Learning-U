@@ -13,6 +13,7 @@ export type IResource =
       thumbnail: string;
       channel: string;
       course: Parse.Object<Parse.Attributes>;
+      user: Parse.User<Parse.Attributes>;
     }
   | {
       type: "website";
@@ -22,4 +23,5 @@ export type IResource =
       title: string;
       url: string;
       course: Parse.Object<Parse.Attributes>;
+      user: Parse.User<Parse.Attributes>;
     };
