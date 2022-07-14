@@ -20,6 +20,7 @@ import { baseURL } from "../../utils/constants";
 import { ErrorType } from "../../types/requests";
 import { useNavigate } from "react-router-dom";
 import { ICourse } from "../../../../types/course";
+import { getConfig, useSession } from "../../utils/auth";
 
 interface LearnForm {
   name: string;
@@ -32,6 +33,7 @@ const schema = Yup.object({
 const NewCourseIndex = () => {
   const toast = useToast();
   const navigate = useNavigate();
+  const { user } = useSession();
 
   const handleSubmit = (values: LearnForm) => {
     createCourse.mutate(values.name);
@@ -39,7 +41,13 @@ const NewCourseIndex = () => {
 
   const createCourse = useMutation(
     async (name: string) => {
-      const res = await axios.post<ICourse>(`${baseURL}/course/new`, { name });
+      if (!user) throw new Error("User is not logged in");
+
+      const res = await axios.post<ICourse>(
+        `${baseURL}/course/new`,
+        { name },
+        getConfig(user.sessionToken)
+      );
       return res.data;
     },
     {
