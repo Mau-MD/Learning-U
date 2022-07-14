@@ -3,6 +3,7 @@ import {
   createCourse,
   createResource,
   generateResources,
+  getUserCourses,
   saveResources,
 } from "../course/course";
 import { getAuthUser } from "../middleware/getAuthUser";
@@ -37,6 +38,13 @@ course.post("/new", async (req: RequestWUser, res, next) => {
   } catch (error) {
     next(new BadRequestError(error));
   }
+});
+
+course.get("/me", async (req: RequestWUser, res, next) => {
+  const { user } = req;
+
+  const courses = await getUserCourses(user);
+  res.send(courses);
 });
 
 export default course;
