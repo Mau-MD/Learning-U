@@ -1,4 +1,5 @@
 import { IResource } from "../types/resource";
+import Parse from "parse/node";
 
 export const createResource = (resource: IResource) => {
   const Resource: Parse.Object = new Parse.Object("Resource");
