@@ -1,10 +1,33 @@
 import { Button, Container, Flex, Grid, Heading } from "@chakra-ui/react";
 import React from "react";
+import { useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
+import { getConfig, useSession } from "../../utils/auth";
 import CourseCard from "./CourseCard";
+import axios from "axios";
+import { baseURL } from "../../utils/constants";
+import { ICourse } from "../../types/course";
 
 const DashboardIndex = () => {
   const navigate = useNavigate();
+  const { isFetching, user } = useSession();
+
+  const { data: courses, isLoading } = useQuery(
+    "courses",
+    async () => {
+      if (!user) throw new Error();
+
+      const res = await axios.get<ICourse[]>(
+        `${baseURL}/course/me`,
+        getConfig(user?.sessionToken)
+      );
+
+      return res.data;
+    },
+    {
+      enabled: !isFetching,
+    }
+  );
 
   return (
     <Container maxW="container.xl">
@@ -20,27 +43,17 @@ const DashboardIndex = () => {
           gap="1em"
           mt={10}
         >
-          <CourseCard
-            title="React Course"
-            src="https://assets-global.website-files.com/61a0a53beeb118af7ddb4c55/61c0ba0267c18ebf1fd19b2f_maxresdefault-1-1-1024x576.jpeg"
-            beginnerProgress={100}
-            intermediateProgress={40}
-            advancedProgress={10}
-          />
-          <CourseCard
-            title="Node JS Course"
-            src="https://assets-global.website-files.com/61a0a53beeb118af7ddb4c55/61c0ba0267c18ebf1fd19b2f_maxresdefault-1-1-1024x576.jpeg"
-            beginnerProgress={60}
-            intermediateProgress={10}
-            advancedProgress={0}
-          />
-          <CourseCard
-            title="Express Course"
-            src="https://assets-global.website-files.com/61a0a53beeb118af7ddb4c55/61c0ba0267c18ebf1fd19b2f_maxresdefault-1-1-1024x576.jpeg"
-            beginnerProgress={100}
-            intermediateProgress={100}
-            advancedProgress={90}
-          />
+          {courses &&
+            courses.map((course) => (
+              <CourseCard
+                key={course.objectId}
+                title={course.name}
+                src="https://assets-global.website-files.com/61a0a53beeb118af7ddb4c55/61c0ba0267c18ebf1fd19b2f_maxresdefault-1-1-1024x576.jpeg"
+                beginnerProgress={100}
+                intermediateProgress={40}
+                advancedProgress={10}
+              />
+            ))}
         </Grid>
       </Flex>
     </Container>
