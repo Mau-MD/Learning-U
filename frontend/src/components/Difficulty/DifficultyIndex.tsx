@@ -1,12 +1,33 @@
 import { Box, Heading } from "@chakra-ui/react";
 import React from "react";
 import { useParams, useSearchParams } from "react-router-dom";
+import { ICourse } from "../../types/course";
+import { useSession, getConfig } from "../../utils/auth";
+import { baseURL } from "../../utils/constants";
 import DifficultyCard from "./DifficultyCard";
+import { useQuery } from "react-query";
+import axios from "axios";
 
 const DifficultyIndex = () => {
   const [searchParams] = useSearchParams();
   const { id } = useParams();
   const name = searchParams.get("name");
+
+  const { user, isFetching } = useSession();
+
+  const { data, isLoading } = useQuery(
+    `${id}`,
+    async () => {
+      if (!user) throw new Error("User is not defiend");
+
+      const res = await axios.get<ICourse>(
+        `${baseURL}/course/${id}`,
+        getConfig(user.sessionToken)
+      );
+      return res.data;
+    },
+    { enabled: !!user && !!id }
+  );
 
   return (
     <>
@@ -17,7 +38,7 @@ const DifficultyIndex = () => {
         <DifficultyCard
           title="Beginners"
           progress={20}
-          src="https://images.unsplash.com/photo-1633356122102-3fe601e05bd2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
+          src={data?.images[2].small || ""}
           phrase="You can do it!"
           courseId={id || ""}
           courseTitle={name || ""}
@@ -27,7 +48,7 @@ const DifficultyIndex = () => {
         <DifficultyCard
           title="Advanced"
           progress={0}
-          src="https://images.unsplash.com/photo-1569748130764-3fed0c102c59?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
+          src={data?.images[3].small || ""}
           courseId={id || ""}
           courseTitle={name || ""}
           phrase="Let's go"
