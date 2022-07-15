@@ -22,6 +22,7 @@ interface Props {
   courseId: string;
   started?: boolean;
   phrase: string;
+  courseTitle: string;
   difficulty: 1 | 2;
 }
 
@@ -32,6 +33,7 @@ const DifficultyCard = ({
   src,
   started = false,
   phrase,
+  courseTitle,
   difficulty,
 }: Props) => {
   const { backgroundColor, borderColor } = useThemeColor();
@@ -76,7 +78,7 @@ const DifficultyCard = ({
           </Box>
           <Box display="flex" flexDir={{ base: "column", md: "row" }} gap="1em">
             <HashLink
-              to={`/courses/hub/${courseId}?difficulty=${difficulty}#title`}
+              to={`/courses/hub/${courseId}?title=${courseTitle}&difficulty=${difficulty}#title`}
               smooth
               scroll={(el) => scrollWithOffset(el)}
             >
