@@ -1,4 +1,13 @@
-import { Button, Container, Flex, Grid, Heading } from "@chakra-ui/react";
+import {
+  Button,
+  Container,
+  Flex,
+  Grid,
+  Heading,
+  HStack,
+  Skeleton,
+  Stack,
+} from "@chakra-ui/react";
 import React from "react";
 import { useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +16,7 @@ import CourseCard from "./CourseCard";
 import axios from "axios";
 import { baseURL } from "../../utils/constants";
 import { ICourse } from "../../types/course";
+import LoadingCard from "../Loading/LoadingCard";
 
 const DashboardIndex = () => {
   const navigate = useNavigate();
@@ -43,7 +53,13 @@ const DashboardIndex = () => {
           gap="1em"
           mt={10}
         >
-          {courses &&
+          {!courses ? (
+            <>
+              <LoadingCard />
+              <LoadingCard />
+              <LoadingCard />
+            </>
+          ) : (
             courses.map((course) => (
               <CourseCard
                 key={course.objectId}
@@ -54,7 +70,8 @@ const DashboardIndex = () => {
                 intermediateProgress={40}
                 advancedProgress={10}
               />
-            ))}
+            ))
+          )}
         </Grid>
       </Flex>
     </Container>
