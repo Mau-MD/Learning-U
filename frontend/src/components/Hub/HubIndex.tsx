@@ -5,6 +5,7 @@ import {
   CircularProgress,
   CircularProgressLabel,
   HStack,
+  Spinner,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
@@ -25,7 +26,11 @@ const HubIndex = () => {
   const difficulty = searchParams.get("difficulty");
   const title = searchParams.get("title");
 
-  const { data } = useQuery(
+  const {
+    data,
+    isFetching: isQueryFetching,
+    isLoading,
+  } = useQuery(
     `hub-${id}-${difficulty}`,
     async () => {
       if (!user) throw new Error("User is not defined");
@@ -54,7 +59,10 @@ const HubIndex = () => {
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <Box>
           <Heading as="h1" fontWeight="bold" fontSize="4xl" id="title">
-            {title}
+            <>
+              {title}
+              {(isLoading || isQueryFetching) && <Spinner ml={5} />}
+            </>
           </Heading>
           <Badge>{difficulty === "1" ? "Beginner" : "Advanced"}</Badge>
         </Box>
