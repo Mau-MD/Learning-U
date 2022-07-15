@@ -1,16 +1,25 @@
 import express from "express";
 import { getAuthUser } from "../middleware/getAuthUser";
-import { getResourcesFromCourse } from "../resources/resources";
+import {
+  getResourcesFromCourse,
+  getResourcesFromCourseAndDifficulty,
+} from "../resources/resources";
 import { RequestWUser } from "../types/user";
 
 const resources = express.Router();
 
 resources.use(getAuthUser);
 
-resources.get("/byCourse/:courseId", async (req: RequestWUser, res, next) => {
-  const { courseId } = req.params;
-  const courses = await getResourcesFromCourse(courseId);
-  res.send(courses);
-});
+resources.get(
+  "/byCourse/:courseId/:level",
+  async (req: RequestWUser, res, next) => {
+    const { courseId, level } = req.params;
+    const courses = await getResourcesFromCourseAndDifficulty(
+      courseId,
+      parseInt(level)
+    );
+    res.send(courses);
+  }
+);
 
 export default resources;
