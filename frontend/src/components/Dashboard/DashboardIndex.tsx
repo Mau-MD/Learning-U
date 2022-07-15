@@ -65,7 +65,7 @@ const DashboardIndex = () => {
                 key={course.objectId}
                 link={course.objectId}
                 title={course.name}
-                src="https://assets-global.website-files.com/61a0a53beeb118af7ddb4c55/61c0ba0267c18ebf1fd19b2f_maxresdefault-1-1-1024x576.jpeg"
+                src={course.images[2].regular}
                 beginnerProgress={100}
                 intermediateProgress={40}
                 advancedProgress={10}
