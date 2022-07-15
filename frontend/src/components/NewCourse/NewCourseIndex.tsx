@@ -57,7 +57,7 @@ const NewCourseIndex = () => {
           description: "Your custom course was created successfully!",
           status: "success",
         });
-        navigate(`/course/difficulty/${course.objectId}`);
+        navigate(`/courses/${course.objectId}/difficulty?name=${course.name}`);
       },
       onError: (error: AxiosError<ErrorType>) => {
         toast({

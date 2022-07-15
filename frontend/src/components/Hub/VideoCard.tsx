@@ -21,7 +21,6 @@ const getBadgeColor = (status: ResourceStatus) => {
 
 const VideoCard = ({ src, title, href, status }: Props) => {
   const { backgroundColor, borderColor } = useThemeColor();
-  const navigate = useNavigate();
 
   const badgeColor = getBadgeColor(status);
 
@@ -34,9 +33,16 @@ const VideoCard = ({ src, title, href, status }: Props) => {
       transition={"all 0.3s"}
     >
       <a href={href} target="_blank" rel="noreferrer">
-        <Image src={src} w="full" cursor="pointer" />
+        <Box w="100%" h="220px">
+          <Image
+            src={src}
+            w="full"
+            h="full"
+            objectFit="cover"
+            cursor="pointer"
+          />
+        </Box>
       </a>
-
       <Box
         display="flex"
         alignItems="center"
