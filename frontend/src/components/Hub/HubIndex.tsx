@@ -4,6 +4,7 @@ import {
   Badge,
   CircularProgress,
   CircularProgressLabel,
+  HStack,
 } from "@chakra-ui/react";
 import React from "react";
 import { useQuery } from "react-query";
@@ -13,6 +14,7 @@ import ResourceGroup from "./ResourceGroup";
 import axios from "axios";
 import { baseURL } from "../../utils/constants";
 import { IResource } from "../../types/resource";
+import LoadingCard from "../Loading/LoadingCard";
 
 const HubIndex = () => {
   const { isFetching, user } = useSession();
@@ -20,6 +22,7 @@ const HubIndex = () => {
 
   const { id } = useParams();
   const difficulty = searchParams.get("difficulty");
+  const title = searchParams.get("title");
 
   const { data } = useQuery(
     `hub-${id}-${difficulty}`,
@@ -42,7 +45,7 @@ const HubIndex = () => {
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <Box>
           <Heading as="h1" fontWeight="bold" fontSize="4xl" id="title">
-            React
+            {title}
           </Heading>
           <Badge>{difficulty === "1" ? "Beginner" : "Advanced"}</Badge>
         </Box>
@@ -51,7 +54,13 @@ const HubIndex = () => {
         </CircularProgress>
       </Box>
       <Box display="flex" flexDirection="column" gap={10} my={10}>
-        {data && (
+        {!data ? (
+          <>
+            <LoadingCard />
+            <LoadingCard />
+            <LoadingCard />
+          </>
+        ) : (
           <>
             <ResourceGroup
               title="🎥 Recommended Videos"
