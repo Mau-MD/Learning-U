@@ -5,18 +5,19 @@ import PopoverPortal from "./PopoverPortal";
 interface Props {
   children: React.ReactElement;
   render: React.ReactElement;
+  space?: number;
 }
 
-const getPoint = (element: HTMLElement, ref: HTMLElement) => {
+const getPoint = (element: HTMLElement, ref: HTMLElement, space = 10) => {
   const pt = { x: 0, y: 0 };
   const rectangle = element.getBoundingClientRect();
   const refRectangle = ref.getBoundingClientRect();
   pt.x = rectangle.left + (rectangle.width - refRectangle.width) / 2;
-  pt.y = rectangle.top - refRectangle.height + 10;
+  pt.y = rectangle.top - refRectangle.height + space;
   return pt;
 };
 
-const Tooltip = ({ children, render }: Props) => {
+const Tooltip = ({ children, render, space = 10 }: Props) => {
   const [show, setShow] = useState(false);
 
   const posRef = useRef({ x: 0, y: 0 });
@@ -25,7 +26,7 @@ const Tooltip = ({ children, render }: Props) => {
   const handleMouseOver = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     setShow(true);
     if (!tooltipRef.current) return;
-    posRef.current = getPoint(e.currentTarget, tooltipRef.current);
+    posRef.current = getPoint(e.currentTarget, tooltipRef.current, space);
   };
 
   const handleMouseOut = () => {
