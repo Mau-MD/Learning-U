@@ -1,4 +1,4 @@
-import { IResource } from "../types/resource";
+import { IResource, IResourceStatus } from "../types/resource";
 import Parse from "parse/node";
 
 export const createResource = (resource: IResource) => {
@@ -43,4 +43,15 @@ export const getResourcesFromCourseAndDifficulty = async (
 
   const resources = await query.findAll();
   return resources;
+};
+
+export const updateResourceStatus = async (
+  resourceId: string,
+  status: IResourceStatus
+) => {
+  const Resource = new Parse.Object("Resource");
+  Resource.set("objectId", resourceId);
+  Resource.set("status", status);
+
+  return Resource;
 };
