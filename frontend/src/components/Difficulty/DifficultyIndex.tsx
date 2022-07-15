@@ -34,7 +34,7 @@ const DifficultyIndex = () => {
       <Heading as="h1" fontWeight="bold" fontSize="4xl">
         {name}
       </Heading>
-      <Box display="flex" flexDir="column" my="1em" gap="1em">
+      <Box display="flex" flexDir="column" my="1em" gap="1em" mb="20vh">
         <DifficultyCard
           title="Beginners"
           progress={20}
