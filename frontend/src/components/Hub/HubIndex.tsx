@@ -6,7 +6,7 @@ import {
   CircularProgressLabel,
   HStack,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useParams, useSearchParams } from "react-router-dom";
 import { getConfig, useSession } from "../../utils/auth";
@@ -15,6 +15,7 @@ import axios from "axios";
 import { baseURL } from "../../utils/constants";
 import { IResource } from "../../types/resource";
 import LoadingCard from "../Loading/LoadingCard";
+import { calculateCourseCompletition } from "../../utils/courseCompletition";
 
 const HubIndex = () => {
   const { isFetching, user } = useSession();
@@ -40,6 +41,14 @@ const HubIndex = () => {
     }
   );
 
+  const [completition, setCompletition] = useState(0);
+
+  useEffect(() => {
+    if (!data) return;
+    const courseCompletition = calculateCourseCompletition(data);
+    setCompletition(courseCompletition);
+  }, [data]);
+
   return (
     <>
       <Box display="flex" alignItems="center" justifyContent="space-between">
@@ -49,8 +58,14 @@ const HubIndex = () => {
           </Heading>
           <Badge>{difficulty === "1" ? "Beginner" : "Advanced"}</Badge>
         </Box>
-        <CircularProgress value={30} size={"60px"}>
-          <CircularProgressLabel>30%</CircularProgressLabel>
+        <CircularProgress
+          isIndeterminate={!data}
+          value={completition}
+          size={"60px"}
+        >
+          <CircularProgressLabel>
+            {completition.toFixed(0)}%
+          </CircularProgressLabel>
         </CircularProgress>
       </Box>
       <Box display="flex" flexDirection="column" gap={10} my={10}>

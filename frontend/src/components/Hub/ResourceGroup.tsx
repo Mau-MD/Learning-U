@@ -28,7 +28,7 @@ const ResourceGroup = ({ title, kind, data }: Props) => {
               key={resource.objectId}
               title={resource.title}
               src={resource.type === "video" ? resource.thumbnail : ""}
-              status="completed"
+              status={resource.status}
               href={resource.url}
             />
           ))}
