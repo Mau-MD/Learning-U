@@ -117,22 +117,28 @@ const VideoCard = ({ src, title, href, status, objectId }: Props) => {
         <Tooltip
           space={-10}
           render={
-            <Box
-              backgroundColor={backgroundColor}
-              borderColor={borderColor}
-              borderWidth={1}
-              p={2}
-              borderRadius={4}
-              boxShadow={"0px 10px 15px -3px rgba(0,0,0,0.3)"}
-            >
-              Mark as completed?
-            </Box>
+            status !== "completed" ? (
+              <Box
+                backgroundColor={backgroundColor}
+                borderColor={borderColor}
+                borderWidth={1}
+                p={2}
+                borderRadius={4}
+                boxShadow={"0px 10px 15px -3px rgba(0,0,0,0.3)"}
+              >
+                Mark as completed?
+              </Box>
+            ) : (
+              <></>
+            )
           }
         >
           <Badge
             colorScheme={badgeColor}
             cursor="pointer"
-            onClick={() => handleUpdateVideoStatus("completed")}
+            onClick={() =>
+              status !== "completed" && handleUpdateVideoStatus("completed")
+            }
           >
             {status}
           </Badge>
