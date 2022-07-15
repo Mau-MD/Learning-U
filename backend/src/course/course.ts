@@ -4,6 +4,7 @@ import Parse from "parse/node";
 import { IResource } from "../types/resource";
 import { IWeightedYoutubeVideo } from "../types/youtube";
 import { createResource } from "../resources/resources";
+import { getImagesByQuery } from "../unsplash/unsplash";
 
 const VIDEOS_PER_QUERY = 100;
 
@@ -17,13 +18,31 @@ export const getUserCourses = async (user: Parse.Object<Parse.Attributes>) => {
 
   return courses;
 };
+export const getCourseByUserAndId = async (
+  user: Parse.Object<Parse.Attributes>,
+  courseId: string
+) => {
+  const Course = Parse.Object.extend("Course");
+  const query = new Parse.Query(Course);
 
-export const createCourse = (
+  query.equalTo("user", user);
+  query.equalTo("objectId", courseId);
+
+  const course = await query.find();
+
+  return course[0];
+};
+
+export const createCourse = async (
   name: string,
   user: Parse.Object<Parse.Attributes>
 ) => {
   const Course: Parse.Object = new Parse.Object("Course");
+
+  const images = await getImagesByQuery(name);
+
   Course.set("name", name);
+  Course.set("images", images);
   Course.set("user", user);
   return Course;
 };

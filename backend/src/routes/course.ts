@@ -2,6 +2,7 @@ import express from "express";
 import {
   createCourse,
   generateResources,
+  getCourseByUserAndId,
   getUserCourses,
   saveResources,
 } from "../course/course";
@@ -23,7 +24,7 @@ course.post("/new", async (req: RequestWUser, res, next) => {
     return;
   }
 
-  const course = createCourse(name, user);
+  const course = await createCourse(name, user);
   const { beginner, advanced } = await generateResources(name);
 
   try {
@@ -44,6 +45,14 @@ course.get("/me", async (req: RequestWUser, res, next) => {
 
   const courses = await getUserCourses(user);
   res.send(courses);
+});
+
+course.get("/:courseId", async (req: RequestWUser, res, next) => {
+  const { user } = req;
+  const { courseId } = req.params;
+
+  const course = await getCourseByUserAndId(user, courseId);
+  res.send(course);
 });
 
 export default course;
