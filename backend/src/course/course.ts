@@ -61,7 +61,7 @@ export const saveResources = async (
       title: resource.snippet.title,
       description: resource.snippet.description,
       url: `https://youtube.com/video/${resource.id}`,
-      thumbnail: resource.snippet.thumbnails.default.url,
+      thumbnail: resource.snippet.thumbnails.high.url,
       channel: resource.snippet.channelTitle,
       feedback: 0,
       course,
