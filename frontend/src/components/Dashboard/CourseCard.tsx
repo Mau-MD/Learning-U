@@ -54,7 +54,15 @@ const CourseCard = ({
             />
           }
         >
-          <Image src={src} cursor="pointer" w={"100%"}></Image>
+          <Box w="100%px" h="200px">
+            <Image
+              src={src}
+              cursor="pointer"
+              w="100%"
+              h="100%"
+              objectFit={"cover"}
+            />
+          </Box>
         </Tooltip>
         <Flex
           padding={4}
