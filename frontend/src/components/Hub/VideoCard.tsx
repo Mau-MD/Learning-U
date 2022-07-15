@@ -58,10 +58,8 @@ const VideoCard = ({ src, title, href, status, objectId }: Props) => {
     }
   );
 
-  const handleUpdateVideoStatus = () => {
-    if (status === "not started") {
-      updateVideoStatus.mutate("in progress");
-    }
+  const handleUpdateVideoStatus = (status: IResourceStatus) => {
+    updateVideoStatus.mutate(status);
   };
 
   return (
@@ -76,7 +74,9 @@ const VideoCard = ({ src, title, href, status, objectId }: Props) => {
         href={href}
         target="_blank"
         rel="noreferrer"
-        onClick={() => handleUpdateVideoStatus()}
+        onClick={() =>
+          status === "not started" && handleUpdateVideoStatus("in progress")
+        }
       >
         <Tooltip
           render={
@@ -114,7 +114,29 @@ const VideoCard = ({ src, title, href, status, objectId }: Props) => {
           <Icon as={BiVideo} />
           <Text noOfLines={1}>{title}</Text>
         </Box>
-        <Badge colorScheme={badgeColor}>{status}</Badge>
+        <Tooltip
+          space={-10}
+          render={
+            <Box
+              backgroundColor={backgroundColor}
+              borderColor={borderColor}
+              borderWidth={1}
+              p={2}
+              borderRadius={4}
+              boxShadow={"0px 10px 15px -3px rgba(0,0,0,0.3)"}
+            >
+              Mark as completed?
+            </Box>
+          }
+        >
+          <Badge
+            colorScheme={badgeColor}
+            cursor="pointer"
+            onClick={() => handleUpdateVideoStatus("completed")}
+          >
+            {status}
+          </Badge>
+        </Tooltip>
       </Box>
     </Box>
   );
