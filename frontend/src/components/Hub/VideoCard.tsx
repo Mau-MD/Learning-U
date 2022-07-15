@@ -3,6 +3,7 @@ import { Badge, Box, Icon, Image, Text } from "@chakra-ui/react";
 import { BiVideo } from "react-icons/bi";
 import useThemeColor from "../../hooks/useThemeColor";
 import { Link, useNavigate } from "react-router-dom";
+import Tooltip from "../Popover/Tooltip";
 
 type ResourceStatus = "completed" | "in progress" | "not started";
 interface Props {
@@ -33,15 +34,30 @@ const VideoCard = ({ src, title, href, status }: Props) => {
       transition={"all 0.3s"}
     >
       <a href={href} target="_blank" rel="noreferrer">
-        <Box w="100%" h="220px">
-          <Image
-            src={src}
-            w="full"
-            h="full"
-            objectFit="cover"
-            cursor="pointer"
-          />
-        </Box>
+        <Tooltip
+          render={
+            <Box
+              backgroundColor={backgroundColor}
+              borderColor={borderColor}
+              borderWidth={1}
+              p={2}
+              borderRadius={4}
+              boxShadow={"0px 10px 15px -3px rgba(0,0,0,0.3)"}
+            >
+              {title}
+            </Box>
+          }
+        >
+          <Box w="100%" h="220px">
+            <Image
+              src={src}
+              w="full"
+              h="full"
+              objectFit="cover"
+              cursor="pointer"
+            />
+          </Box>
+        </Tooltip>
       </a>
       <Box
         display="flex"
@@ -52,7 +68,7 @@ const VideoCard = ({ src, title, href, status }: Props) => {
       >
         <Box display="flex" alignItems="center" gap={3}>
           <Icon as={BiVideo} />
-          <Text>{title}</Text>
+          <Text noOfLines={1}>{title}</Text>
         </Box>
         <Badge colorScheme={badgeColor}>{status}</Badge>
       </Box>
