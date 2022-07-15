@@ -25,6 +25,7 @@ const ResourceGroup = ({ title, kind, data }: Props) => {
           data &&
           data.map((resource) => (
             <VideoCard
+              objectId={resource.objectId}
               key={resource.objectId}
               title={resource.title}
               src={resource.type === "video" ? resource.thumbnail : ""}

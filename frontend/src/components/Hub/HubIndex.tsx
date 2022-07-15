@@ -19,8 +19,8 @@ import { calculateCourseCompletition } from "../../utils/courseCompletition";
 
 const HubIndex = () => {
   const { isFetching, user } = useSession();
-  const [searchParams] = useSearchParams();
 
+  const [searchParams] = useSearchParams();
   const { id } = useParams();
   const difficulty = searchParams.get("difficulty");
   const title = searchParams.get("title");
