@@ -3,6 +3,7 @@ import Parse from "parse/node";
 
 export type IResource =
   | {
+      objectId: string;
       type: "video";
       status: "not started" | "in progress" | "completed";
       level: 1 | 2;
@@ -15,6 +16,7 @@ export type IResource =
       course: Parse.Object<Parse.Attributes>;
     }
   | {
+      objectId: string;
       type: "website";
       status: "not started" | "in progress" | "completed";
       level: 1 | 2;
