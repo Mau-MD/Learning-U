@@ -1,6 +1,8 @@
 import { ICourse } from "./course";
 import Parse from "parse/node";
 
+export type IResourceStatus = "not started" | "in progress" | "completed";
+
 export type IResource =
   | {
       type: "video";
