@@ -10,6 +10,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React from "react";
+import { createSearchParams } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import useThemeColor from "../../hooks/useThemeColor";
 import { scrollWithOffset } from "../../utils/scrollWithOffset";
@@ -21,6 +22,7 @@ interface Props {
   courseId: string;
   started?: boolean;
   phrase: string;
+  difficulty: 1 | 2;
 }
 
 const DifficultyCard = ({
@@ -30,6 +32,7 @@ const DifficultyCard = ({
   src,
   started = false,
   phrase,
+  difficulty,
 }: Props) => {
   const { backgroundColor, borderColor } = useThemeColor();
 
@@ -73,7 +76,7 @@ const DifficultyCard = ({
           </Box>
           <Box display="flex" flexDir={{ base: "column", md: "row" }} gap="1em">
             <HashLink
-              to={`/courses/hub/${courseId}#title`}
+              to={`/courses/hub/${courseId}?difficulty=${difficulty}#title`}
               smooth
               scroll={(el) => scrollWithOffset(el)}
             >

@@ -23,6 +23,7 @@ const DifficultyIndex = () => {
           phrase="You can do it!"
           courseId={id || ""}
           started
+          difficulty={1}
         />
         <DifficultyCard
           title="Advanced"
@@ -30,6 +31,7 @@ const DifficultyIndex = () => {
           src="https://images.unsplash.com/photo-1569748130764-3fed0c102c59?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
           courseId={id || ""}
           phrase="Let's go"
+          difficulty={2}
         />
       </Box>
     </>
