@@ -44,14 +44,6 @@ const Popover = ({
         <CircularProgress value={beginnerProgress} color="green" size={10} />
       </Flex>
       <Flex alignItems="center" justifyContent="space-between">
-        <Badge colorScheme="orange">Intermediate</Badge>
-        <CircularProgress
-          value={intermediateProgress}
-          color="orange"
-          size={10}
-        />
-      </Flex>
-      <Flex alignItems="center" justifyContent="space-between">
         <Badge colorScheme="red">Advanced</Badge>
         <CircularProgress value={advancedProgress} color="red" size={10} />
       </Flex>
