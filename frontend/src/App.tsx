@@ -32,15 +32,15 @@ function App() {
           <Route path="new" element={<NewCourseIndex />} />
         </Route>
         <Route
-          path="courses"
+          path="courses/:id"
           element={
             <RequireAuth>
               <CourseLayout />
             </RequireAuth>
           }
         >
-          <Route path="difficulty/:id" element={<DifficultyIndex />} />
-          <Route path="hub/:id" element={<HubIndex />} />
+          <Route path="difficulty" element={<DifficultyIndex />} />
+          <Route path="hub" element={<HubIndex />} />
         </Route>
       </Routes>
     </BrowserRouter>

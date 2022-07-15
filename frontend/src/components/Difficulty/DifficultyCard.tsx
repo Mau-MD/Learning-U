@@ -78,7 +78,7 @@ const DifficultyCard = ({
           </Box>
           <Box display="flex" flexDir={{ base: "column", md: "row" }} gap="1em">
             <HashLink
-              to={`/courses/hub/${courseId}?title=${courseTitle}&difficulty=${difficulty}#title`}
+              to={`/courses/${courseId}/hub?title=${courseTitle}&difficulty=${difficulty}#title`}
               smooth
               scroll={(el) => scrollWithOffset(el)}
             >

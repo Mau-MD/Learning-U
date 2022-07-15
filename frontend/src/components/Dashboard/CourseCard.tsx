@@ -54,7 +54,7 @@ const CourseCard = ({
             />
           }
         >
-          <Image src={src} cursor="pointer"></Image>
+          <Image src={src} cursor="pointer" w={"100%"}></Image>
         </Tooltip>
         <Flex
           padding={4}
@@ -67,7 +67,7 @@ const CourseCard = ({
           <Box>
             <Link
               to={{
-                pathname: `/courses/difficulty/${link}`,
+                pathname: `/courses/${link}/difficulty`,
                 search: createSearchParams({ name: title }).toString(),
               }}
             >
