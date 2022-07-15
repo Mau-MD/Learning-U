@@ -2,11 +2,17 @@ import React from "react";
 import { Badge, Box, Icon, Image, Text } from "@chakra-ui/react";
 import { BiVideo } from "react-icons/bi";
 import useThemeColor from "../../hooks/useThemeColor";
-import { Link, useNavigate } from "react-router-dom";
 import Tooltip from "../Popover/Tooltip";
+import { useMutation, useQueryClient } from "react-query";
+import axios from "axios";
+import { baseURL } from "../../utils/constants";
+import { IResourceStatus } from "../../types/resource";
+import { useParams, useSearchParams } from "react-router-dom";
+import { getConfig, useSession } from "../../utils/auth";
 
 type ResourceStatus = "completed" | "in progress" | "not started";
 interface Props {
+  objectId: string;
   src: string;
   title: string;
   href: string;
@@ -20,10 +26,43 @@ const getBadgeColor = (status: ResourceStatus) => {
   return "gray";
 };
 
-const VideoCard = ({ src, title, href, status }: Props) => {
+const VideoCard = ({ src, title, href, status, objectId }: Props) => {
   const { backgroundColor, borderColor } = useThemeColor();
 
   const badgeColor = getBadgeColor(status);
+  const queryClient = useQueryClient();
+
+  const [searchParams] = useSearchParams();
+  const { id } = useParams();
+  const difficulty = searchParams.get("difficulty");
+
+  const { user } = useSession();
+
+  const updateVideoStatus = useMutation(
+    async (status: IResourceStatus) => {
+      if (!user) throw new Error("No user");
+      const res = await axios.put(
+        `${baseURL}/resources/updateStatus/${objectId}`,
+        { status },
+        getConfig(user?.sessionToken)
+      );
+      return res.data;
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(`hub-${id}-${difficulty}`);
+      },
+      onError: () => {
+        alert("error");
+      },
+    }
+  );
+
+  const handleUpdateVideoStatus = () => {
+    if (status === "not started") {
+      updateVideoStatus.mutate("in progress");
+    }
+  };
 
   return (
     <Box
@@ -33,7 +72,12 @@ const VideoCard = ({ src, title, href, status }: Props) => {
       borderRadius={4}
       transition={"all 0.3s"}
     >
-      <a href={href} target="_blank" rel="noreferrer">
+      <a
+        href={href}
+        target="_blank"
+        rel="noreferrer"
+        onClick={() => handleUpdateVideoStatus()}
+      >
         <Tooltip
           render={
             <Box
