@@ -1,8 +1,11 @@
 import express from "express";
+import { readdirSync } from "fs";
+import { reseller_v1 } from "googleapis";
 import {
   createCourse,
   generateResources,
   getCourseByUserAndId,
+  getProgressByCourse,
   getUserCourses,
   saveResources,
 } from "../course/course";
@@ -53,6 +56,14 @@ course.get("/:courseId", async (req: RequestWUser, res, next) => {
 
   const course = await getCourseByUserAndId(user, courseId);
   res.send(course);
+});
+
+course.get("/progress/:courseId", async (req: RequestWUser, res, next) => {
+  const { user } = req;
+  const { courseId } = req.params;
+
+  const progress = await getProgressByCourse(user, courseId);
+  res.send(progress);
 });
 
 export default course;

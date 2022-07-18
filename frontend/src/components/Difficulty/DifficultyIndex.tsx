@@ -29,12 +29,27 @@ const DifficultyIndex = () => {
     { enabled: !!user && !!id }
   );
 
+  const { data: progress } = useQuery(
+    `progress-${id}`,
+    async () => {
+      if (!user) throw new Error("User is not defined");
+
+      const res = await axios.get<{ 1: number; 2: number }>(
+        `${baseURL}/course/progress/${id}`,
+        getConfig(user.sessionToken)
+      );
+      return res.data;
+    },
+    { enabled: !!user }
+  );
+
   return (
     <>
       <Heading as="h1" fontWeight="bold" fontSize="4xl">
         {name}
       </Heading>
       <Box display="flex" flexDir="column" my="1em" gap="1em" mb="20vh">
+        <pre>{JSON.stringify(progress)}</pre>
         <DifficultyCard
           title="Beginners"
           progress={20}

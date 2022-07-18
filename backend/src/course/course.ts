@@ -18,6 +18,7 @@ export const getUserCourses = async (user: Parse.Object<Parse.Attributes>) => {
 
   return courses;
 };
+
 export const getCourseByUserAndId = async (
   user: Parse.Object<Parse.Attributes>,
   courseId: string
@@ -31,6 +32,38 @@ export const getCourseByUserAndId = async (
   const course = await query.find();
 
   return course[0];
+};
+
+export const getProgressByCourse = async (
+  user: Parse.Object<Parse.Attributes>,
+  courseId: string
+) => {
+  const Resource = Parse.Object.extend("Resource");
+  const Course = Parse.Object.extend("Course");
+
+  const query = new Parse.Query(Resource);
+
+  const course = new Course();
+  course.id = courseId;
+
+  query.equalTo("user", user);
+  query.equalTo("course", course);
+
+  const resources = await query.findAll();
+
+  // filter by level
+  const beginnerLevelResources = resources.filter(
+    (resource: any) => resource.level === 1
+  );
+  const advancedLevelResources = resources.filter(
+    (resource: any) => resource.level === 2
+  );
+
+  console.log(beginnerLevelResources);
+  return {
+    1: calculateCourseCompletition(beginnerLevelResources),
+    2: calculateCourseCompletition(advancedLevelResources),
+  };
 };
 
 export const createCourse = async (
@@ -104,4 +137,18 @@ const getRankedVideos = async (query: string) => {
   );
 
   return sortedRankedVideos;
+};
+
+const calculateCourseCompletition = (
+  resources: Parse.Object<Parse.Attributes>[]
+) => {
+  let totalCompleted = 0;
+  let totalInProgress = 0;
+
+  for (const resource of resources) {
+    if ((resource as any).status === "completed") totalCompleted++;
+    if ((resource as any).status === "in progress") totalInProgress++;
+  }
+
+  return ((totalCompleted + 0.5 * totalInProgress) / resources.length) * 100;
 };
