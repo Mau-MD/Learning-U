@@ -49,10 +49,9 @@ const DifficultyIndex = () => {
         {name}
       </Heading>
       <Box display="flex" flexDir="column" my="1em" gap="1em" mb="20vh">
-        <pre>{JSON.stringify(progress)}</pre>
         <DifficultyCard
           title="Beginners"
-          progress={20}
+          progress={progress ? progress["1"] : undefined}
           src={data?.images[2].small || ""}
           phrase="You can do it!"
           courseId={id || ""}
@@ -62,7 +61,7 @@ const DifficultyIndex = () => {
         />
         <DifficultyCard
           title="Advanced"
-          progress={0}
+          progress={progress ? progress["2"] : undefined}
           src={data?.images[3].small || ""}
           courseId={id || ""}
           courseTitle={name || ""}

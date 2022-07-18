@@ -17,7 +17,7 @@ import { scrollWithOffset } from "../../utils/scrollWithOffset";
 
 interface Props {
   title: string;
-  progress: number;
+  progress: number | undefined;
   src: string;
   courseId: string;
   started?: boolean;
@@ -92,8 +92,16 @@ const DifficultyCard = ({
           </Box>
         </Box>
         <Box display="flex" alignItems="center">
-          <CircularProgress value={progress} size="60px">
-            <CircularProgressLabel>{progress}%</CircularProgressLabel>
+          <CircularProgress
+            value={progress}
+            isIndeterminate={progress === undefined}
+            size="60px"
+          >
+            {progress !== undefined && (
+              <CircularProgressLabel>
+                {progress.toFixed()}%
+              </CircularProgressLabel>
+            )}
           </CircularProgress>
         </Box>
       </Box>
