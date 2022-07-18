@@ -1,6 +1,6 @@
 import express from "express";
 import { getAuthUser } from "../middleware/getAuthUser";
-import { createPost } from "../post/post";
+import { createPost, getPostsByUser } from "../post/post";
 import { RequestWUser } from "../types/user";
 import { BadRequestError } from "../utils/errors";
 
@@ -25,6 +25,13 @@ post.post("/", async (req: RequestWUser, res, next) => {
     next(new BadRequestError(err));
     return;
   }
+});
+
+post.get("/me", async (req: RequestWUser, res, next) => {
+  const { user } = req;
+
+  const posts = await getPostsByUser(user.id);
+  res.send(posts);
 });
 
 export default post;
