@@ -31,7 +31,6 @@ const CourseCard = ({
   link,
   src,
   beginnerProgress,
-  intermediateProgress,
   advancedProgress,
 }: Props) => {
   const { backgroundColor, borderColor } = useThemeColor();
@@ -47,9 +46,9 @@ const CourseCard = ({
         <Tooltip
           render={
             <Popover
+              id={link}
               courseName={title}
               beginnerProgress={beginnerProgress}
-              intermediateProgress={intermediateProgress}
               advancedProgress={advancedProgress}
             />
           }

@@ -67,7 +67,6 @@ const DashboardIndex = () => {
                 title={course.name}
                 src={course.images[2].regular}
                 beginnerProgress={100}
-                intermediateProgress={40}
                 advancedProgress={10}
               />
             ))

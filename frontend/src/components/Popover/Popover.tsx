@@ -13,17 +13,18 @@ import useThemeColor from "../../hooks/useThemeColor";
 interface Props {
   courseName: string;
   beginnerProgress: number;
-  intermediateProgress: number;
   advancedProgress: number;
+  id: string;
 }
 
 const Popover = ({
   courseName,
   beginnerProgress,
-  intermediateProgress,
   advancedProgress,
+  id,
 }: Props) => {
   const { backgroundColor, borderColor } = useThemeColor();
+
   return (
     <Flex
       backgroundColor={backgroundColor}
