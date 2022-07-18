@@ -1,3 +1,4 @@
+import { differenceInCalendarDays } from "date-fns";
 import {
   getDateScore,
   getDateXLikes,
@@ -16,7 +17,10 @@ test("weights should throw an error if weights are incorrect", () => {
 
 test("should return the days that have passed since then, given an ISO Date", () => {
   const publishedAt = "2018-07-16T16:51:44Z";
-  expect(getDaysSincePublished(publishedAt)).toBe(1456);
+  const today = new Date();
+  expect(getDaysSincePublished(publishedAt)).toBe(
+    differenceInCalendarDays(today, new Date(publishedAt))
+  );
   expect(getDaysSincePublished(new Date().toISOString())).toBe(0);
 });
 
