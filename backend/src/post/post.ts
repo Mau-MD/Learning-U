@@ -16,3 +16,17 @@ export const createPost = (
 
   return Post;
 };
+
+export const getPostsByUser = async (userId: string) => {
+  const Post = Parse.Object.extend("Post");
+  const User = Parse.Object.extend("User");
+
+  const query = new Parse.Query(Post);
+
+  const user = new User();
+  user.id = userId;
+
+  query.equalTo("user", user);
+
+  return await query.findAll();
+};
