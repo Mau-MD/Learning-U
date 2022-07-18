@@ -7,23 +7,36 @@ import {
   Flex,
   Heading,
 } from "@chakra-ui/react";
+import axios from "axios";
 import React from "react";
 import useThemeColor from "../../hooks/useThemeColor";
+import { getConfig, useSession } from "../../utils/auth";
+import { baseURL } from "../../utils/constants";
+import { useQuery } from "react-query";
 
 interface Props {
   courseName: string;
-  beginnerProgress: number;
-  advancedProgress: number;
   id: string;
 }
 
-const Popover = ({
-  courseName,
-  beginnerProgress,
-  advancedProgress,
-  id,
-}: Props) => {
+const Popover = ({ courseName, id }: Props) => {
   const { backgroundColor, borderColor } = useThemeColor();
+
+  const { user } = useSession();
+
+  const { data: progress } = useQuery(
+    `progress-${id}`,
+    async () => {
+      if (!user) throw new Error("User is not defined");
+
+      const res = await axios.get<{ 1: number; 2: number }>(
+        `${baseURL}/course/progress/${id}`,
+        getConfig(user.sessionToken)
+      );
+      return res.data;
+    },
+    { enabled: !!user }
+  );
 
   return (
     <Flex
@@ -42,11 +55,21 @@ const Popover = ({
       </Heading>
       <Flex alignItems="center" justifyContent="space-between">
         <Badge colorScheme="green">Beginner</Badge>
-        <CircularProgress value={beginnerProgress} color="green" size={10} />
+        <CircularProgress
+          isIndeterminate={!progress}
+          value={progress !== undefined ? progress["1"] : 0}
+          color="green"
+          size={10}
+        />
       </Flex>
       <Flex alignItems="center" justifyContent="space-between">
         <Badge colorScheme="red">Advanced</Badge>
-        <CircularProgress value={advancedProgress} color="red" size={10} />
+        <CircularProgress
+          isIndeterminate={!progress}
+          value={progress !== undefined ? progress["1"] : 0}
+          color="red"
+          size={10}
+        />
       </Flex>
     </Flex>
   );

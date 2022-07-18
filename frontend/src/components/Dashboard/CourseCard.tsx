@@ -21,18 +21,9 @@ interface Props {
   link: string;
   title: string;
   src: string;
-  beginnerProgress: number;
-  intermediateProgress: number;
-  advancedProgress: number;
 }
 
-const CourseCard = ({
-  title,
-  link,
-  src,
-  beginnerProgress,
-  advancedProgress,
-}: Props) => {
+const CourseCard = ({ title, link, src }: Props) => {
   const { backgroundColor, borderColor } = useThemeColor();
   return (
     <Box
@@ -43,16 +34,7 @@ const CourseCard = ({
       w="100%"
     >
       <Box>
-        <Tooltip
-          render={
-            <Popover
-              id={link}
-              courseName={title}
-              beginnerProgress={beginnerProgress}
-              advancedProgress={advancedProgress}
-            />
-          }
-        >
+        <Tooltip render={<Popover id={link} courseName={title} />}>
           <Box w="100%px" h="200px">
             <Image
               src={src}
