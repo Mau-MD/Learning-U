@@ -53,13 +53,12 @@ export const getProgressByCourse = async (
 
   // filter by level
   const beginnerLevelResources = resources.filter(
-    (resource: any) => resource.level === 1
+    (resource) => resource.get("level") === 1
   );
   const advancedLevelResources = resources.filter(
-    (resource: any) => resource.level === 2
+    (resource) => resource.get("level") === 2
   );
 
-  console.log(beginnerLevelResources);
   return {
     1: calculateCourseCompletition(beginnerLevelResources),
     2: calculateCourseCompletition(advancedLevelResources),
@@ -146,8 +145,8 @@ const calculateCourseCompletition = (
   let totalInProgress = 0;
 
   for (const resource of resources) {
-    if ((resource as any).status === "completed") totalCompleted++;
-    if ((resource as any).status === "in progress") totalInProgress++;
+    if (resource.get("status") === "completed") totalCompleted++;
+    if (resource.get("status") === "in progress") totalInProgress++;
   }
 
   return ((totalCompleted + 0.5 * totalInProgress) / resources.length) * 100;
