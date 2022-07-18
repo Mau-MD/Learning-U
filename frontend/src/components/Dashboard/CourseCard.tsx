@@ -10,12 +10,14 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  useDisclosure,
 } from "@chakra-ui/react";
 import React from "react";
 import { createSearchParams, Link } from "react-router-dom";
 import useThemeColor from "../../hooks/useThemeColor";
 import Popover from "../Popover/Popover";
 import Tooltip from "../Popover/Tooltip";
+import Share from "../Share/Share";
 
 interface Props {
   link: string;
@@ -25,6 +27,9 @@ interface Props {
 
 const CourseCard = ({ title, link, src }: Props) => {
   const { backgroundColor, borderColor } = useThemeColor();
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   return (
     <Box
       backgroundColor={backgroundColor}
@@ -71,9 +76,10 @@ const CourseCard = ({ title, link, src }: Props) => {
                 icon={<HamburgerIcon />}
               ></MenuButton>
               <MenuList>
-                <MenuItem>Share course</MenuItem>
+                <MenuItem onClick={() => onOpen()}>Share course</MenuItem>
                 <MenuItem>Delete course</MenuItem>
               </MenuList>
+              <Share isOpen={isOpen} onClose={onClose} />
             </Menu>
           </Box>
         </Flex>
