@@ -1,6 +1,5 @@
 import express from "express";
-import { readdirSync } from "fs";
-import { reseller_v1 } from "googleapis";
+import { cloneCourse } from "../course/clone";
 import {
   createCourse,
   generateResources,
@@ -10,7 +9,6 @@ import {
   saveResources,
 } from "../course/course";
 import { getAuthUser } from "../middleware/getAuthUser";
-import { ICourse } from "../types/course";
 import { RequestWUser } from "../types/user";
 import { BadRequestError } from "../utils/errors";
 
@@ -66,4 +64,17 @@ course.get("/progress/:courseId", async (req: RequestWUser, res, next) => {
   res.send(progress);
 });
 
+course.post("/clone/:courseId", async (req: RequestWUser, res, next) => {
+  const { user } = req;
+  const { courseId } = req.params;
+  const { name } = req.body;
+
+  if (!name) {
+    next(new BadRequestError("Missing params"));
+    return;
+  }
+
+  const course = await cloneCourse(name, courseId, user);
+  res.send(course);
+});
 export default course;
