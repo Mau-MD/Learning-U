@@ -10,6 +10,7 @@ import LoginIndex from "./components/Registration/LoginIndex";
 import RegisterIndex from "./components/Registration/RegisterIndex";
 import RequireAuth from "./components/Registration/RequireAuth";
 import NewCourseIndex from "./components/NewCourse/NewCourseIndex";
+import FeedIndex from "./components/Feed/FeedIndex";
 
 function App() {
   return (
@@ -41,6 +42,16 @@ function App() {
         >
           <Route path="difficulty" element={<DifficultyIndex />} />
           <Route path="hub" element={<HubIndex />} />
+        </Route>
+        <Route
+          path="feed"
+          element={
+            <RequireAuth>
+              <Outlet />
+            </RequireAuth>
+          }
+        >
+          <Route index element={<FeedIndex />} />
         </Route>
       </Routes>
     </BrowserRouter>
