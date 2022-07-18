@@ -79,7 +79,7 @@ const CourseCard = ({ title, link, src }: Props) => {
                 <MenuItem onClick={() => onOpen()}>Share course</MenuItem>
                 <MenuItem>Delete course</MenuItem>
               </MenuList>
-              <Share isOpen={isOpen} onClose={onClose} />
+              <Share isOpen={isOpen} onClose={onClose} code={link} />
             </Menu>
           </Box>
         </Flex>
