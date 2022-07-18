@@ -13,21 +13,28 @@ interface IMaxScores {
   dateXLikes: number;
 }
 
-const WEIGHTS = {
+/*
+Youtube Video Ranking Algorithm
+For more information: https://docs.google.com/document/d/1zxYRyytmbbvfAZkQc8dampD9Vhun0XQtWepKYxWUTKo/edit?usp=sharing
+
+This algorithm starts at `getExternalRanking` and where it first gets the raw score for each of the videos that were passed in the function. For every `ranking-features` it uses the formula described in 
+the document above.
+
+Then, since we cannot have raw scores, we have to normalize then. Since normalizing requires a minimum and a maximum, we need to find the maximum raw score for each features. `getMaxScores` does that.
+After that, we normalize all `ranking-features` with the information we got before.
+Finally, we apply weights to each `ranking-feature` so it matches the formula proposed before. We sum everything up, and that's our final score that will be used to rank the videos
+*/
+
+export const WEIGHTS = {
   weight1: 60,
-  w2: 40,
-  w3: 100,
-  w4: 0,
-  w5: 100,
-  w6: 0,
+  weight2: 40,
+  weight3: 100,
+  weight4: 0,
+  weight5: 100,
+  weight6: 0,
 };
 
 export const getExternalRanking = (videos: youtube_v3.Schema$Video[]) => {
-  if (!ensureWeightsAreCorrect(WEIGHTS)) {
-    new ExpressError("Ranking Weights are incorrect", 500);
-    return;
-  }
-
   const rawExternalScoreVideos = getRawExternalRanking(videos);
   const maxScores = getMaxScores(rawExternalScoreVideos);
   const normalizedExternalScoreVideos = getNormalizedExternalRanking(
@@ -97,10 +104,10 @@ export const getWeightedExternalRanking = (
 ): IWeightedYoutubeVideo[] => {
   return videos.map((video) => {
     const weighted_score = {
-      date: video.normalized_score.date * WEIGHTS.w1,
-      dateXLikes: video.normalized_score.dateXLikes * WEIGHTS.w2,
-      dateXViews: video.normalized_score.dateXViews * WEIGHTS.w3,
-      useOfChapters: video.normalized_score.useOfChapters * WEIGHTS.w5,
+      date: video.normalized_score.date * WEIGHTS.weight1,
+      dateXLikes: video.normalized_score.dateXLikes * WEIGHTS.weight2,
+      dateXViews: video.normalized_score.dateXViews * WEIGHTS.weight3,
+      useOfChapters: video.normalized_score.useOfChapters * WEIGHTS.weight5,
     };
 
     const final_score =
@@ -159,10 +166,6 @@ export const getUseOfChapters = (description: string) => {
   return usesChapters !== null ? 1 : 0;
 };
 
-const getChannelPopularity = () => {
-  return 1;
-};
-
 export const getDaysSincePublished = (publishedAt: string) => {
   const publishedAtDate = parseISO(publishedAt);
   const daysSincePublished = differenceInCalendarDays(
@@ -170,18 +173,4 @@ export const getDaysSincePublished = (publishedAt: string) => {
     publishedAtDate
   );
   return daysSincePublished;
-};
-
-export const ensureWeightsAreCorrect = (weights: typeof WEIGHTS) => {
-  if (weights.w1 + weights.w2 !== 100) {
-    return false;
-  }
-  if (weights.w3 + weights.w4 !== 100) {
-    return false;
-  }
-  if (weights.w5 + weights.w6 !== 100) {
-    new ExpressError("Weights are incorrect", 500);
-    return false;
-  }
-  return true;
 };
