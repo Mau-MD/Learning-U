@@ -24,7 +24,7 @@ const Popover = ({ courseName, id }: Props) => {
 
   const { user } = useSession();
 
-  const { data: progress } = useQuery(
+  const { data: progress, isFetching } = useQuery(
     `progress-${id}`,
     async () => {
       if (!user) throw new Error("User is not defined");
@@ -56,7 +56,7 @@ const Popover = ({ courseName, id }: Props) => {
       <Flex alignItems="center" justifyContent="space-between">
         <Badge colorScheme="green">Beginner</Badge>
         <CircularProgress
-          isIndeterminate={!progress}
+          isIndeterminate={isFetching}
           value={progress !== undefined ? progress["1"] : 0}
           color="green"
           size={10}
@@ -65,8 +65,8 @@ const Popover = ({ courseName, id }: Props) => {
       <Flex alignItems="center" justifyContent="space-between">
         <Badge colorScheme="red">Advanced</Badge>
         <CircularProgress
-          isIndeterminate={!progress}
-          value={progress !== undefined ? progress["1"] : 0}
+          isIndeterminate={isFetching}
+          value={progress !== undefined ? progress["2"] : 0}
           color="red"
           size={10}
         />
