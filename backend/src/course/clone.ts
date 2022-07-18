@@ -36,4 +36,6 @@ export const cloneCourse = async (
 
     await newResource.save();
   }
+
+  return course;
 };
