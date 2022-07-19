@@ -19,7 +19,7 @@ import axios, { AxiosError } from "axios";
 import { baseURL } from "../../utils/constants";
 import { ErrorType } from "../../types/requests";
 import { useNavigate } from "react-router-dom";
-import { ICourse } from "../../../../types/course";
+import { ICourse } from "../../types/course";
 import { getConfig, useSession } from "../../utils/auth";
 
 interface LearnForm {
