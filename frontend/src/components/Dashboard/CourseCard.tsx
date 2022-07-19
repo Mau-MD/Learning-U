@@ -15,6 +15,7 @@ import {
 import React from "react";
 import { createSearchParams, Link } from "react-router-dom";
 import useThemeColor from "../../hooks/useThemeColor";
+import DeleteCourse from "../DeleteCourse/DeleteCourse";
 import Popover from "../Popover/Popover";
 import Tooltip from "../Popover/Tooltip";
 import Share from "../Share/Share";
@@ -29,6 +30,11 @@ const CourseCard = ({ title, link, src }: Props) => {
   const { backgroundColor, borderColor } = useThemeColor();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenDeleteCourse,
+    onOpen: onOpenDeleteCourse,
+    onClose: onCloseDeleteCourse,
+  } = useDisclosure();
 
   return (
     <Box
@@ -77,9 +83,15 @@ const CourseCard = ({ title, link, src }: Props) => {
               ></MenuButton>
               <MenuList>
                 <MenuItem onClick={() => onOpen()}>Share course</MenuItem>
-                <MenuItem>Delete course</MenuItem>
+                <MenuItem onClick={() => onOpenDeleteCourse()}>
+                  Delete course
+                </MenuItem>
               </MenuList>
               <Share isOpen={isOpen} onClose={onClose} code={link} />
+              <DeleteCourse
+                isOpen={isOpenDeleteCourse}
+                onClose={onCloseDeleteCourse}
+              />
             </Menu>
           </Box>
         </Flex>
