@@ -12,6 +12,7 @@ import axios, { AxiosError } from "axios";
 import { Field, Form, Formik } from "formik";
 import React from "react";
 import { useMutation } from "react-query";
+import { useNavigate } from "react-router-dom";
 import { ICourse } from "../../types/course";
 import { ErrorType } from "../../types/requests";
 import { getConfig, useSession } from "../../utils/auth";
@@ -24,6 +25,7 @@ interface CodeForm {
 const CourseCode = () => {
   const { user } = useSession();
   const toast = useToast();
+  const navigate = useNavigate();
 
   const handleOnSubmit = (values: CodeForm) => {
     cloneCourse.mutate(values);
@@ -31,7 +33,10 @@ const CourseCode = () => {
 
   const cloneCourse = useMutation(
     async ({ name, code }: CodeForm) => {
-      if (!user) return;
+      if (!user) {
+        throw new Error("User not defined");
+        return;
+      }
       const res = await axios.post<ICourse>(
         `${baseURL}/course/clone/${code}`,
         {
@@ -42,13 +47,14 @@ const CourseCode = () => {
       return res.data;
     },
     {
-      onSuccess: () => {
+      onSuccess: (course) => {
         toast({
           status: "success",
           title: "Course cloned!",
           description: "The course has successfully been cloned",
           isClosable: true,
         });
+        navigate(`/courses/${course?.objectId}/difficulty`);
       },
       onError: (error: AxiosError<ErrorType>) => {
         toast({
