@@ -25,8 +25,9 @@ const DeleteCourse = ({ isOpen, onClose }: Props) => {
         <ModalHeader>Are you sure you want to delete this course?</ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={7}>
-          <Text mb={2}>Select which tutorials you didn{"'"}t like?</Text>
+          <Text mb={2}>Select which tutorials you didn{"'"}t like</Text>
           <Grid gridTemplateColumns="repeat(2, 1fr)" gap={5}>
+            <VideoCardToDelete title="Video 1" src="" />
             <VideoCardToDelete title="Video 1" src="" />
           </Grid>
         </ModalBody>
