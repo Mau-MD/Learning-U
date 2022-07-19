@@ -9,7 +9,7 @@ import {
   Grid,
 } from "@chakra-ui/react";
 import axios from "axios";
-import React from "react";
+import React, { useState } from "react";
 import { IResource } from "../../types/resource";
 import { getConfig, useSession } from "../../utils/auth";
 import { baseURL } from "../../utils/constants";
@@ -25,6 +25,8 @@ interface Props {
 const DeleteCourse = ({ isOpen, onClose, courseId }: Props) => {
   const { user, isFetching } = useSession();
 
+  const [selectedResources, setSelectedResources] = useState<string[]>([]);
+
   const { data: resources, isFetching: isQueryFetching } = useQuery(
     `hub-${courseId}`,
     async () => {
@@ -37,9 +39,25 @@ const DeleteCourse = ({ isOpen, onClose, courseId }: Props) => {
       return res.data;
     },
     {
-      enabled: !isFetching && !!courseId,
+      enabled: isOpen && !isFetching && !!courseId,
     }
   );
+
+  // Future Note: It's better if we use something like set() or hashmap. Better complexity.
+  const handleToggleSelectedResource = (id: string) => {
+    const alreadySelected = selectedResources.find(
+      (selectedId) => selectedId === id
+    );
+
+    if (alreadySelected) {
+      setSelectedResources(
+        selectedResources.filter((selectedId) => selectedId !== id)
+      );
+      return;
+    }
+
+    setSelectedResources([...selectedResources, id]);
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="4xl">
@@ -57,6 +75,12 @@ const DeleteCourse = ({ isOpen, onClose, courseId }: Props) => {
                   title={resource.title}
                   objectId={resource.objectId}
                   src={resource.type === "video" ? resource.thumbnail : ""}
+                  onClick={(objectId) => handleToggleSelectedResource(objectId)}
+                  active={
+                    !!selectedResources.find(
+                      (selectedId) => selectedId === resource.objectId
+                    )
+                  }
                 />
               ))}
           </Grid>
