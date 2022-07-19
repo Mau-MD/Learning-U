@@ -5,7 +5,7 @@ import type { IUser } from "../types/user";
 
 const auth = express.Router();
 
-auth.get("/login", async (req, res, next) => {
+auth.post("/login", async (req, res, next) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
@@ -29,7 +29,7 @@ auth.post("/register", async (req, res, next) => {
     return;
   }
 
-  const user = new Parse.User({ username, password, email });
+  const user = new Parse.User<IUser>({ username, password, email });
 
   try {
     await user.signUp();
