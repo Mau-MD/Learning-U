@@ -25,6 +25,12 @@ resources.get(
   }
 );
 
+resources.get("/byCourse/:courseId", async (req: RequestWUser, res, next) => {
+  const { courseId } = req.params;
+  const resources = await getResourcesFromCourse(courseId);
+  res.send(resources);
+});
+
 resources.put(
   "/updateStatus/:resourceId",
   async (req: RequestWUser, res, next) => {
