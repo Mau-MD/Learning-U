@@ -13,7 +13,6 @@ import React from "react";
 import { IResource } from "../../types/resource";
 import { getConfig, useSession } from "../../utils/auth";
 import { baseURL } from "../../utils/constants";
-import VideoCard from "../Hub/VideoCard";
 import VideoCardToDelete from "./VideoCardToDelete";
 import { useQuery } from "react-query";
 
@@ -26,7 +25,7 @@ interface Props {
 const DeleteCourse = ({ isOpen, onClose, courseId }: Props) => {
   const { user, isFetching } = useSession();
 
-  const { data, isFetching: isQueryFetching } = useQuery(
+  const { data: resources, isFetching: isQueryFetching } = useQuery(
     `hub-${courseId}`,
     async () => {
       if (!user) throw new Error("User is not defined");
@@ -51,8 +50,15 @@ const DeleteCourse = ({ isOpen, onClose, courseId }: Props) => {
         <ModalBody pb={7}>
           <Text mb={2}>Select which tutorials you didn{"'"}t like</Text>
           <Grid gridTemplateColumns="repeat(2, 1fr)" gap={5}>
-            <VideoCardToDelete title="Video 1" src="" />
-            <VideoCardToDelete title="Video 1" src="" />
+            {resources &&
+              resources.map((resource) => (
+                <VideoCardToDelete
+                  key={resource.objectId}
+                  title={resource.title}
+                  objectId={resource.objectId}
+                  src={resource.type === "video" ? resource.thumbnail : ""}
+                />
+              ))}
           </Grid>
         </ModalBody>
       </ModalContent>
