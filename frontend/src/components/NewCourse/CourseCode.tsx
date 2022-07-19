@@ -20,7 +20,33 @@ interface CodeForm {
   name: string;
 }
 const CourseCode = () => {
-  const handleOnSubmit = (values: CodeForm) => {};
+  const { user } = useSession();
+
+  const handleOnSubmit = (values: CodeForm) => {
+    cloneCourse.mutate(values);
+  };
+
+  const cloneCourse = useMutation(
+    async ({ name, code }: CodeForm) => {
+      if (!user) return;
+      const res = await axios.post<ICourse>(
+        `${baseURL}/course/clone/${code}`,
+        {
+          name,
+        },
+        getConfig(user?.sessionToken)
+      );
+      return res.data;
+    },
+    {
+      onSuccess: () => {
+        console.log("yay");
+      },
+      onError: () => {
+        console.log("error");
+      },
+    }
+  );
 
   return (
     <Box mb={20}>
@@ -40,7 +66,13 @@ const CourseCode = () => {
               <Field as={Input} name="name" />
               <FormErrorMessage>{errors.name}</FormErrorMessage>
             </FormControl>
-            <Button colorScheme="blue" w="100%" mt={5} type="submit">
+            <Button
+              colorScheme="blue"
+              w="100%"
+              mt={5}
+              type="submit"
+              isLoading={cloneCourse.isLoading}
+            >
               Clone Course
             </Button>
           </Form>
