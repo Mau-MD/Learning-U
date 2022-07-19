@@ -17,11 +17,18 @@ import { ICourse } from "../../types/course";
 import { ErrorType } from "../../types/requests";
 import { getConfig, useSession } from "../../utils/auth";
 import { baseURL } from "../../utils/constants";
+import * as Yup from "yup";
 
 interface CodeForm {
   code: string;
   name: string;
 }
+
+const schema = Yup.object({
+  code: Yup.string().required("Course code is required"),
+  name: Yup.string().required("Course name is required"),
+});
+
 const CourseCode = () => {
   const { user } = useSession();
   const toast = useToast();
@@ -70,7 +77,11 @@ const CourseCode = () => {
 
   return (
     <Box mb={20}>
-      <Formik initialValues={{ code: "", name: "" }} onSubmit={handleOnSubmit}>
+      <Formik
+        initialValues={{ code: "", name: "" }}
+        onSubmit={handleOnSubmit}
+        validationSchema={schema}
+      >
         {({ touched, errors }) => (
           <Form>
             <FormControl mt={10} isInvalid={touched.code && !!errors.code}>
