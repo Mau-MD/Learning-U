@@ -91,6 +91,7 @@ const CourseCard = ({ title, link, src }: Props) => {
               <DeleteCourse
                 isOpen={isOpenDeleteCourse}
                 onClose={onCloseDeleteCourse}
+                courseId={link}
               />
             </Menu>
           </Box>
