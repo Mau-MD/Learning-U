@@ -36,7 +36,8 @@ const DeleteCourse = ({ isOpen, onClose, courseId }: Props) => {
         `${baseURL}/resources/byCourse/${courseId}`,
         getConfig(user.sessionToken)
       );
-      return res.data;
+
+      return res.data.sort((a, b) => a.level - b.level);
     },
     {
       enabled: isOpen && !isFetching && !!courseId,
@@ -67,7 +68,7 @@ const DeleteCourse = ({ isOpen, onClose, courseId }: Props) => {
         <ModalCloseButton />
         <ModalBody pb={7}>
           <Text mb={2}>Select which tutorials you didn{"'"}t like</Text>
-          <Grid gridTemplateColumns="repeat(2, 1fr)" gap={5}>
+          <Grid gridTemplateColumns="repeat(3, 1fr)" gap={5}>
             {resources &&
               resources.map((resource) => (
                 <VideoCardToDelete
