@@ -18,6 +18,10 @@ export const cloneCourse = async (
   const course = await createCourse(courseName, user);
   const resources = parseObjectsToJson(await getResourcesFromCourse(courseId));
 
+  if (!resources || resources.length === 0) {
+    throw new Error("Course doesn't exist");
+  }
+
   await course.save();
 
   for (const resource of resources) {

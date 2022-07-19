@@ -74,7 +74,11 @@ course.post("/clone/:courseId", async (req: RequestWUser, res, next) => {
     return;
   }
 
-  const course = await cloneCourse(name, courseId, user);
-  res.send(course);
+  try {
+    const course = await cloneCourse(name, courseId, user);
+    res.send(course);
+  } catch (err) {
+    next(new BadRequestError(err.message));
+  }
 });
 export default course;
