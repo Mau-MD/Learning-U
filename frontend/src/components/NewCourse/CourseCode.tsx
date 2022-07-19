@@ -6,12 +6,14 @@ import {
   FormErrorMessage,
   Button,
   Box,
+  useToast,
 } from "@chakra-ui/react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { Field, Form, Formik } from "formik";
 import React from "react";
 import { useMutation } from "react-query";
 import { ICourse } from "../../types/course";
+import { ErrorType } from "../../types/requests";
 import { getConfig, useSession } from "../../utils/auth";
 import { baseURL } from "../../utils/constants";
 
@@ -21,6 +23,7 @@ interface CodeForm {
 }
 const CourseCode = () => {
   const { user } = useSession();
+  const toast = useToast();
 
   const handleOnSubmit = (values: CodeForm) => {
     cloneCourse.mutate(values);
@@ -40,10 +43,21 @@ const CourseCode = () => {
     },
     {
       onSuccess: () => {
-        console.log("yay");
+        toast({
+          status: "success",
+          title: "Course cloned!",
+          description: "The course has successfully been cloned",
+          isClosable: true,
+        });
       },
-      onError: () => {
-        console.log("error");
+      onError: (error: AxiosError<ErrorType>) => {
+        toast({
+          title: "An error ocurred",
+          description: error.response?.data.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
       },
     }
   );
