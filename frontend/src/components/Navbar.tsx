@@ -9,13 +9,19 @@ import {
 } from "@chakra-ui/react";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import useThemeColor from "../hooks/useThemeColor";
+import { deleteCachedUser, useSession } from "../utils/auth";
 
 const Navbar = () => {
   const { toggleColorMode, colorMode } = useColorMode();
 
   const colorToggleIcon = colorMode === "dark" ? <SunIcon /> : <MoonIcon />;
   const { backgroundColor, borderColor } = useThemeColor();
+  const { user } = useSession();
 
+  const handleLogout = () => {
+    deleteCachedUser();
+    window.location.reload();
+  };
   return (
     <Box
       bg={backgroundColor}
@@ -52,6 +58,11 @@ const Navbar = () => {
             aria-label="Toggle Color Icon"
             onClick={() => toggleColorMode()}
           />
+          {user && (
+            <Button onClick={() => handleLogout()} ml={4}>
+              Log out
+            </Button>
+          )}
         </Box>
       </Container>
     </Box>
