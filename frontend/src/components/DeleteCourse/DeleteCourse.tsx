@@ -8,16 +8,40 @@ import {
   Text,
   Grid,
 } from "@chakra-ui/react";
+import axios from "axios";
 import React from "react";
+import { IResource } from "../../types/resource";
+import { getConfig, useSession } from "../../utils/auth";
+import { baseURL } from "../../utils/constants";
 import VideoCard from "../Hub/VideoCard";
 import VideoCardToDelete from "./VideoCardToDelete";
+import { useQuery } from "react-query";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  courseId: string;
 }
 
-const DeleteCourse = ({ isOpen, onClose }: Props) => {
+const DeleteCourse = ({ isOpen, onClose, courseId }: Props) => {
+  const { user, isFetching } = useSession();
+
+  const { data, isFetching: isQueryFetching } = useQuery(
+    `hub-${courseId}`,
+    async () => {
+      if (!user) throw new Error("User is not defined");
+
+      const res = await axios.get<IResource[]>(
+        `${baseURL}/resources/byCourse/${courseId}`,
+        getConfig(user.sessionToken)
+      );
+      return res.data;
+    },
+    {
+      enabled: !isFetching && !!courseId,
+    }
+  );
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="4xl">
       <ModalOverlay />
