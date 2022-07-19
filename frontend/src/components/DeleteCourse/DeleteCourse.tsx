@@ -7,6 +7,8 @@ import {
   ModalBody,
   Text,
   Grid,
+  Button,
+  ModalFooter,
 } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useState } from "react";
@@ -85,7 +87,16 @@ const DeleteCourse = ({ isOpen, onClose, courseId }: Props) => {
                 />
               ))}
           </Grid>
+          <Text fontWeight={"bold"} mt={5}>
+            {selectedResources.length} resources selected
+          </Text>
         </ModalBody>
+        <ModalFooter>
+          <Button onClick={onClose} mr={3}>
+            Cancel{" "}
+          </Button>
+          <Button colorScheme="red">Delete Course</Button>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );
