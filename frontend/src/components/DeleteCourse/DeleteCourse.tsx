@@ -82,7 +82,7 @@ const DeleteCourse = ({ isOpen, onClose, courseId }: Props) => {
         toast({
           status: "error",
           title: "Error deleting course",
-          description: error.response?.data.message
+          description: error.response?.data.message,
           isClosable: true,
         });
       },
