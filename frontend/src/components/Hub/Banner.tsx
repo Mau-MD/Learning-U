@@ -3,8 +3,9 @@ import React from "react";
 
 interface Props {
   src: string;
+  fallback?: string;
 }
-const Banner = ({ src }: Props) => {
+const Banner = ({ src, fallback = "" }: Props) => {
   const linearGradientColor = useColorModeValue(
     "linear-gradient(to bottom, rgba(255,0,0,0), rgba(255,255,255,1))",
     "linear-gradient(to bottom, rgba(255,0,0,0), rgba(26,32,44,1))"
@@ -12,7 +13,7 @@ const Banner = ({ src }: Props) => {
   return (
     <>
       <Box w="100%" h="40vh">
-        <Image src={src} w="100%" h="100%" fit="cover" />
+        <Image src={src} w="100%" h="100%" fit="cover" fallbackSrc={fallback} />
       </Box>
       {/* Makes the gradient effect */}
       <Box

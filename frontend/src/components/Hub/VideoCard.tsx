@@ -2,7 +2,8 @@ import React from "react";
 import { Badge, Box, Icon, Image, Text } from "@chakra-ui/react";
 import { BiVideo } from "react-icons/bi";
 import useThemeColor from "../../hooks/useThemeColor";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import Tooltip from "../Popover/Tooltip";
 
 type ResourceStatus = "completed" | "in progress" | "not started";
 interface Props {
@@ -21,7 +22,6 @@ const getBadgeColor = (status: ResourceStatus) => {
 
 const VideoCard = ({ src, title, href, status }: Props) => {
   const { backgroundColor, borderColor } = useThemeColor();
-  const navigate = useNavigate();
 
   const badgeColor = getBadgeColor(status);
 
@@ -31,11 +31,34 @@ const VideoCard = ({ src, title, href, status }: Props) => {
       borderColor={borderColor}
       borderWidth={1}
       borderRadius={4}
-      cursor="pointer"
       transition={"all 0.3s"}
-      onClick={() => navigate(href)}
     >
-      <Image src={src} w="full" />
+      <a href={href} target="_blank" rel="noreferrer">
+        <Tooltip
+          render={
+            <Box
+              backgroundColor={backgroundColor}
+              borderColor={borderColor}
+              borderWidth={1}
+              p={2}
+              borderRadius={4}
+              boxShadow={"0px 10px 15px -3px rgba(0,0,0,0.3)"}
+            >
+              {title}
+            </Box>
+          }
+        >
+          <Box w="100%" h="220px">
+            <Image
+              src={src}
+              w="full"
+              h="full"
+              objectFit="cover"
+              cursor="pointer"
+            />
+          </Box>
+        </Tooltip>
+      </a>
       <Box
         display="flex"
         alignItems="center"
@@ -45,7 +68,7 @@ const VideoCard = ({ src, title, href, status }: Props) => {
       >
         <Box display="flex" alignItems="center" gap={3}>
           <Icon as={BiVideo} />
-          <Text>{title}</Text>
+          <Text noOfLines={1}>{title}</Text>
         </Box>
         <Badge colorScheme={badgeColor}>{status}</Badge>
       </Box>
