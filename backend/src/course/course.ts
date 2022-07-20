@@ -96,6 +96,7 @@ export const saveResources = async (
     const video = createResource({
       type: "video",
       level,
+      videoId: resource.id,
       status: "not started",
       title: resource.snippet.title,
       description: resource.snippet.description,

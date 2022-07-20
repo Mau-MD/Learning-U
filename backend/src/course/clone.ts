@@ -28,6 +28,7 @@ export const cloneCourse = async (
     const newResource = createResource({
       type: resource.type,
       status: "not started",
+      videoId: resource.id,
       url: resource.url,
       level: resource.level,
       title: resource.title,
