@@ -9,6 +9,9 @@ import {
   Grid,
   Button,
   ModalFooter,
+  Spinner,
+  HStack,
+  Skeleton,
 } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useState } from "react";
@@ -29,7 +32,11 @@ const DeleteCourse = ({ isOpen, onClose, courseId }: Props) => {
 
   const [selectedResources, setSelectedResources] = useState<string[]>([]);
 
-  const { data: resources, isFetching: isQueryFetching } = useQuery(
+  const {
+    data: resources,
+    isFetching: isQueryFetching,
+    isLoading,
+  } = useQuery(
     `hub-${courseId}`,
     async () => {
       if (!user) throw new Error("User is not defined");
@@ -66,12 +73,24 @@ const DeleteCourse = ({ isOpen, onClose, courseId }: Props) => {
     <Modal isOpen={isOpen} onClose={onClose} size="4xl">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Are you sure you want to delete this course?</ModalHeader>
+        <ModalHeader>
+          <HStack>
+            <Text>Are you sure you want to delete this course?</Text>
+            {isQueryFetching && <Spinner />}
+          </HStack>
+        </ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={7}>
           <Text mb={2}>Select which tutorials you didn{"'"}t like</Text>
           <Grid gridTemplateColumns="repeat(3, 1fr)" gap={5}>
-            {resources &&
+            {isLoading ? (
+              <>
+                <Skeleton h="213px" />
+                <Skeleton h="213px" />
+                <Skeleton h="213px" />
+              </>
+            ) : (
+              resources &&
               resources.map((resource) => (
                 <VideoCardToDelete
                   key={resource.objectId}
@@ -85,7 +104,8 @@ const DeleteCourse = ({ isOpen, onClose, courseId }: Props) => {
                     )
                   }
                 />
-              ))}
+              ))
+            )}
           </Grid>
           <Text fontWeight={"bold"} mt={5}>
             {selectedResources.length} resources selected
