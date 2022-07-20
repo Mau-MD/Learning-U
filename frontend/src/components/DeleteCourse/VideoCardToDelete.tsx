@@ -28,7 +28,7 @@ const VideoCardToDelete = ({
       transition={"all 0.3s"}
       onClick={() => onClick(objectId)}
     >
-      <Box w="100%" h="220px">
+      <Box w="100%" h="150px">
         <Image src={src} w="full" h="full" objectFit="cover" cursor="pointer" />
       </Box>
       <Box
