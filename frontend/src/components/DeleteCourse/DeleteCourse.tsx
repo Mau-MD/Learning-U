@@ -12,14 +12,16 @@ import {
   Spinner,
   HStack,
   Skeleton,
+  useToast,
 } from "@chakra-ui/react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import React, { useState } from "react";
 import { IResource } from "../../types/resource";
 import { getConfig, useSession } from "../../utils/auth";
 import { baseURL } from "../../utils/constants";
 import VideoCardToDelete from "./VideoCardToDelete";
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { ErrorType } from "../../types/requests";
 
 interface Props {
   isOpen: boolean;
@@ -29,6 +31,8 @@ interface Props {
 
 const DeleteCourse = ({ isOpen, onClose, courseId }: Props) => {
   const { user, isFetching } = useSession();
+  const queryClient = useQueryClient();
+  const toast = useToast();
 
   const [selectedResources, setSelectedResources] = useState<string[]>([]);
 
@@ -52,6 +56,43 @@ const DeleteCourse = ({ isOpen, onClose, courseId }: Props) => {
       enabled: isOpen && !isFetching && !!courseId,
     }
   );
+
+  const deleteCourse = useMutation(
+    async (courseId: string) => {
+      if (!user) {
+        throw new Error("User is not defined");
+      }
+      const res = await axios.delete(
+        `${baseURL}/course/${courseId}`,
+        getConfig(user.sessionToken)
+      );
+      return res.data;
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("courses");
+        toast({
+          status: "success",
+          title: "Course deleted!",
+          description: "We appreciate your feedback!",
+          isClosable: true,
+        });
+      },
+      onError: (error: AxiosError<ErrorType>) => {
+        toast({
+          status: "error",
+          title: "Error deleting course",
+          description: error.response?.data.message
+          isClosable: true,
+        });
+      },
+    }
+  );
+
+  const handleDeleteCourse = () => {
+    deleteCourse.mutate(courseId);
+    onClose();
+  };
 
   // Future Note: It's better if we use something like set() or hashmap. Better complexity.
   const handleToggleSelectedResource = (id: string) => {
@@ -115,7 +156,9 @@ const DeleteCourse = ({ isOpen, onClose, courseId }: Props) => {
           <Button onClick={onClose} mr={3}>
             Cancel{" "}
           </Button>
-          <Button colorScheme="red">Delete Course</Button>
+          <Button colorScheme="red" onClick={() => handleDeleteCourse()}>
+            Delete Course
+          </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
