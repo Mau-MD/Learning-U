@@ -2,7 +2,7 @@ import React from "react";
 import { Badge, Box, Icon, Image, Text } from "@chakra-ui/react";
 import { BiVideo } from "react-icons/bi";
 import useThemeColor from "../../hooks/useThemeColor";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 type ResourceStatus = "completed" | "in progress" | "not started";
 interface Props {
@@ -31,11 +31,12 @@ const VideoCard = ({ src, title, href, status }: Props) => {
       borderColor={borderColor}
       borderWidth={1}
       borderRadius={4}
-      cursor="pointer"
       transition={"all 0.3s"}
-      onClick={() => navigate(href)}
     >
-      <Image src={src} w="full" />
+      <a href={href} target="_blank" rel="noreferrer">
+        <Image src={src} w="full" cursor="pointer" />
+      </a>
+
       <Box
         display="flex"
         alignItems="center"
