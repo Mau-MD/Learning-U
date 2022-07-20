@@ -2,6 +2,7 @@ import express from "express";
 import { cloneCourse } from "../course/clone";
 import {
   createCourse,
+  deleteCourse,
   generateResources,
   getCourseByUserAndId,
   getProgressByCourse,
@@ -81,4 +82,14 @@ course.post("/clone/:courseId", async (req: RequestWUser, res, next) => {
     next(new BadRequestError(err.message));
   }
 });
+
+course.delete("/:courseId", async (req: RequestWUser, res, next) => {
+  // I want to both delete the course and take feedback into consideration
+
+  const { courseId } = req.params;
+  const deletedCourse = await deleteCourse(courseId);
+
+  res.send(deletedCourse);
+});
+
 export default course;
