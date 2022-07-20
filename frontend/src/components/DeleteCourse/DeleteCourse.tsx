@@ -9,8 +9,6 @@ import {
   Grid,
 } from "@chakra-ui/react";
 import React from "react";
-import VideoCard from "../Hub/VideoCard";
-import VideoCardToDelete from "./VideoCardToDelete";
 
 interface Props {
   isOpen: boolean;
@@ -26,10 +24,7 @@ const DeleteCourse = ({ isOpen, onClose }: Props) => {
         <ModalCloseButton />
         <ModalBody pb={7}>
           <Text mb={2}>Select which tutorials you didn{"'"}t like</Text>
-          <Grid gridTemplateColumns="repeat(2, 1fr)" gap={5}>
-            <VideoCardToDelete title="Video 1" src="" />
-            <VideoCardToDelete title="Video 1" src="" />
-          </Grid>
+          <Grid gridTemplateColumns="repeat(2, 1fr)" gap={5}></Grid>
         </ModalBody>
       </ModalContent>
     </Modal>
