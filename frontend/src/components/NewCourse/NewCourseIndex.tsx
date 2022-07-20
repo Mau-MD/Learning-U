@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Container,
   Flex,
@@ -11,7 +12,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
-import React from "react";
+import React, { useState } from "react";
 import Banner from "../Hub/Banner";
 import * as Yup from "yup";
 import { useMutation } from "react-query";
@@ -21,6 +22,7 @@ import { ErrorType } from "../../types/requests";
 import { useNavigate } from "react-router-dom";
 import { ICourse } from "../../types/course";
 import { getConfig, useSession } from "../../utils/auth";
+import CourseCode from "./CourseCode";
 
 interface LearnForm {
   name: string;
@@ -34,6 +36,8 @@ const NewCourseIndex = () => {
   const toast = useToast();
   const navigate = useNavigate();
   const { user } = useSession();
+
+  const [openCode, setOpenCode] = useState(false);
 
   const handleSubmit = (values: LearnForm) => {
     createCourse.mutate(values.name);
@@ -57,7 +61,7 @@ const NewCourseIndex = () => {
           description: "Your custom course was created successfully!",
           status: "success",
         });
-        navigate(`/course/difficulty/${course.objectId}`);
+        navigate(`/courses/${course.objectId}/difficulty?name=${course.name}`);
       },
       onError: (error: AxiosError<ErrorType>) => {
         toast({
@@ -101,18 +105,29 @@ const NewCourseIndex = () => {
                   </FormHelperText>
                   <FormErrorMessage>{errors.name}</FormErrorMessage>
                 </FormControl>
-                <Button
-                  w="100%"
-                  colorScheme="green"
-                  type="submit"
-                  isLoading={createCourse.isLoading}
-                >
-                  Generate Course!
-                </Button>
+                <Flex gap={2}>
+                  <Button
+                    w="100%"
+                    type="button"
+                    onClick={() => setOpenCode(!openCode)}
+                  >
+                    I have a course code
+                  </Button>
+                  <Button
+                    w="100%"
+                    colorScheme="green"
+                    type="submit"
+                    isDisabled={openCode}
+                    isLoading={createCourse.isLoading}
+                  >
+                    Generate Course!
+                  </Button>
+                </Flex>
               </Flex>
             </Form>
           )}
         </Formik>
+        {openCode && <CourseCode />}
       </Container>
     </>
   );
