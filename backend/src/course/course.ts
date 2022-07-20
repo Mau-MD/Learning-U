@@ -79,6 +79,13 @@ export const createCourse = async (
   return Course;
 };
 
+export const deleteCourse = async (courseId: string) => {
+  const Course = new Parse.Object("Course");
+  Course.set("objectId", courseId);
+
+  return await Course.destroy();
+};
+
 export const saveResources = async (
   resources: IWeightedYoutubeVideo[],
   course: Parse.Object<Parse.Attributes>,
