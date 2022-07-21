@@ -58,14 +58,22 @@ const DeleteCourse = ({ isOpen, onClose, courseId }: Props) => {
   );
 
   const deleteCourse = useMutation(
-    async (courseId: string) => {
+    async ({
+      courseId,
+      dislikedVideos,
+    }: {
+      courseId: string;
+      dislikedVideos: string[];
+    }) => {
       if (!user) {
         throw new Error("User is not defined");
       }
-      const res = await axios.delete(
-        `${baseURL}/course/${courseId}`,
-        getConfig(user.sessionToken)
-      );
+      const res = await axios.delete(`${baseURL}/course/${courseId}`, {
+        ...getConfig(user.sessionToken),
+        data: {
+          dislikedVideos: dislikedVideos,
+        },
+      });
       return res.data;
     },
     {
@@ -90,7 +98,7 @@ const DeleteCourse = ({ isOpen, onClose, courseId }: Props) => {
   );
 
   const handleDeleteCourse = () => {
-    deleteCourse.mutate(courseId);
+    deleteCourse.mutate({ courseId, dislikedVideos: selectedResources });
     onClose();
   };
 
@@ -136,12 +144,12 @@ const DeleteCourse = ({ isOpen, onClose, courseId }: Props) => {
                 <VideoCardToDelete
                   key={resource.objectId}
                   title={resource.title}
-                  objectId={resource.objectId}
+                  objectId={resource.videoId}
                   src={resource.type === "video" ? resource.thumbnail : ""}
                   onClick={(objectId) => handleToggleSelectedResource(objectId)}
                   active={
                     !!selectedResources.find(
-                      (selectedId) => selectedId === resource.objectId
+                      (selectedId) => selectedId === resource.videoId
                     )
                   }
                 />

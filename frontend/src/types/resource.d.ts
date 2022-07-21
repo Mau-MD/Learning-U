@@ -16,6 +16,7 @@ export type IResource =
       thumbnail: string;
       channel: string;
       course: Parse.Object<Parse.Attributes>;
+      videoId: string;
     }
   | {
       objectId: string;
@@ -26,4 +27,5 @@ export type IResource =
       title: string;
       url: string;
       course: Parse.Object<Parse.Attributes>;
+      videoId: string;
     };
