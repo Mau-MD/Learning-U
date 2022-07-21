@@ -1,4 +1,5 @@
 import Parse from "parse/node";
+import { updateFeedback } from "../feedback/feedback";
 import { createResource, getResourcesFromCourse } from "../resources/resources";
 import { parseObjectsToJson } from "../utils/parseToJason";
 import { createCourse } from "./course";
@@ -9,6 +10,8 @@ To clone a course:
   3. Create new resources with content from the other one
   4. Make sure to reference the destination course with the resources
 */
+
+export const SCORE_PER_SHARE = 1;
 
 export const cloneCourse = async (
   courseName: string,
@@ -28,7 +31,7 @@ export const cloneCourse = async (
     const newResource = createResource({
       type: resource.type,
       status: "not started",
-      videoId: resource.id,
+      videoId: resource.videoId,
       url: resource.url,
       level: resource.level,
       title: resource.title,
@@ -42,5 +45,15 @@ export const cloneCourse = async (
     await newResource.save();
   }
 
+  await updateFeedbackForEveryResource(resources);
   return course;
+};
+
+const updateFeedbackForEveryResource = async (
+  resources: (Parse.Object.ToJSON<Parse.Attributes> &
+    Parse.JSONBaseAttributes)[]
+) => {
+  for (const resource of resources) {
+    await updateFeedback(resource.videoId, SCORE_PER_SHARE);
+  }
 };
