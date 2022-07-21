@@ -14,10 +14,12 @@ export const updateFeedback = async (
   const feedback = await getFeedbackByVideoId(videoId);
 
   if (!feedback || feedback.length === 0) {
-    return createFeedback(videoId, amountToIncrement);
+    const newFeedbackObject = createFeedback(videoId, amountToIncrement);
+    return await newFeedbackObject.save();
   }
 
-  return feedback[0].increment("feedback", amountToIncrement);
+  feedback[0].increment("feedback", amountToIncrement);
+  return await feedback[0].save();
 };
 
 export const getFeedbackByVideoId = async (videoId: string) => {
