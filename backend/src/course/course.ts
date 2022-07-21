@@ -5,8 +5,10 @@ import { IResource } from "../types/resource";
 import { IWeightedYoutubeVideo } from "../types/youtube";
 import { createResource } from "../resources/resources";
 import { getImagesByQuery } from "../unsplash/unsplash";
+import { updateFeedback } from "../feedback/feedback";
 
 const VIDEOS_PER_QUERY = 100;
+const SCORE_PER_DISLIKED_VIDEO = -2;
 
 export const getUserCourses = async (user: Parse.Object<Parse.Attributes>) => {
   const Course = Parse.Object.extend("Course");
@@ -79,11 +81,23 @@ export const createCourse = async (
   return Course;
 };
 
-export const deleteCourse = async (courseId: string) => {
+export const deleteCourse = async (
+  courseId: string,
+  dislikedVideos: string[]
+) => {
   const Course = new Parse.Object("Course");
   Course.set("objectId", courseId);
 
+  giveNegativeFeedbackToDislikedVideos(dislikedVideos);
   return await Course.destroy();
+};
+
+export const giveNegativeFeedbackToDislikedVideos = async (
+  dislikedVideos: string[]
+) => {
+  for (const dislikedVideo of dislikedVideos) {
+    await updateFeedback(dislikedVideo, SCORE_PER_DISLIKED_VIDEO);
+  }
 };
 
 export const saveResources = async (

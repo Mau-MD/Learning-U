@@ -85,9 +85,15 @@ course.post("/clone/:courseId", async (req: RequestWUser, res, next) => {
 
 course.delete("/:courseId", async (req: RequestWUser, res, next) => {
   // I want to both delete the course and take feedback into consideration
-
   const { courseId } = req.params;
-  const deletedCourse = await deleteCourse(courseId);
+  const { dislikedVideos } = req.body;
+
+  if (dislikedVideos === undefined) {
+    next(new BadRequestError("Missing parameters"));
+    return;
+  }
+
+  const deletedCourse = await deleteCourse(courseId, dislikedVideos);
 
   res.send(deletedCourse);
 });
