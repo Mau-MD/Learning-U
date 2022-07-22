@@ -3,10 +3,16 @@ import { ExpressError } from "../utils/errors";
 import { parseISO, differenceInCalendarDays } from "date-fns";
 import { normalize } from "../utils/math";
 import {
+  IFinalRankingYoutubeVideo,
+  INormalizedInternalYoutubeVideo,
   INormalizedYoutubeVideo,
   IRawYoutubeVideo,
   IWeightedYoutubeVideo,
 } from "../types/youtube";
+import {
+  assignFeedbackScoreToFetchedVideos,
+  getFeedback,
+} from "../feedback/feedback";
 
 interface IMaxScores {
   dateXViews: number;
@@ -32,6 +38,32 @@ export const WEIGHTS = {
   weight4: 0,
   weight5: 100,
   weight6: 0,
+};
+
+export const getFinalRanking = async (videos: youtube_v3.Schema$Video[]) => {
+  const externalRankedVideos = getExternalRanking(videos);
+  const internalRankedVideos = await getInternalRanking(videos);
+  return mergeInternalExternalRanking(
+    externalRankedVideos,
+    internalRankedVideos
+  );
+};
+
+export const getInternalRanking = async (videos: youtube_v3.Schema$Video[]) => {
+  const feedback = await getFeedback();
+  return assignFeedbackScoreToFetchedVideos(videos, feedback);
+};
+
+export const mergeInternalExternalRanking = (
+  externalRankedVideos: IWeightedYoutubeVideo[],
+  internalRankedVideos: INormalizedInternalYoutubeVideo[]
+): IFinalRankingYoutubeVideo[] => {
+  if (externalRankedVideos.length !== internalRankedVideos.length) {
+    throw new Error("External and internal ranking doesn't match");
+  }
+  return externalRankedVideos.map((externalVideo, idx) => {
+    return { ...externalVideo, ...internalRankedVideos[idx] };
+  });
 };
 
 export const getExternalRanking = (videos: youtube_v3.Schema$Video[]) => {
