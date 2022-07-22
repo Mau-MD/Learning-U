@@ -16,6 +16,7 @@ export type IResource =
       channel: string;
       course: Parse.Object<Parse.Attributes>;
       user: Parse.User<Parse.Attributes>;
+      videoId: string;
     }
   | {
       type: "website";

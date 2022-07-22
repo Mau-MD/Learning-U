@@ -3,17 +3,35 @@ import { ExpressError } from "../utils/errors";
 import { parseISO, differenceInCalendarDays } from "date-fns";
 import { normalize } from "../utils/math";
 import {
+  IFinalRankingYoutubeVideo,
+  INormalizedInternalYoutubeVideo,
   INormalizedYoutubeVideo,
   IRawYoutubeVideo,
   IWeightedYoutubeVideo,
 } from "../types/youtube";
+import {
+  assignFeedbackScoreToFetchedVideos,
+  getFeedback,
+} from "../feedback/feedback";
 
 interface IMaxScores {
   dateXViews: number;
   dateXLikes: number;
 }
 
-const WEIGHTS = {
+/*
+Youtube Video Ranking Algorithm
+For more information: https://docs.google.com/document/d/1zxYRyytmbbvfAZkQc8dampD9Vhun0XQtWepKYxWUTKo/edit?usp=sharing
+
+This algorithm starts at `getExternalRanking` and where it first gets the raw score for each of the videos that were passed in the function. For every `ranking-features` it uses the formula described in 
+the document above.
+
+Then, since we cannot have raw scores, we have to normalize then. Since normalizing requires a minimum and a maximum, we need to find the maximum raw score for each features. `getMaxScores` does that.
+After that, we normalize all `ranking-features` with the information we got before.
+Finally, we apply weights to each `ranking-feature` so it matches the formula proposed before. We sum everything up, and that's our final score that will be used to rank the videos
+*/
+
+export const WEIGHTS = {
   weight1: 60,
   weight2: 40,
   weight3: 100,
@@ -22,12 +40,36 @@ const WEIGHTS = {
   weight6: 0,
 };
 
-export const getExternalRanking = (videos: youtube_v3.Schema$Video[]) => {
-  if (!ensureWeightsAreCorrect(WEIGHTS)) {
-    new ExpressError("Ranking Weights are incorrect", 500);
-    return;
-  }
+export const getFinalRanking = async (videos: youtube_v3.Schema$Video[]) => {
+  const externalRankedVideos = getExternalRanking(videos);
+  const internalRankedVideos = await getInternalRanking(videos);
+  return mergeInternalExternalRanking(
+    externalRankedVideos,
+    internalRankedVideos
+  );
+};
 
+export const getInternalRanking = async (videos: youtube_v3.Schema$Video[]) => {
+  const feedback = await getFeedback();
+  return assignFeedbackScoreToFetchedVideos(videos, feedback);
+};
+
+export const mergeInternalExternalRanking = (
+  externalRankedVideos: IWeightedYoutubeVideo[],
+  internalRankedVideos: INormalizedInternalYoutubeVideo[]
+): IFinalRankingYoutubeVideo[] => {
+  if (externalRankedVideos.length !== internalRankedVideos.length) {
+    throw new Error("External and internal ranking doesn't match");
+  }
+  return externalRankedVideos.map((externalVideo, idx) => {
+    const final_score =
+      0.4 * externalVideo.final_external_score +
+      0.6 * internalRankedVideos[idx].internal_score;
+    return { ...externalVideo, ...internalRankedVideos[idx], final_score };
+  });
+};
+
+export const getExternalRanking = (videos: youtube_v3.Schema$Video[]) => {
   const rawExternalScoreVideos = getRawExternalRanking(videos);
   const maxScores = getMaxScores(rawExternalScoreVideos);
   const normalizedExternalScoreVideos = getNormalizedExternalRanking(
@@ -103,7 +145,7 @@ export const getWeightedExternalRanking = (
       useOfChapters: video.normalized_score.useOfChapters * WEIGHTS.weight5,
     };
 
-    const final_score =
+    const final_external_score =
       0.5 * (weighted_score.date + weighted_score.dateXLikes) +
       0.3 * weighted_score.dateXViews +
       0.2 * weighted_score.useOfChapters;
@@ -111,7 +153,7 @@ export const getWeightedExternalRanking = (
     return {
       ...video,
       weighted_score,
-      final_score,
+      final_external_score,
     };
   });
 };
@@ -159,10 +201,6 @@ export const getUseOfChapters = (description: string) => {
   return usesChapters !== null ? 1 : 0;
 };
 
-const getChannelPopularity = () => {
-  return 1;
-};
-
 export const getDaysSincePublished = (publishedAt: string) => {
   const publishedAtDate = parseISO(publishedAt);
   const daysSincePublished = differenceInCalendarDays(
@@ -170,20 +208,4 @@ export const getDaysSincePublished = (publishedAt: string) => {
     publishedAtDate
   );
   return daysSincePublished;
-};
-
-export const ensureWeightsAreCorrect = (weights: typeof WEIGHTS) => {
-  if (weights.weight1 + weights.weight2 !== 100) {
-    new ExpressError("Weights are incorrect", 500);
-    return false;
-  }
-  if (weights.weight3 + weights.weight4 !== 100) {
-    new ExpressError("Weights are incorrect", 500);
-    return false;
-  }
-  if (weights.weight5 + weights.weight6 !== 100) {
-    new ExpressError("Weights are incorrect", 500);
-    return false;
-  }
-  return true;
 };

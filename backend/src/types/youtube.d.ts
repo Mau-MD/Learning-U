@@ -17,5 +17,17 @@ export interface INormalizedYoutubeVideo extends IRawYoutubeVideo {
 
 export interface IWeightedYoutubeVideo extends INormalizedYoutubeVideo {
   weighted_score: IExternalRankingScore;
-  final_score: number;
+  final_external_score: number;
 }
+
+export interface IRawInternalYoutubeVideo extends youtube_v3.Schema$Video {
+  raw_internal_score: number;
+}
+
+export interface INormalizedInternalYoutubeVideo
+  extends IRawInternalYoutubeVideo {
+  internal_score: number;
+}
+
+export type IFinalRankingYoutubeVideo = INormalizedInternalYoutubeVideo &
+  IWeightedYoutubeVideo & { final_score: number };

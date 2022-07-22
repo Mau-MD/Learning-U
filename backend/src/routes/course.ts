@@ -1,8 +1,8 @@
 import express from "express";
-import { readdirSync } from "fs";
-import { reseller_v1 } from "googleapis";
+import { cloneCourse } from "../course/clone";
 import {
   createCourse,
+  deleteCourse,
   generateResources,
   getCourseByUserAndId,
   getProgressByCourse,
@@ -10,7 +10,6 @@ import {
   saveResources,
 } from "../course/course";
 import { getAuthUser } from "../middleware/getAuthUser";
-import { ICourse } from "../types/course";
 import { RequestWUser } from "../types/user";
 import { BadRequestError } from "../utils/errors";
 
@@ -64,6 +63,39 @@ course.get("/progress/:courseId", async (req: RequestWUser, res, next) => {
 
   const progress = await getProgressByCourse(user, courseId);
   res.send(progress);
+});
+
+course.post("/clone/:courseId", async (req: RequestWUser, res, next) => {
+  const { user } = req;
+  const { courseId } = req.params;
+  const { name } = req.body;
+
+  if (!name) {
+    next(new BadRequestError("Missing params"));
+    return;
+  }
+
+  try {
+    const course = await cloneCourse(name, courseId, user);
+    res.send(course);
+  } catch (err) {
+    next(new BadRequestError(err.message));
+  }
+});
+
+course.delete("/:courseId", async (req: RequestWUser, res, next) => {
+  // I want to both delete the course and take feedback into consideration
+  const { courseId } = req.params;
+  const { dislikedVideos } = req.body;
+
+  if (dislikedVideos === undefined) {
+    next(new BadRequestError("Missing parameters"));
+    return;
+  }
+
+  const deletedCourse = await deleteCourse(courseId, dislikedVideos);
+
+  res.send(deletedCourse);
 });
 
 export default course;
