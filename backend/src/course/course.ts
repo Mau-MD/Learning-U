@@ -1,4 +1,8 @@
-import { getExternalRanking } from "../rating/ranking";
+import {
+  getExternalRanking,
+  getFinalRanking,
+  getInternalRanking,
+} from "../rating/ranking";
 import { getVideoDetailByIds, getVideosByQuery } from "../rating/youtube";
 import Parse from "parse/node";
 import { IResource } from "../types/resource";
@@ -152,7 +156,8 @@ const getRankedVideos = async (query: string) => {
 
   const videosDetailed = await getVideoDetailByIds(ids, VIDEOS_PER_QUERY);
 
-  const rankedVideos = getExternalRanking(videosDetailed.data.items);
+  const rankedVideos = await getFinalRanking(videosDetailed.data.items);
+
   const sortedRankedVideos = rankedVideos.sort(
     (a, b) => b.final_score - a.final_score
   );
