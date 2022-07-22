@@ -91,11 +91,12 @@ export const normalizeFeedbackFromFetchedVideos = (
   return videos.map((video) => {
     return {
       ...video,
-      internal_score: normalize(
-        video.raw_internal_score,
-        minInternalFeedbackScore,
-        maxInternalFeedbackScore
-      ),
+      internal_score:
+        normalize(
+          video.raw_internal_score,
+          minInternalFeedbackScore,
+          maxInternalFeedbackScore
+        ) * 100,
     };
   });
 };
