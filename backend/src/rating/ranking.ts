@@ -62,7 +62,10 @@ export const mergeInternalExternalRanking = (
     throw new Error("External and internal ranking doesn't match");
   }
   return externalRankedVideos.map((externalVideo, idx) => {
-    return { ...externalVideo, ...internalRankedVideos[idx] };
+    const final_score =
+      0.4 * externalVideo.final_external_score +
+      0.6 * internalRankedVideos[idx].internal_score;
+    return { ...externalVideo, ...internalRankedVideos[idx], final_score };
   });
 };
 
@@ -142,7 +145,7 @@ export const getWeightedExternalRanking = (
       useOfChapters: video.normalized_score.useOfChapters * WEIGHTS.weight5,
     };
 
-    const final_score =
+    const final_external_score =
       0.5 * (weighted_score.date + weighted_score.dateXLikes) +
       0.3 * weighted_score.dateXViews +
       0.2 * weighted_score.useOfChapters;
@@ -150,7 +153,7 @@ export const getWeightedExternalRanking = (
     return {
       ...video,
       weighted_score,
-      final_score,
+      final_external_score,
     };
   });
 };
