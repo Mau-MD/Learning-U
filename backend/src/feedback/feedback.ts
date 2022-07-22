@@ -1,4 +1,10 @@
+import { youtube_v3 } from "googleapis";
 import Parse from "parse/node";
+import {
+  INormalizedInternalYoutubeVideo,
+  IRawInternalYoutubeVideo,
+} from "../types/youtube";
+import { normalize } from "../utils/math";
 
 export const createFeedback = (videoId: string, feedback: number) => {
   const Feedback = new Parse.Object("Feedback");
@@ -29,4 +35,67 @@ export const getFeedbackByVideoId = async (videoId: string) => {
   query.equalTo("videoId", videoId);
   const feedback = await query.find();
   return feedback;
+};
+export const getFeedback = async () => {
+  const Feedback = Parse.Object.extend("Feedback");
+  const query = new Parse.Query(Feedback);
+
+  const feedback = await query.find();
+  return feedback;
+};
+
+export const assignFeedbackScoreToFetchedVideos = (
+  videos: youtube_v3.Schema$Video[],
+  feedback: Parse.Object<Parse.Attributes>[]
+) => {
+  const rawFeedbackVideos = assignRawFeedbackScoreToFetchedVideos(
+    videos,
+    feedback
+  );
+  const { minScore, maxScore } = getMaxMinFeedbackScore(rawFeedbackVideos);
+  return normalizeFeedbackFromFetchedVideos(
+    rawFeedbackVideos,
+    minScore,
+    maxScore
+  );
+};
+
+export const assignRawFeedbackScoreToFetchedVideos = (
+  videos: youtube_v3.Schema$Video[],
+  feedback: Parse.Object<Parse.Attributes>[]
+): IRawInternalYoutubeVideo[] => {
+  return videos.map((video) => {
+    const videoInFeedback = feedback.find((f) => f.get("videoId") === video.id);
+
+    if (!videoInFeedback) return { ...video, raw_internal_score: 0 };
+    return { ...video, raw_internal_score: videoInFeedback.get("feedback") };
+  });
+};
+
+export const getMaxMinFeedbackScore = (videos: IRawInternalYoutubeVideo[]) => {
+  let maxFeedbackScore = videos[0].raw_internal_score;
+  let minFeedbackScore = videos[0].raw_internal_score;
+
+  for (const video of videos) {
+    maxFeedbackScore = Math.max(video.raw_internal_score, maxFeedbackScore);
+    minFeedbackScore = Math.min(video.raw_internal_score, minFeedbackScore);
+  }
+  return { minScore: minFeedbackScore, maxScore: maxFeedbackScore };
+};
+
+export const normalizeFeedbackFromFetchedVideos = (
+  videos: IRawInternalYoutubeVideo[],
+  minInternalFeedbackScore: number,
+  maxInternalFeedbackScore: number
+): INormalizedInternalYoutubeVideo[] => {
+  return videos.map((video) => {
+    return {
+      ...video,
+      internal_score: normalize(
+        video.raw_internal_score,
+        minInternalFeedbackScore,
+        maxInternalFeedbackScore
+      ),
+    };
+  });
 };
