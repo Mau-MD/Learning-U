@@ -6,7 +6,10 @@ import {
 import { getVideoDetailByIds, getVideosByQuery } from "../rating/youtube";
 import Parse from "parse/node";
 import { IResource } from "../types/resource";
-import { IWeightedYoutubeVideo } from "../types/youtube";
+import {
+  IFinalRankingYoutubeVideo,
+  IWeightedYoutubeVideo,
+} from "../types/youtube";
 import { createResource } from "../resources/resources";
 import { getImagesByQuery } from "../unsplash/unsplash";
 import { updateFeedback } from "../feedback/feedback";
@@ -131,17 +134,44 @@ export const saveResources = async (
 };
 
 export const generateResources = async (name: string) => {
-  const rankedBeginner = await getTop3ByDifficulty(name, "beginner");
-  const rankedAdvanced = await getTop3ByDifficulty(name, "advanced");
+  return await getBeginnerAndAdvancedCourses(name);
+};
 
+const getBeginnerAndAdvancedCourses = async (query: string) => {
+  const beginnerVideos = await getRankedVideos(`beginner ${query} tutorial`);
+  const top3AdvancedVideos = getTop3(
+    await getRankedVideos(`advanced ${query} tutorial`)
+  );
+  const top3BeginnerVideos = getTop3BeginnerVideosWithoutDuplicates(
+    beginnerVideos,
+    top3AdvancedVideos
+  );
   return {
-    beginner: rankedBeginner,
-    advanced: rankedAdvanced,
+    beginner: top3BeginnerVideos,
+    advanced: top3AdvancedVideos,
   };
 };
 
-const getTop3ByDifficulty = async (query: string, difficulty: string) => {
-  const rankedVideos = await getRankedVideos(`${difficulty} ${query} tutorial`);
+const getTop3BeginnerVideosWithoutDuplicates = (
+  beginnerVideos: IFinalRankingYoutubeVideo[],
+  top3AdvancedVideos: IFinalRankingYoutubeVideo[]
+) => {
+  const selectedBeginnerVideos = new Set();
+
+  const top3BeginnersVideos: IFinalRankingYoutubeVideo[] = [];
+
+  // We have to iterate over all videos. And then break as soon as we have 3
+  for (const video of beginnerVideos) {
+    if (top3AdvancedVideos.find((v) => v.id === video.id)) {
+      continue;
+    }
+    top3BeginnersVideos.push(video);
+    if (top3BeginnersVideos.length === 3) break;
+  }
+  return top3BeginnersVideos;
+};
+
+const getTop3 = (rankedVideos: IFinalRankingYoutubeVideo[]) => {
   const splicedRankedVideos = rankedVideos.splice(0, 3);
   return splicedRankedVideos;
 };
