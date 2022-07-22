@@ -49,6 +49,9 @@ const Navbar = () => {
             <Button onClick={() => navigate("/dashboard")} variant="link">
               Dashboard
             </Button>
+            <Button onClick={() => navigate("/feed")} variant="link">
+              Feed
+            </Button>
             <Button variant="link">Profile</Button>
           </Box>
         </Box>
