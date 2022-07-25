@@ -1,6 +1,6 @@
 import { Button, Container, Heading, VStack } from "@chakra-ui/react";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useInfiniteQuery, useQuery } from "react-query";
 import { createSearchParams } from "react-router-dom";
 import { IPost } from "../../types/post";
@@ -15,8 +15,12 @@ const FeedIndex = () => {
 
   const [openFeedForm, setOpenFeedForm] = useState(false);
 
-  const { data: posts, fetchNextPage } = useInfiniteQuery(
-    "post",
+  const {
+    data: posts,
+    fetchNextPage,
+    isFetching,
+  } = useInfiniteQuery(
+    "posts",
     async ({ pageParam = 0 }) => {
       if (!user) {
         throw new Error("User is not defined");
@@ -38,6 +42,23 @@ const FeedIndex = () => {
       enabled: !!user,
     }
   );
+
+  useEffect(() => {
+    window.addEventListener("scroll", handlePageBottom);
+
+    return () => {
+      window.removeEventListener("scroll", handlePageBottom);
+    };
+  }, []);
+
+  const handlePageBottom = () => {
+    if (
+      window.innerHeight + window.scrollY >= document.body.offsetHeight &&
+      !isFetching
+    ) {
+      fetchNextPage();
+    }
+  };
 
   return (
     <Container maxW="container.xl">
@@ -62,7 +83,6 @@ const FeedIndex = () => {
             ))
           )}
       </VStack>
-      <Button onClick={() => fetchNextPage()}>More</Button>
     </Container>
   );
 };
