@@ -10,7 +10,7 @@ import {
 import axios, { AxiosError } from "axios";
 import { Field, Form, Formik } from "formik";
 import React from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { ICourse } from "../../types/course";
 import { getConfig, useSession } from "../../utils/auth";
 import { baseURL } from "../../utils/constants";
@@ -30,6 +30,7 @@ const emptySelect = {
 const NewPostForm = () => {
   const { user } = useSession();
   const toast = useToast();
+  const queryClient = useQueryClient();
 
   const convertCoursesToValueLabel = (courses: ICourse[]) => {
     return courses.map((course) => {
@@ -74,9 +75,10 @@ const NewPostForm = () => {
         toast({
           status: "success",
           title: "Post created!",
-          description: "The course has successfully been cloned",
+          description: "The post has successfully been created",
           isClosable: true,
         });
+        queryClient.invalidateQueries("posts");
       },
       onError: (error: AxiosError<ErrorType>) => {
         toast({
