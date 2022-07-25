@@ -1,7 +1,9 @@
+import { ICourse } from "./course";
 import { DbObject } from "./global";
+import { IUser } from "./user";
 
 interface IPost extends DbObject {
   content: string;
-  user: string;
-  course: id;
+  user: IUser;
+  course?: ICourse;
 }
