@@ -1,4 +1,13 @@
-import { Box, Container, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Container,
+  FormControl,
+  Heading,
+  Select,
+  Textarea,
+  VStack,
+} from "@chakra-ui/react";
 import axios from "axios";
 import React from "react";
 import { useQuery } from "react-query";
@@ -6,6 +15,7 @@ import { IPost } from "../../types/post";
 import { getConfig, useSession } from "../../utils/auth";
 import { baseURL } from "../../utils/constants";
 import FeedCard from "./FeedCard";
+import NewPostForm from "./NewPostForm";
 
 const FeedIndex = () => {
   const { user } = useSession();
@@ -28,6 +38,8 @@ const FeedIndex = () => {
 
   return (
     <Container maxW="container.xl">
+      <Heading mt={10}>Feed</Heading>
+      <NewPostForm />
       <VStack mt={10} gap={19}>
         {posts &&
           posts.map((post) => (
