@@ -5,8 +5,11 @@ import {
   Flex,
   Heading,
   HStack,
+  Skeleton,
   Spinner,
+  Stack,
   VStack,
+  Wrap,
 } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -28,6 +31,7 @@ const FeedIndex = () => {
     data: posts,
     fetchNextPage,
     isFetching,
+    isLoading,
   } = useInfiniteQuery(
     "posts",
     async ({ pageParam = 0 }) => {
@@ -80,6 +84,13 @@ const FeedIndex = () => {
         {openFeedForm ? "Close" : "Create a post"}
       </Button>
       {openFeedForm && <NewPostForm />}
+      {isLoading && (
+        <Stack mt={10}>
+          <Skeleton h={"120px"} />
+          <Skeleton h={"120px"} />
+          <Skeleton h={"120px"} />
+        </Stack>
+      )}
       <VStack my={10} gap={19}>
         {posts &&
           posts.pages.map((page) =>
