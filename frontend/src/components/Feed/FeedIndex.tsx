@@ -1,15 +1,6 @@
-import {
-  Box,
-  Button,
-  Container,
-  FormControl,
-  Heading,
-  Select,
-  Textarea,
-  VStack,
-} from "@chakra-ui/react";
+import { Button, Container, Heading, VStack } from "@chakra-ui/react";
 import axios from "axios";
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "react-query";
 import { IPost } from "../../types/post";
 import { getConfig, useSession } from "../../utils/auth";
@@ -19,6 +10,8 @@ import NewPostForm from "./NewPostForm";
 
 const FeedIndex = () => {
   const { user } = useSession();
+
+  const [openFeedForm, setOpenFeedForm] = useState(false);
 
   const { data: posts } = useQuery(
     "posts",
@@ -39,7 +32,10 @@ const FeedIndex = () => {
   return (
     <Container maxW="container.xl">
       <Heading mt={10}>Feed</Heading>
-      <NewPostForm />
+      <Button mt={5} onClick={() => setOpenFeedForm(!openFeedForm)}>
+        {openFeedForm ? "Close" : "Create a post"}
+      </Button>
+      {openFeedForm && <NewPostForm />}
       <VStack mt={10} gap={19}>
         {posts &&
           posts.map((post) => (
