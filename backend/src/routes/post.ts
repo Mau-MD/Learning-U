@@ -31,7 +31,7 @@ post.get("/me", async (req: RequestWUser, res, next) => {
   const { user } = req;
 
   const posts = await getPostsByUser(user.id);
-  res.send(posts);
+  res.send(posts.sort((a, b) => b.get("createdAt") - a.get("createdAt")));
 });
 
 export default post;
