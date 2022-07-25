@@ -2,24 +2,48 @@ import {
   Box,
   FormControl,
   Textarea,
-  Select,
   Button,
   FormLabel,
   VStack,
 } from "@chakra-ui/react";
+import axios from "axios";
 import { Field, Form, Formik } from "formik";
 import React from "react";
+import { useQuery } from "react-query";
+import { ICourse } from "../../types/course";
+import { getConfig, useSession } from "../../utils/auth";
+import { baseURL } from "../../utils/constants";
+import { Select } from "chakra-react-select";
 
 interface PostValues {
   content: string;
   course: string;
 }
 
-const handleFormSubmit = (values: PostValues) => {
-  console.log(values);
-};
-
 const NewPostForm = () => {
+  const { user } = useSession();
+
+  const { data: courses } = useQuery(
+    "courses",
+    async () => {
+      if (!user) throw new Error();
+
+      const res = await axios.get<ICourse[]>(
+        `${baseURL}/course/me`,
+        getConfig(user?.sessionToken)
+      );
+
+      return res.data;
+    },
+    {
+      enabled: !!user,
+    }
+  );
+
+  const handleFormSubmit = (values: PostValues) => {
+    console.log(values);
+  };
+
   return (
     <Formik
       initialValues={{ content: "", course: "" }}
