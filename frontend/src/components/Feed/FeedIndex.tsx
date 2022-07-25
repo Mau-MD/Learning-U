@@ -2,7 +2,9 @@ import {
   Button,
   Center,
   Container,
+  Flex,
   Heading,
+  HStack,
   Spinner,
   VStack,
 } from "@chakra-ui/react";
@@ -70,7 +72,10 @@ const FeedIndex = () => {
 
   return (
     <Container maxW="container.xl">
-      <Heading mt={10}>Feed</Heading>
+      <HStack mt={10} gap={3}>
+        <Heading>Feed</Heading>
+        {isFetching && <Spinner />}
+      </HStack>
       <Button mt={5} onClick={() => setOpenFeedForm(!openFeedForm)}>
         {openFeedForm ? "Close" : "Create a post"}
       </Button>
