@@ -7,10 +7,18 @@ import {
   Heading,
   HStack,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import React from "react";
 import useThemeColor from "../../hooks/useThemeColor";
 import { formatDistanceToNow } from "date-fns";
+import axios, { AxiosError } from "axios";
+import { useMutation } from "react-query";
+import { ICourse } from "../../types/course";
+import { ErrorType } from "../../types/requests";
+import { getConfig, useSession } from "../../utils/auth";
+import { baseURL } from "../../utils/constants";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   username: string;
@@ -19,6 +27,11 @@ interface Props {
   courseId?: string;
   courseDifficulty?: number;
   createdAt: string;
+}
+
+interface CloneForm {
+  name: string;
+  code: string;
 }
 
 const FeedCard = ({
@@ -30,6 +43,52 @@ const FeedCard = ({
   courseId,
 }: Props) => {
   const { backgroundColor, borderColor } = useThemeColor();
+
+  const toast = useToast();
+  const navigate = useNavigate();
+  const { user } = useSession();
+
+  const cloneCourse = useMutation(
+    async ({ name, code }: CloneForm) => {
+      if (!user) {
+        throw new Error("User not defined");
+        return;
+      }
+      const res = await axios.post<ICourse>(
+        `${baseURL}/course/clone/${code}`,
+        {
+          name,
+        },
+        getConfig(user?.sessionToken)
+      );
+      return res.data;
+    },
+    {
+      onSuccess: (course) => {
+        toast({
+          status: "success",
+          title: "Course cloned!",
+          description: "The course has successfully been cloned",
+          isClosable: true,
+        });
+        navigate(`/courses/${course?.objectId}/difficulty`);
+      },
+      onError: (error: AxiosError<ErrorType>) => {
+        toast({
+          title: "An error ocurred",
+          description: error.response?.data.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      },
+    }
+  );
+
+  const handleCloneCourse = () => {
+    if (!courseId || !courseName) return;
+    cloneCourse.mutate({ code: courseId, name: courseName });
+  };
 
   return (
     <HStack
@@ -60,7 +119,12 @@ const FeedCard = ({
             </HStack>
             <Text fontSize={14}>{createdAt}</Text>
           </Box>
-          <Button>Clone Course</Button>
+          <Button
+            onClick={() => handleCloneCourse()}
+            isLoading={cloneCourse.isLoading}
+          >
+            Clone Course
+          </Button>
         </Flex>
       )}
     </HStack>
