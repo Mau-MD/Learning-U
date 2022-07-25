@@ -8,8 +8,8 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import axios, { AxiosError } from "axios";
-import { Field, Form, Formik } from "formik";
-import React from "react";
+import { Field, Form, Formik, FormikProps } from "formik";
+import React, { useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { ICourse } from "../../types/course";
 import { getConfig, useSession } from "../../utils/auth";
@@ -31,6 +31,7 @@ const NewPostForm = () => {
   const { user } = useSession();
   const toast = useToast();
   const queryClient = useQueryClient();
+  const formikRef = useRef<FormikProps<PostValues> | null>(null);
 
   const convertCoursesToValueLabel = (courses: ICourse[]) => {
     return courses.map((course) => {
@@ -84,6 +85,7 @@ const NewPostForm = () => {
           isClosable: true,
         });
         queryClient.invalidateQueries("posts");
+        formikRef.current?.resetForm();
       },
       onError: (error: AxiosError<ErrorType>) => {
         toast({
@@ -100,6 +102,7 @@ const NewPostForm = () => {
     <Formik
       initialValues={{ content: "", course: emptySelect }}
       onSubmit={handleFormSubmit}
+      innerRef={(ref) => (formikRef.current = ref)}
     >
       {({ setFieldValue, values }) => (
         <Form>
