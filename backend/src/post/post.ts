@@ -11,7 +11,9 @@ export const createPost = (
   Post.set("user", user);
 
   if (courseId) {
-    Post.set("course", courseId);
+    const Course = new Parse.Object("Course");
+    Course.set("objectId", courseId);
+    Post.set("course", Course);
   }
 
   return Post;
@@ -28,6 +30,5 @@ export const getPostsByUser = async (userId: string) => {
 
   query.equalTo("user", user);
   query.includeAll();
-  query.select(["user.username", "createdAt", "content"]);
   return await query.findAll();
 };
