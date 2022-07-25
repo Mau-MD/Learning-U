@@ -5,15 +5,17 @@ import {
   Button,
   FormLabel,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { Field, Form, Formik } from "formik";
 import React from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { ICourse } from "../../types/course";
 import { getConfig, useSession } from "../../utils/auth";
 import { baseURL } from "../../utils/constants";
 import { Select } from "chakra-react-select";
+import { ErrorType } from "../../types/requests";
 
 interface PostValues {
   content: string;
@@ -27,6 +29,7 @@ const emptySelect = {
 
 const NewPostForm = () => {
   const { user } = useSession();
+  const toast = useToast();
 
   const convertCoursesToValueLabel = (courses: ICourse[]) => {
     return courses.map((course) => {
@@ -55,9 +58,37 @@ const NewPostForm = () => {
   );
 
   const handleFormSubmit = (values: PostValues) => {
-    console.log(values);
+    uploadPost.mutate(values);
   };
 
+  const uploadPost = useMutation(
+    async (values: PostValues) => {
+      const res = await axios.post(`${baseURL}/post`, {
+        content: values.content,
+        courseId: values.course.value,
+      });
+      return res.data;
+    },
+    {
+      onSuccess: () => {
+        toast({
+          status: "success",
+          title: "Post created!",
+          description: "The course has successfully been cloned",
+          isClosable: true,
+        });
+      },
+      onError: (error: AxiosError<ErrorType>) => {
+        toast({
+          title: "An error ocurred",
+          description: error.response?.data.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      },
+    }
+  );
   return (
     <Formik
       initialValues={{ content: "", course: emptySelect }}
