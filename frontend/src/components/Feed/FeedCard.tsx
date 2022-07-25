@@ -37,7 +37,7 @@ const FeedCard = ({
       borderWidth={1}
       borderRadius={4}
     >
-      <Flex flexDir="column" p={4} gap={4} w="80%">
+      <Flex flexDir="column" p={4} gap={4} w={courseId ? "80%" : "100%"}>
         <Flex alignItems="center" gap={4}>
           <Avatar />
           <Flex flexDirection="column">
@@ -47,16 +47,18 @@ const FeedCard = ({
         </Flex>
         <Text>{content}</Text>
       </Flex>
-      <Flex flexDir="column" p={4} gap={4}>
-        <Box>
-          <HStack>
-            <Text fontWeight="bold">{courseName}</Text>
-            <Badge>{courseDifficulty === 1 ? "Beginner" : "Advanced"}</Badge>
-          </HStack>
-          <Text fontSize={14}>{createdAt}</Text>
-        </Box>
-        <Button>Clone Course</Button>
-      </Flex>
+      {courseId && (
+        <Flex flexDir="column" p={4} gap={4}>
+          <Box>
+            <HStack>
+              <Text fontWeight="bold">{courseName}</Text>
+              <Badge>{courseDifficulty === 1 ? "Beginner" : "Advanced"}</Badge>
+            </HStack>
+            <Text fontSize={14}>{createdAt}</Text>
+          </Box>
+          <Button>Clone Course</Button>
+        </Flex>
+      )}
     </HStack>
   );
 };
