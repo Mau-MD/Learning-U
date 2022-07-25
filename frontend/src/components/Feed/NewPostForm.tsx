@@ -7,21 +7,40 @@ import {
   FormLabel,
   VStack,
 } from "@chakra-ui/react";
+import { Field, Form, Formik } from "formik";
 import React from "react";
+
+interface PostValues {
+  content: string;
+  course: string;
+}
+
+const handleFormSubmit = (values: PostValues) => {
+  console.log(values);
+};
 
 const NewPostForm = () => {
   return (
-    <VStack mt={5}>
-      <FormControl>
-        <FormLabel>Write anything below!</FormLabel>
-        <Textarea />
-      </FormControl>
-      <FormControl>
-        <FormLabel>Select a Course</FormLabel>
-        <Select>Select a course</Select>
-      </FormControl>
-      <Button>Submit</Button>
-    </VStack>
+    <Formik
+      initialValues={{ content: "", course: "" }}
+      onSubmit={handleFormSubmit}
+    >
+      {() => (
+        <Form>
+          <VStack mt={5}>
+            <FormControl>
+              <FormLabel>Write anything below!</FormLabel>
+              <Field as={Textarea} name="content" />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Select a Course</FormLabel>
+              <Select>Select a course</Select>
+            </FormControl>
+            <Button type="submit">Submit</Button>
+          </VStack>
+        </Form>
+      )}
+    </Formik>
   );
 };
 
