@@ -27,6 +27,7 @@ export const getPostsByUser = async (userId: string) => {
   user.id = userId;
 
   query.equalTo("user", user);
-
+  query.includeAll();
+  query.select(["user.username", "createdAt", "content"]);
   return await query.findAll();
 };
