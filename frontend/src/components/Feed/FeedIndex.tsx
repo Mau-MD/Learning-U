@@ -38,6 +38,7 @@ const FeedIndex = () => {
               createdAt={post.createdAt}
               courseId={post.course?.objectId}
               courseName={post.course?.name}
+              courseCreatedAt={post.course?.createdAt}
             />
           ))}
       </VStack>

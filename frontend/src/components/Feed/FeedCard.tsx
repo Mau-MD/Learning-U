@@ -27,6 +27,7 @@ interface Props {
   courseId?: string;
   courseDifficulty?: number;
   createdAt: string;
+  courseCreatedAt?: string;
 }
 
 interface CloneForm {
@@ -39,8 +40,8 @@ const FeedCard = ({
   courseName,
   username,
   createdAt,
-  courseDifficulty,
   courseId,
+  courseCreatedAt,
 }: Props) => {
   const { backgroundColor, borderColor } = useThemeColor();
 
@@ -115,9 +116,12 @@ const FeedCard = ({
           <Box>
             <HStack>
               <Text fontWeight="bold">{courseName}</Text>
-              <Badge>{courseDifficulty === 1 ? "Beginner" : "Advanced"}</Badge>
             </HStack>
-            <Text fontSize={14}>{createdAt}</Text>
+            {courseCreatedAt && (
+              <Text fontSize={14}>
+                Created {formatDistanceToNow(new Date(courseCreatedAt))} ago
+              </Text>
+            )}
           </Box>
           <Button
             onClick={() => handleCloneCourse()}
