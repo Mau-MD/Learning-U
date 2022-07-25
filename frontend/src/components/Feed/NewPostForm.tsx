@@ -119,7 +119,11 @@ const NewPostForm = () => {
                 onChange={(value) => setFieldValue("course", value)}
               />
             </FormControl>
-            <Button type="submit">Submit</Button>
+            <FormControl>
+              <Button type="submit" w="100%" mt={3} colorScheme="blue">
+                Submit
+              </Button>
+            </FormControl>
           </VStack>
         </Form>
       )}
