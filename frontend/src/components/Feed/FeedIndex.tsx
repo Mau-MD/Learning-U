@@ -1,32 +1,42 @@
 import { Button, Container, Heading, VStack } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useState } from "react";
-import { useQuery } from "react-query";
+import { useInfiniteQuery, useQuery } from "react-query";
+import { createSearchParams } from "react-router-dom";
 import { IPost } from "../../types/post";
 import { getConfig, useSession } from "../../utils/auth";
 import { baseURL } from "../../utils/constants";
 import FeedCard from "./FeedCard";
 import NewPostForm from "./NewPostForm";
 
+const POST_PER_FETCH = 5;
 const FeedIndex = () => {
   const { user } = useSession();
 
   const [openFeedForm, setOpenFeedForm] = useState(false);
 
-  const { data: posts } = useQuery(
-    "posts",
-    async () => {
+  const { data: posts, fetchNextPage } = useInfiniteQuery(
+    "post",
+    async ({ pageParam = 0 }) => {
       if (!user) {
         throw new Error("User is not defined");
       }
 
       const res = await axios.get<IPost[]>(
-        `${baseURL}/post/me`,
+        `${baseURL}/post/me?${createSearchParams({
+          limit: `${POST_PER_FETCH}`,
+          skip: `${pageParam}`,
+        })}`,
         getConfig(user?.sessionToken)
       );
-      return res.data;
+      return { data: res.data, currentPage: pageParam };
     },
-    { enabled: !!user }
+    {
+      getNextPageParam: (params) => {
+        return params.currentPage + POST_PER_FETCH;
+      },
+      enabled: !!user,
+    }
   );
 
   return (
@@ -38,18 +48,21 @@ const FeedIndex = () => {
       {openFeedForm && <NewPostForm />}
       <VStack mt={10} gap={19}>
         {posts &&
-          posts.map((post) => (
-            <FeedCard
-              key={post.objectId}
-              content={post.content}
-              username={post.user.username}
-              createdAt={post.createdAt}
-              courseId={post.course?.objectId}
-              courseName={post.course?.name}
-              courseCreatedAt={post.course?.createdAt}
-            />
-          ))}
+          posts.pages.map((page) =>
+            page.data.map((post) => (
+              <FeedCard
+                key={post.objectId}
+                content={post.content}
+                username={post.user.username}
+                createdAt={post.createdAt}
+                courseId={post.course?.objectId}
+                courseName={post.course?.name}
+                courseCreatedAt={post.course?.createdAt}
+              />
+            ))
+          )}
       </VStack>
+      <Button onClick={() => fetchNextPage()}>More</Button>
     </Container>
   );
 };
