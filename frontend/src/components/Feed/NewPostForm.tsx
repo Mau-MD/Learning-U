@@ -64,10 +64,15 @@ const NewPostForm = () => {
 
   const uploadPost = useMutation(
     async (values: PostValues) => {
-      const res = await axios.post(`${baseURL}/post`, {
-        content: values.content,
-        courseId: values.course.value,
-      });
+      if (!user) throw new Error("User not defined");
+      const res = await axios.post(
+        `${baseURL}/post`,
+        {
+          content: values.content,
+          courseId: values.course.value,
+        },
+        getConfig(user.sessionToken)
+      );
       return res.data;
     },
     {
