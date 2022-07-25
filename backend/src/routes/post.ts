@@ -29,9 +29,19 @@ post.post("/", async (req: RequestWUser, res, next) => {
 
 post.get("/me", async (req: RequestWUser, res, next) => {
   const { user } = req;
+  const { limit, skip } = req.query;
+  if (
+    !limit ||
+    typeof limit !== "string" ||
+    !skip ||
+    typeof skip !== "string"
+  ) {
+    next(new BadRequestError("Missing parameters"));
+    return;
+  }
 
-  const posts = await getPostsByUser(user.id);
-  res.send(posts.sort((a, b) => b.get("createdAt") - a.get("createdAt")));
+  const posts = await getPostsByUser(user.id, parseInt(limit), parseInt(skip));
+  res.send(posts);
 });
 
 export default post;

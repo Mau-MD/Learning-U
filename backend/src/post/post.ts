@@ -19,7 +19,11 @@ export const createPost = (
   return Post;
 };
 
-export const getPostsByUser = async (userId: string) => {
+export const getPostsByUser = async (
+  userId: string,
+  limit: number,
+  skip: number
+) => {
   const Post = Parse.Object.extend("Post");
   const User = Parse.Object.extend("User");
 
@@ -29,6 +33,9 @@ export const getPostsByUser = async (userId: string) => {
   user.id = userId;
 
   query.equalTo("user", user);
+  query.descending("createdAt");
+  query.skip(skip);
+  query.limit(limit);
   query.includeAll();
-  return await query.findAll();
+  return await query.find();
 };
