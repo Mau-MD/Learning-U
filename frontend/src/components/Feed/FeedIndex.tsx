@@ -31,7 +31,14 @@ const FeedIndex = () => {
       <VStack mt={10} gap={19}>
         {posts &&
           posts.map((post) => (
-            <FeedCard key={post.objectId} content={post.content} />
+            <FeedCard
+              key={post.objectId}
+              content={post.content}
+              username={post.user.username}
+              createdAt={post.createdAt}
+              courseId={post.course?.objectId}
+              courseName={post.course?.name}
+            />
           ))}
       </VStack>
     </Container>
