@@ -1,4 +1,11 @@
-import { Button, Container, Heading, VStack } from "@chakra-ui/react";
+import {
+  Button,
+  Center,
+  Container,
+  Heading,
+  Spinner,
+  VStack,
+} from "@chakra-ui/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useInfiniteQuery, useQuery } from "react-query";
@@ -37,7 +44,8 @@ const FeedIndex = () => {
     },
     {
       getNextPageParam: (params) => {
-        return params.currentPage + POST_PER_FETCH;
+        if (params.data.length < POST_PER_FETCH) return undefined;
+        return params.currentPage + params.data.length;
       },
       enabled: !!user,
     }
@@ -67,7 +75,7 @@ const FeedIndex = () => {
         {openFeedForm ? "Close" : "Create a post"}
       </Button>
       {openFeedForm && <NewPostForm />}
-      <VStack mt={10} gap={19}>
+      <VStack my={10} gap={19}>
         {posts &&
           posts.pages.map((page) =>
             page.data.map((post) => (
@@ -83,6 +91,11 @@ const FeedIndex = () => {
             ))
           )}
       </VStack>
+      {isFetching && (
+        <Center mb={5}>
+          <Spinner />
+        </Center>
+      )}
     </Container>
   );
 };
