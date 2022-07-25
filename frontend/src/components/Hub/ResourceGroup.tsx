@@ -8,9 +8,11 @@ interface Props {
   title: string;
   kind: "video" | "documentation" | "both";
   data: IResource[];
+  courseId: string;
+  courseName: string;
 }
 
-const ResourceGroup = ({ title, kind, data }: Props) => {
+const ResourceGroup = ({ title, kind, data, courseId, courseName }: Props) => {
   return (
     <Box>
       <Heading as="h2" fontSize="xl" mb={3}>
@@ -31,6 +33,8 @@ const ResourceGroup = ({ title, kind, data }: Props) => {
               src={resource.type === "video" ? resource.thumbnail : ""}
               status={resource.status}
               href={resource.url}
+              courseId={courseId}
+              courseName={courseName}
             />
           ))}
         {kind === "documentation" && (

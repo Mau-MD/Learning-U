@@ -9,6 +9,7 @@ import { baseURL } from "../../utils/constants";
 import { IResourceStatus } from "../../types/resource";
 import { useParams, useSearchParams } from "react-router-dom";
 import { getConfig, useSession } from "../../utils/auth";
+import { StringSchema } from "yup";
 
 type ResourceStatus = "completed" | "in progress" | "not started";
 interface Props {
@@ -17,6 +18,8 @@ interface Props {
   title: string;
   href: string;
   status: ResourceStatus;
+  courseId: string;
+  courseName: string;
 }
 
 const getBadgeColor = (status: ResourceStatus) => {
@@ -26,7 +29,15 @@ const getBadgeColor = (status: ResourceStatus) => {
   return "gray";
 };
 
-const VideoCard = ({ src, title, href, status, objectId }: Props) => {
+const VideoCard = ({
+  src,
+  title,
+  href,
+  status,
+  objectId,
+  courseId,
+  courseName,
+}: Props) => {
   const { backgroundColor, borderColor } = useThemeColor();
 
   const badgeColor = getBadgeColor(status);
@@ -43,7 +54,7 @@ const VideoCard = ({ src, title, href, status, objectId }: Props) => {
       if (!user) throw new Error("No user");
       const res = await axios.put(
         `${baseURL}/resources/updateStatus/${objectId}`,
-        { status },
+        { status, resourceName: title, courseName, courseId },
         getConfig(user?.sessionToken)
       );
       return res.data;
