@@ -10,13 +10,14 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import useThemeColor from "../../hooks/useThemeColor";
+import { formatDistanceToNow } from "date-fns";
 
 interface Props {
   username: string;
   content: string;
-  courseName: string;
-  courseId: string;
-  courseDifficulty: number;
+  courseName?: string;
+  courseId?: string;
+  courseDifficulty?: number;
   createdAt: string;
 }
 
@@ -36,13 +37,16 @@ const FeedCard = ({
       borderColor={borderColor}
       borderWidth={1}
       borderRadius={4}
+      w="100%"
     >
-      <Flex flexDir="column" p={4} gap={4} w={courseId ? "80%" : "100%"}>
+      <Flex flexDir="column" p={4} gap={4} minW={courseId ? "80%" : "100%"}>
         <Flex alignItems="center" gap={4}>
           <Avatar />
           <Flex flexDirection="column">
             <Text fontWeight="bold">{username}</Text>
-            <Text fontSize={14}>{createdAt}</Text>
+            <Text fontSize={14}>
+              {formatDistanceToNow(new Date(createdAt))} ago
+            </Text>
           </Flex>
         </Flex>
         <Text>{content}</Text>
