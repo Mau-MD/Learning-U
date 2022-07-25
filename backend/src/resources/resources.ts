@@ -1,6 +1,8 @@
 import { IResource, IResourceStatus } from "../types/resource";
 import Parse from "parse/node";
 import { updateFeedback } from "../feedback/feedback";
+import { createPost } from "../post/post";
+import { getCourseByUserAndId } from "../course/course";
 
 const SCORE_PER_COMPLETED = 0.1;
 export const createResource = (resource: IResource) => {
@@ -55,8 +57,12 @@ export const getResourcesFromCourseAndDifficulty = async (
 };
 
 export const updateResourceStatus = async (
+  resourceName: string,
   resourceId: string,
-  status: IResourceStatus
+  status: IResourceStatus,
+  courseName: string,
+  courseId: string,
+  user: Parse.User<Parse.Attributes>
 ) => {
   const Resource = new Parse.Object("Resource");
   Resource.set("objectId", resourceId);
@@ -65,6 +71,14 @@ export const updateResourceStatus = async (
   if (status === "completed") {
     const resource = await findResourceById(resourceId);
     updateFeedback(resource[0].get("videoId"), SCORE_PER_COMPLETED);
+
+    const post = createPost(
+      `Finished ${resourceName} from the course ${courseName}`,
+      user,
+      courseId
+    );
+
+    await post.save();
   }
 
   return Resource;

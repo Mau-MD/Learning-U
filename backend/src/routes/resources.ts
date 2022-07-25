@@ -34,15 +34,23 @@ resources.get("/byCourse/:courseId", async (req: RequestWUser, res, next) => {
 resources.put(
   "/updateStatus/:resourceId",
   async (req: RequestWUser, res, next) => {
+    const { user } = req;
     const { resourceId } = req.params;
-    const { status } = req.body;
+    const { status, courseName, courseId, resourceName } = req.body;
 
-    if (!status) {
-      next(new BadRequestError("Status is missing"));
+    if (!status || !courseName || !courseId || !resourceName) {
+      next(new BadRequestError("Missing params"));
       return;
     }
 
-    const resource = await updateResourceStatus(resourceId, status);
+    const resource = await updateResourceStatus(
+      resourceName,
+      resourceId,
+      status,
+      courseName,
+      courseId,
+      user
+    );
     const result = await resource.save();
 
     res.send(result);
