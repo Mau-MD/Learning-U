@@ -17,11 +17,25 @@ import { Select } from "chakra-react-select";
 
 interface PostValues {
   content: string;
-  course: string;
+  course: { value: string; label: string };
 }
+
+const emptySelect = {
+  value: "",
+  label: "No course",
+};
 
 const NewPostForm = () => {
   const { user } = useSession();
+
+  const convertCoursesToValueLabel = (courses: ICourse[]) => {
+    return courses.map((course) => {
+      return {
+        value: course.objectId,
+        label: course.name,
+      };
+    });
+  };
 
   const { data: courses } = useQuery(
     "courses",
@@ -33,7 +47,7 @@ const NewPostForm = () => {
         getConfig(user?.sessionToken)
       );
 
-      return res.data;
+      return convertCoursesToValueLabel(res.data);
     },
     {
       enabled: !!user,
@@ -46,10 +60,10 @@ const NewPostForm = () => {
 
   return (
     <Formik
-      initialValues={{ content: "", course: "" }}
+      initialValues={{ content: "", course: emptySelect }}
       onSubmit={handleFormSubmit}
     >
-      {() => (
+      {({ setFieldValue, values }) => (
         <Form>
           <VStack mt={5}>
             <FormControl>
@@ -58,7 +72,11 @@ const NewPostForm = () => {
             </FormControl>
             <FormControl>
               <FormLabel>Select a Course</FormLabel>
-              <Select>Select a course</Select>
+              <Select
+                options={courses}
+                value={values.course}
+                onChange={(value) => setFieldValue("course", value)}
+              />
             </FormControl>
             <Button type="submit">Submit</Button>
           </VStack>
