@@ -11,7 +11,23 @@ import {
 import React from "react";
 import useThemeColor from "../../hooks/useThemeColor";
 
-const FeedCard = () => {
+interface Props {
+  username: string;
+  content: string;
+  courseName: string;
+  courseId: string;
+  courseDifficulty: number;
+  createdAt: string;
+}
+
+const FeedCard = ({
+  content,
+  courseName,
+  username,
+  createdAt,
+  courseDifficulty,
+  courseId,
+}: Props) => {
   const { backgroundColor, borderColor } = useThemeColor();
 
   return (
@@ -25,24 +41,19 @@ const FeedCard = () => {
         <Flex alignItems="center" gap={4}>
           <Avatar />
           <Flex flexDirection="column">
-            <Text fontWeight="bold">Mauricio</Text>
-            <Text fontSize={14}>24 hours ago</Text>
+            <Text fontWeight="bold">{username}</Text>
+            <Text fontSize={14}>{createdAt}</Text>
           </Flex>
         </Flex>
-        <Text>
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Suscipit
-          officia eaque vero odio sit, cupiditate quo itaque maxime, quis, at
-          distinctio nihil consequatur quae. Aut recusandae debitis magnam
-          accusamus harum!
-        </Text>
+        <Text>{content}</Text>
       </Flex>
       <Flex flexDir="column" p={4} gap={4}>
         <Box>
           <HStack>
-            <Text fontWeight="bold">Object Oriented Programming</Text>
-            <Badge>Beginner</Badge>
+            <Text fontWeight="bold">{courseName}</Text>
+            <Badge>{courseDifficulty === 1 ? "Beginner" : "Advanced"}</Badge>
           </HStack>
-          <Text fontSize={14}>Generated 24 hours ago</Text>
+          <Text fontSize={14}>{createdAt}</Text>
         </Box>
         <Button>Clone Course</Button>
       </Flex>
