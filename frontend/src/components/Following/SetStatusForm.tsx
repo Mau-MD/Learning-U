@@ -8,8 +8,8 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import axios, { AxiosError } from "axios";
-import { Field, Form, Formik } from "formik";
-import React from "react";
+import { Field, Form, Formik, FormikProps } from "formik";
+import React, { useRef } from "react";
 import { useMutation } from "react-query";
 import * as Yup from "yup";
 import { ErrorType } from "../../types/requests";
@@ -27,6 +27,7 @@ const schema = Yup.object({
 const SetStatusForm = () => {
   const toast = useToast();
   const { user } = useSession();
+  const formikRef = useRef<FormikProps<StatusForm> | null>(null);
 
   const handleFormSubmit = (values: StatusForm) => {
     setStatus.mutate(values.status);
@@ -50,6 +51,7 @@ const SetStatusForm = () => {
           description: `Your status has been updated`,
           status: "success",
         });
+        formikRef.current?.resetForm();
       },
       onError: (error: AxiosError<ErrorType>) => {
         toast({
@@ -68,6 +70,7 @@ const SetStatusForm = () => {
       initialValues={{ status: "" }}
       onSubmit={handleFormSubmit}
       validationSchema={schema}
+      innerRef={(ref) => (formikRef.current = ref)}
     >
       {({ errors, touched }) => (
         <Form>
@@ -77,7 +80,7 @@ const SetStatusForm = () => {
               <Field as={Input} name="status" />
               <FormErrorMessage>{errors.status}</FormErrorMessage>
             </FormControl>
-            <Button type="submit" w={"100%"}>
+            <Button type="submit" w={"100%"} isLoading={setStatus.isLoading}>
               Update Status
             </Button>
           </VStack>
