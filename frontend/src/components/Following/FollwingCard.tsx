@@ -2,7 +2,13 @@ import { Avatar, Box, Flex, HStack, Text, VStack } from "@chakra-ui/react";
 import React from "react";
 import useThemeColor from "../../hooks/useThemeColor";
 
-const FollwingCard = () => {
+interface Props {
+  username: string;
+  userId: string;
+  status: string;
+}
+
+const FollwingCard = ({ username, userId, status }: Props) => {
   const { borderColor } = useThemeColor();
   return (
     <HStack
@@ -14,8 +20,8 @@ const FollwingCard = () => {
     >
       <Avatar size={"sm"} ml={3} />
       <Flex p={2} w="100%" flexDir={"column"}>
-        <Text>User</Text>
-        <Text fontSize={"13px"}>Learning Object Oriented Programming!</Text>
+        <Text>{username}</Text>
+        <Text fontSize={"13px"}>{status}</Text>
       </Flex>
     </HStack>
   );
