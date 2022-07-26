@@ -9,6 +9,7 @@ import cors from "cors";
 import course from "./src/routes/course";
 import resources from "./src/routes/resources";
 import post from "./src/routes/post";
+import follow from "./src/routes/follow";
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use("/debug", debug);
 app.use("/course", course);
 app.use("/resources", resources);
 app.use("/post", post);
+app.use("/follow", follow);
 
 app.get("/", async (req, res) => {
   const testObject = new Parse.Object("test");
