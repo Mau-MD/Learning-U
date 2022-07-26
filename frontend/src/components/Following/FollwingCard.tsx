@@ -9,14 +9,14 @@ interface Props {
 }
 
 const FollwingCard = ({ username, userId, status }: Props) => {
-  const { borderColor } = useThemeColor();
+  const { borderColor, invertedBackgroundColor } = useThemeColor();
   return (
     <HStack
       w="100%"
-      backgroundColor={"white"}
+      backgroundColor={invertedBackgroundColor}
       borderColor={borderColor}
       borderWidth={1}
-      borderRadius={2}
+      borderRadius={4}
     >
       <Avatar size={"sm"} ml={3} />
       <Flex p={2} w="100%" flexDir={"column"}>
