@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Center,
   Container,
@@ -75,7 +76,7 @@ const FeedIndex = () => {
   };
 
   return (
-    <Container maxW="container.xl">
+    <Box>
       <HStack mt={10} gap={3}>
         <Heading>Feed</Heading>
         {isFetching && <Spinner />}
@@ -112,7 +113,7 @@ const FeedIndex = () => {
           <Spinner />
         </Center>
       )}
-    </Container>
+    </Box>
   );
 };
 

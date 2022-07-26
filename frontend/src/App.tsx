@@ -11,6 +11,7 @@ import RegisterIndex from "./components/Registration/RegisterIndex";
 import RequireAuth from "./components/Registration/RequireAuth";
 import NewCourseIndex from "./components/NewCourse/NewCourseIndex";
 import FeedIndex from "./components/Feed/FeedIndex";
+import FollowingLayout from "./components/Following/FollowingLayout";
 
 function App() {
   return (
@@ -47,7 +48,7 @@ function App() {
           path="feed"
           element={
             <RequireAuth>
-              <Outlet />
+              <FollowingLayout />
             </RequireAuth>
           }
         >
