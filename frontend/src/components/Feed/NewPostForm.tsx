@@ -120,7 +120,13 @@ const NewPostForm = () => {
               />
             </FormControl>
             <FormControl>
-              <Button type="submit" w="100%" mt={3} colorScheme="blue">
+              <Button
+                type="submit"
+                w="100%"
+                mt={3}
+                colorScheme="blue"
+                isLoading={uploadPost.isLoading}
+              >
                 Submit
               </Button>
             </FormControl>
