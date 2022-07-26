@@ -16,6 +16,7 @@ specifiers:
   '@vitejs/plugin-react': ^1.3.0
   axios: ^0.27.2
   cypress: ^10.3.0
+  date-fns: ^2.29.1
   eslint: ^8.18.0
   eslint-plugin-react: ^7.30.1
   formik: ^2.2.9
@@ -39,6 +40,7 @@ dependencies:
   '@emotion/react': 11.9.3_4jaruczdv2uxjj3lb2xbkiuci4
   '@emotion/styled': 11.9.3_toiz7tndcw4z2b7gxmmeo5fkcu
   axios: 0.27.2
+  date-fns: 2.29.1
   formik: 2.2.9_react@18.2.0
   framer-motion: 6.3.16_biqbaboplfbrettd7655fr4n2y
   react: 18.2.0
@@ -2080,6 +2082,11 @@ packages:
     dependencies:
       assert-plus: 1.0.0
     dev: true
+
+  /date-fns/2.29.1:
+    resolution: {integrity: sha512-dlLD5rKaKxpFdnjrs+5azHDFOPEu4ANy/LTh04A1DTzMM7qoajmKCBc8pkKRFT41CNzw+4gQh79X5C+Jq27HAw==}
+    engines: {node: '>=0.11'}
+    dev: false
 
   /dayjs/1.11.3:
     resolution: {integrity: sha512-xxwlswWOlGhzgQ4TKzASQkUhqERI3egRNqgV4ScR8wlANA/A9tZ7miXa44vTTKEq5l7vWoL5G57bG3zA+Kow0A==}
