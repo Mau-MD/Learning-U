@@ -30,3 +30,12 @@ export const createStatus = async (
   Status.set("user", user);
   return await Status.save();
 };
+
+export const findStatusByMultipleUsers = async (
+  users: Parse.User<Parse.Attributes>[]
+) => {
+  const Status = Parse.Object.extend("Status");
+  const query = new Parse.Query(Status);
+  query.containsAll("user", users);
+  return await query.findAll();
+};
