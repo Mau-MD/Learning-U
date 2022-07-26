@@ -13,6 +13,7 @@ import { createSearchParams } from "react-router-dom";
 import { IPost } from "../../types/post";
 import { getConfig, useSession } from "../../utils/auth";
 import { baseURL } from "../../utils/constants";
+import { debounce } from "../../utils/debounce";
 import FeedCard from "./FeedCard";
 import NewPostForm from "./NewPostForm";
 
@@ -59,14 +60,14 @@ const FeedIndex = () => {
     };
   }, []);
 
-  const handlePageBottom = () => {
+  const handlePageBottom = debounce(() => {
     if (
       window.innerHeight + window.scrollY >= document.body.offsetHeight &&
       !isFetching
     ) {
       fetchNextPage();
     }
-  };
+  }, 500);
 
   return (
     <Container maxW="container.xl">
@@ -91,11 +92,9 @@ const FeedIndex = () => {
             ))
           )}
       </VStack>
-      {isFetching && (
-        <Center mb={5}>
-          <Spinner />
-        </Center>
-      )}
+      <Center mb={5} opacity={isFetching ? 1 : 0}>
+        <Spinner />
+      </Center>
     </Container>
   );
 };
