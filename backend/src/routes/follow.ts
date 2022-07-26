@@ -19,12 +19,16 @@ follow.get("/getFollowers", async (req: RequestWUser, res, next) => {
   res.send(await getFollowersIds(user));
 });
 
-follow.post("/followUser/:targetId", async (req: RequestWUser, res, next) => {
+follow.post("/followUser/:username", async (req: RequestWUser, res, next) => {
   const { user } = req;
-  const { targetId } = req.params;
+  const { username } = req.params;
 
-  const Follower = followUser(user, targetId);
-  res.send(await Follower.save());
+  try {
+    const Follower = await followUser(user, username);
+    res.send(await Follower.save());
+  } catch (err) {
+    next(new BadRequestError(err.message));
+  }
 });
 
 follow.post("/status", async (req: RequestWUser, res, next) => {

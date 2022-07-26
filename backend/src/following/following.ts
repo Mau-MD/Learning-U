@@ -1,13 +1,17 @@
 import Parse from "parse/node";
+import { updateFeedback } from "../feedback/feedback";
 
-export const followUser = (
+export const followUser = async (
   currUser: Parse.User<Parse.Attributes>,
-  targetUserId: string
+  username: string
 ) => {
   const Follower = new Parse.Object("Following");
 
-  const targetUser = new Parse.User();
-  targetUser.set("objectId", targetUserId);
+  const targetUser = await findUserByUsername(username);
+
+  if (!targetUser) {
+    throw new Error("User does not exist");
+  }
 
   Follower.set("user", currUser);
   Follower.set("target", targetUser);
@@ -29,4 +33,11 @@ export const getFollowersIds = async (user: Parse.User<Parse.Attributes>) => {
     const followJson = follow.toJSON();
     return followJson.target.objectId;
   });
+};
+
+export const findUserByUsername = async (username: string) => {
+  const User = Parse.Object.extend("User");
+  const query = new Parse.Query(User);
+  query.equalTo("username", username);
+  return await query.first();
 };
