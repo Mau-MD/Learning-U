@@ -1,8 +1,11 @@
 import express from "express";
 import { followUser } from "../following/following";
+import { getAuthUser } from "../middleware/getAuthUser";
 import { RequestWUser } from "../types/user";
 
 const follow = express.Router();
+
+follow.use(getAuthUser);
 
 follow.post("/:targetId", async (req: RequestWUser, res, next) => {
   const { user } = req;
