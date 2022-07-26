@@ -52,7 +52,7 @@ const DifficultyIndex = () => {
         <DifficultyCard
           title="Beginners"
           progress={progress ? progress["1"] : undefined}
-          src={data?.images[2].small || ""}
+          src={data?.images[2] ? data?.images[2].small : ""}
           phrase="You can do it!"
           courseId={id || ""}
           courseTitle={name || ""}
@@ -62,7 +62,7 @@ const DifficultyIndex = () => {
         <DifficultyCard
           title="Advanced"
           progress={progress ? progress["2"] : undefined}
-          src={data?.images[3].small || ""}
+          src={data?.images[3] ? data?.images[3].small : ""}
           courseId={id || ""}
           courseTitle={name || ""}
           phrase="Let's go"
