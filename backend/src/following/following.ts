@@ -14,3 +14,19 @@ export const followUser = (
 
   return Follower;
 };
+
+export const getFollowers = async (user: Parse.User<Parse.Attributes>) => {
+  const Following = Parse.Object.extend("Following");
+  const query = new Parse.Query(Following);
+
+  query.equalTo("user", user);
+  return await query.find();
+};
+
+export const getFollowersIds = async (user: Parse.User<Parse.Attributes>) => {
+  const followersObject = await getFollowers(user);
+  return followersObject.map((follow) => {
+    const followJson = follow.toJSON();
+    return followJson.target.objectId;
+  });
+};
