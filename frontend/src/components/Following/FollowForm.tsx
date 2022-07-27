@@ -8,8 +8,8 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import axios, { AxiosError } from "axios";
-import { Field, Form, Formik } from "formik";
-import React from "react";
+import { Field, Form, Formik, FormikProps } from "formik";
+import React, { useRef } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import * as Yup from "yup";
 import { ErrorType } from "../../types/requests";
@@ -28,6 +28,7 @@ const FollowForm = () => {
   const toast = useToast();
   const { user } = useSession();
   const queryClient = useQueryClient();
+  const formikRef = useRef<FormikProps<FollowForm> | null>(null);
 
   const handleSubmit = (values: FollowForm) => {
     followUser.mutate(values.username);
@@ -52,6 +53,7 @@ const FollowForm = () => {
           status: "success",
         });
         queryClient.invalidateQueries("following");
+        formikRef.current?.resetForm();
       },
       onError: (error: AxiosError<ErrorType>) => {
         toast({
@@ -70,6 +72,7 @@ const FollowForm = () => {
       initialValues={{ username: "" }}
       onSubmit={handleSubmit}
       validationSchema={schema}
+      innerRef={(ref) => (formikRef.current = ref)}
     >
       {({ touched, errors }) => (
         <Form>
@@ -79,7 +82,7 @@ const FollowForm = () => {
               <Field as={Input} name="username" />
               <FormErrorMessage>{errors.username}</FormErrorMessage>
             </FormControl>
-            <Button type="submit" w={"100%"}>
+            <Button type="submit" w={"100%"} isLoading={followUser.isLoading}>
               Follow!
             </Button>
           </VStack>
