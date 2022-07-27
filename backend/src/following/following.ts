@@ -24,6 +24,27 @@ export const followUser = async (
   return Follower;
 };
 
+export const unfollowUser = async (
+  currUser: Parse.User<Parse.Attributes>,
+  userId: string
+) => {
+  const Follower = Parse.Object.extend("Following");
+
+  const TargetUser = Parse.Object.extend("User");
+  TargetUser.id = userId;
+
+  const query = new Parse.Query(Follower);
+
+  query.equalTo("user", currUser);
+  query.equalTo("target", TargetUser);
+
+  const followingObject = await query.first();
+
+  if (!followingObject) throw new Error("You are not following that user");
+
+  return await followingObject.destroy();
+};
+
 export const getFollowersAsUserObjects = async (
   user: Parse.User<Parse.Attributes>
 ) => {

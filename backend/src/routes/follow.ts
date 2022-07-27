@@ -4,6 +4,7 @@ import {
   getFollowers,
   getFollowersAsUserObjects,
   getFollowersIds,
+  unfollowUser,
 } from "../following/following";
 import { findStatusByMultipleUsers, setStatus } from "../following/status";
 import { getAuthUser } from "../middleware/getAuthUser";
@@ -50,6 +51,16 @@ follow.get("/following/status", async (req: RequestWUser, res, next) => {
   const following = await getFollowersAsUserObjects(user);
   const status = await findStatusByMultipleUsers(following);
   res.send(status);
+});
+
+follow.delete("/:userId", async (req: RequestWUser, res, next) => {
+  const { user } = req;
+  const { userId } = req.params;
+  try {
+    res.send(await unfollowUser(user, userId));
+  } catch (err) {
+    next(new BadRequestError(err.message));
+  }
 });
 
 export default follow;
