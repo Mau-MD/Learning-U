@@ -50,6 +50,7 @@ const FollowingCard = ({ username, userId, status }: Props) => {
           isClosable: true,
         });
         queryClient.invalidateQueries("following");
+        queryClient.invalidateQueries("posts");
       },
       onError: (error: AxiosError<ErrorType>) => {
         toast({

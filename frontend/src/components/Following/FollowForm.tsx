@@ -53,6 +53,7 @@ const FollowForm = () => {
           status: "success",
         });
         queryClient.invalidateQueries("following");
+        queryClient.invalidateQueries("posts");
         formikRef.current?.resetForm();
       },
       onError: (error: AxiosError<ErrorType>) => {
