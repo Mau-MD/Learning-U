@@ -10,18 +10,33 @@ import {
   Tabs,
   VStack,
 } from "@chakra-ui/react";
+import axios from "axios";
 import React, { useState } from "react";
+import { useQuery } from "react-query";
 import useThemeColor from "../../hooks/useThemeColor";
+import { IFollowing } from "../../types/following";
+import { getConfig, useSession } from "../../utils/auth";
+import { baseURL } from "../../utils/constants";
 import FollowForm from "./FollowForm";
 import FollwingCard from "./FollwingCard";
 import SetStatusForm from "./SetStatusForm";
 
 const FollowingIndex = () => {
   const { backgroundColor, borderColor } = useThemeColor();
+  const { user } = useSession();
 
   const [tabSelected, setTabSelected] = useState<"none" | "status" | "follow">(
     "none"
   );
+
+  const { data: status } = useQuery("following", async () => {
+    if (!user) throw new Error("User not defined");
+    const res = await axios.get<IFollowing[]>(
+      `${baseURL}/follow/following/status`,
+      getConfig(user.sessionToken)
+    );
+    return res.data;
+  });
 
   const handleTabChange = (tab: "none" | "status" | "follow") => {
     if (tabSelected === tab) {
