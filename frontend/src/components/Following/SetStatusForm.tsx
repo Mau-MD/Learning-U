@@ -10,7 +10,7 @@ import {
 import axios, { AxiosError } from "axios";
 import { Field, Form, Formik, FormikProps } from "formik";
 import React, { useRef } from "react";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import * as Yup from "yup";
 import { ErrorType } from "../../types/requests";
 import { getConfig, useSession } from "../../utils/auth";
@@ -28,6 +28,7 @@ const SetStatusForm = () => {
   const toast = useToast();
   const { user } = useSession();
   const formikRef = useRef<FormikProps<StatusForm> | null>(null);
+  const queryClient = useQueryClient();
 
   const handleFormSubmit = (values: StatusForm) => {
     setStatus.mutate(values.status);
@@ -51,6 +52,7 @@ const SetStatusForm = () => {
           description: `Your status has been updated`,
           status: "success",
         });
+        queryClient.invalidateQueries("following");
         formikRef.current?.resetForm();
       },
       onError: (error: AxiosError<ErrorType>) => {
