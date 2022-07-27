@@ -1,5 +1,15 @@
-import { Avatar, Box, Flex, HStack, Text, VStack } from "@chakra-ui/react";
+import {
+  Avatar,
+  Box,
+  Button,
+  Flex,
+  HStack,
+  IconButton,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import React from "react";
+import { BiTrash } from "react-icons/bi";
 import useThemeColor from "../../hooks/useThemeColor";
 
 interface Props {
@@ -17,12 +27,19 @@ const FollowingCard = ({ username, userId, status }: Props) => {
       borderColor={borderColor}
       borderWidth={1}
       borderRadius={4}
+      px={3}
     >
-      <Avatar size={"sm"} ml={3} />
+      <Avatar size={"sm"} />
       <Flex p={2} w="100%" flexDir={"column"}>
         <Text>{username}</Text>
         <Text fontSize={"13px"}>{status}</Text>
       </Flex>
+      <IconButton
+        icon={<BiTrash />}
+        aria-label="Unfollow user"
+        size="sm"
+        colorScheme="red"
+      />
     </HStack>
   );
 };
