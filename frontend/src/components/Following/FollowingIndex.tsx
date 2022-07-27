@@ -1,4 +1,13 @@
-import { Box, Button, Heading, HStack, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Heading,
+  HStack,
+  Skeleton,
+  Spinner,
+  Stack,
+  VStack,
+} from "@chakra-ui/react";
 import axios from "axios";
 import React, { useState } from "react";
 import { useQuery } from "react-query";
@@ -18,7 +27,11 @@ const FollowingIndex = () => {
     "none"
   );
 
-  const { data: status } = useQuery(
+  const {
+    data: status,
+    isFetching,
+    isLoading,
+  } = useQuery(
     "following",
     async () => {
       if (!user) throw new Error("User not defined");
@@ -50,9 +63,13 @@ const FollowingIndex = () => {
       margin={10}
       marginRight={0}
     >
-      <Heading size={"md"} as={"h2"}>
-        Following
-      </Heading>
+      <HStack gap={2}>
+        <Heading size={"md"} as={"h2"}>
+          Following
+        </Heading>
+        {isFetching && <Spinner />}
+      </HStack>
+
       <HStack w={"100%"} mt={5}>
         <Button
           w={"100%"}
@@ -71,6 +88,14 @@ const FollowingIndex = () => {
       </HStack>
       {tabSelected === "status" && <SetStatusForm />}
       {tabSelected === "follow" && <FollowForm />}
+      {isLoading && (
+        <Stack mt={5}>
+          <Skeleton h="60px" />
+          <Skeleton h="60px" />
+          <Skeleton h="60px" />
+        </Stack>
+      )}
+
       <VStack mt={5}>
         {status &&
           status.map((followingStatus) => (
