@@ -1,15 +1,4 @@
-import {
-  Box,
-  Button,
-  Heading,
-  HStack,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, Button, Heading, HStack, VStack } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useState } from "react";
 import { useQuery } from "react-query";
@@ -18,7 +7,7 @@ import { IFollowing } from "../../types/following";
 import { getConfig, useSession } from "../../utils/auth";
 import { baseURL } from "../../utils/constants";
 import FollowForm from "./FollowForm";
-import FollwingCard from "./FollwingCard";
+import FollowingCard from "./FollowingCard";
 import SetStatusForm from "./SetStatusForm";
 
 const FollowingIndex = () => {
@@ -29,14 +18,18 @@ const FollowingIndex = () => {
     "none"
   );
 
-  const { data: status } = useQuery("following", async () => {
-    if (!user) throw new Error("User not defined");
-    const res = await axios.get<IFollowing[]>(
-      `${baseURL}/follow/following/status`,
-      getConfig(user.sessionToken)
-    );
-    return res.data;
-  });
+  const { data: status } = useQuery(
+    "following",
+    async () => {
+      if (!user) throw new Error("User not defined");
+      const res = await axios.get<IFollowing[]>(
+        `${baseURL}/follow/following/status`,
+        getConfig(user.sessionToken)
+      );
+      return res.data;
+    },
+    { enabled: !!user }
+  );
 
   const handleTabChange = (tab: "none" | "status" | "follow") => {
     if (tabSelected === tab) {
@@ -79,9 +72,15 @@ const FollowingIndex = () => {
       {tabSelected === "status" && <SetStatusForm />}
       {tabSelected === "follow" && <FollowForm />}
       <VStack mt={5}>
-        <FollwingCard username="clanie1" status="cool status" />
-        <FollwingCard username="clinigambit" status="not cool" />
-        <FollwingCard username="clinimove" status="yes" />
+        {status &&
+          status.map((followingStatus) => (
+            <FollowingCard
+              key={followingStatus.objectId}
+              username={followingStatus.user.username}
+              status={followingStatus.status}
+              userId={followingStatus.user.objectId}
+            />
+          ))}
       </VStack>
     </Box>
   );
