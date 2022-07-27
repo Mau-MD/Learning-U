@@ -4,6 +4,7 @@ import {
   getBigrams,
   getCosineSimilarity,
   intersectTwoSets,
+  getStringSimilarity,
 } from "../src/utils/similarity";
 
 test("should get all bigrams of a string", () => {
@@ -43,4 +44,10 @@ test("get cosine similarity ", () => {
   const str1 = "Julie loves me more than Linda loves me";
   const str2 = "Jane likes me more than Julie loves me";
   expect(getCosineSimilarity(str1, str2)).toBeCloseTo(0.822);
+});
+
+test("string similarity", () => {
+  const str1 = "react javascript";
+  const str2 = "react.js";
+  expect(getStringSimilarity(str1, str2)).toBeCloseTo(0.5);
 });

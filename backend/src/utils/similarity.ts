@@ -106,6 +106,5 @@ export const getStringSimilarity = (str1: string, str2: string) => {
   const diceScore = getDiceCoefficient(s1, s2);
   const cosineScore = getCosineSimilarity(s1, s2);
 
-  console.log(diceScore, cosineScore);
   return DICE_WEIGHT * diceScore + COSINE_WEIGHT * cosineScore;
 };
