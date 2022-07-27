@@ -10,9 +10,12 @@ export const intersectTwoSets = <T>(set1: Set<T>, set2: Set<T>) => {
   return new Set([...set1].filter((x) => set2.has(x)));
 };
 
+export const removeWhiteSpaces = (str: string) => {
+  return str.replace(/\s/g, "");
+};
 export const getDiceCoefficient = (str1: string, str2: string) => {
-  const s1 = str1.replace(/\s/g, "").toLowerCase();
-  const s2 = str2.replace(/\s/g, "").toLowerCase();
+  const s1 = removeWhiteSpaces(str1);
+  const s2 = removeWhiteSpaces(str2);
 
   const bigrams1 = getBigrams(s1);
   const bigrams2 = getBigrams(s2);
@@ -89,12 +92,20 @@ export const mapTermFrequencyToVector = (
   return vector;
 };
 
+export const replaceSpecialCharactersToWhitespace = (str: string) => {
+  return str.toLowerCase().replace(/[^a-zA-Z0-9\s]/g, " ");
+};
+
 export const getStringSimilarity = (str1: string, str2: string) => {
   const DICE_WEIGHT = 0.5;
   const COSINE_WEIGHT = 0.5;
 
-  const diceScore = getDiceCoefficient(str1, str2);
-  const cosineScore = getCosineSimilarity(str1, str2);
+  const s1 = replaceSpecialCharactersToWhitespace(str1);
+  const s2 = replaceSpecialCharactersToWhitespace(str2);
 
+  const diceScore = getDiceCoefficient(s1, s2);
+  const cosineScore = getCosineSimilarity(s1, s2);
+
+  console.log(diceScore, cosineScore);
   return DICE_WEIGHT * diceScore + COSINE_WEIGHT * cosineScore;
 };
