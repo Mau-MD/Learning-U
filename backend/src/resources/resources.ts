@@ -3,6 +3,8 @@ import Parse from "parse/node";
 import { updateFeedback } from "../feedback/feedback";
 import { createPost } from "../post/post";
 import { getCourseByUserAndId } from "../course/course";
+import { createStatus, setStatus } from "../following/status";
+import { getRandomEmoji } from "../utils/emojiPicker";
 
 const SCORE_PER_COMPLETED = 0.1;
 export const createResource = (resource: IResource) => {
@@ -79,6 +81,10 @@ export const updateResourceStatus = async (
     );
 
     await post.save();
+  }
+
+  if (status === "in progress") {
+    await setStatus(user, `${getRandomEmoji()} Studying ${courseName}`);
   }
 
   return Resource;
