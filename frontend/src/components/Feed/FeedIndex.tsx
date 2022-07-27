@@ -41,7 +41,7 @@ const FeedIndex = () => {
       }
 
       const res = await axios.get<IPost[]>(
-        `${baseURL}/post/me?${createSearchParams({
+        `${baseURL}/post/following?${createSearchParams({
           limit: `${POST_PER_FETCH}`,
           skip: `${pageParam}`,
         })}`,
