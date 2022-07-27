@@ -30,12 +30,14 @@ export const unfollowUser = async (
 ) => {
   const Follower = Parse.Object.extend("Following");
 
-  const TargetUser = Parse.Object.extend("User");
+  const User = new Parse.User();
+  User.id = currUser.id;
+  const TargetUser = new Parse.User();
   TargetUser.id = userId;
 
   const query = new Parse.Query(Follower);
 
-  query.equalTo("user", currUser);
+  query.equalTo("user", User);
   query.equalTo("target", TargetUser);
 
   const followingObject = await query.first();
