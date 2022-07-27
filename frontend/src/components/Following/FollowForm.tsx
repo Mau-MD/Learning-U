@@ -10,7 +10,7 @@ import {
 import axios, { AxiosError } from "axios";
 import { Field, Form, Formik } from "formik";
 import React from "react";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import * as Yup from "yup";
 import { ErrorType } from "../../types/requests";
 import { getConfig, useSession } from "../../utils/auth";
@@ -27,6 +27,7 @@ const schema = Yup.object({
 const FollowForm = () => {
   const toast = useToast();
   const { user } = useSession();
+  const queryClient = useQueryClient();
 
   const handleSubmit = (values: FollowForm) => {
     followUser.mutate(values.username);
@@ -50,6 +51,7 @@ const FollowForm = () => {
           description: `You are now following ${username}`,
           status: "success",
         });
+        queryClient.invalidateQueries("following");
       },
       onError: (error: AxiosError<ErrorType>) => {
         toast({
