@@ -2,9 +2,10 @@ import express from "express";
 import {
   followUser,
   getFollowers,
+  getFollowersAsUserObjects,
   getFollowersIds,
 } from "../following/following";
-import { setStatus } from "../following/status";
+import { findStatusByMultipleUsers, setStatus } from "../following/status";
 import { getAuthUser } from "../middleware/getAuthUser";
 import { RequestWUser } from "../types/user";
 import { BadRequestError } from "../utils/errors";
@@ -41,6 +42,14 @@ follow.post("/status", async (req: RequestWUser, res, next) => {
   }
 
   res.send(await setStatus(user, status));
+});
+
+follow.get("/following/status", async (req: RequestWUser, res, next) => {
+  const { user } = req;
+
+  const following = await getFollowersAsUserObjects(user);
+  const status = await findStatusByMultipleUsers(following);
+  res.send(status);
 });
 
 export default follow;
