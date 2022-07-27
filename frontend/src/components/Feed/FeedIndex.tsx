@@ -76,7 +76,7 @@ const FeedIndex = () => {
   };
 
   return (
-    <Box>
+    <Box w="100%">
       <HStack mt={10} gap={3}>
         <Heading>Feed</Heading>
         {isFetching && <Spinner />}
