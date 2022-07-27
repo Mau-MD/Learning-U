@@ -8,7 +8,7 @@ interface Props {
   status: string;
 }
 
-const FollwingCard = ({ username, userId, status }: Props) => {
+const FollowingCard = ({ username, userId, status }: Props) => {
   const { borderColor, invertedBackgroundColor } = useThemeColor();
   return (
     <HStack
@@ -27,4 +27,4 @@ const FollwingCard = ({ username, userId, status }: Props) => {
   );
 };
 
-export default FollwingCard;
+export default FollowingCard;
