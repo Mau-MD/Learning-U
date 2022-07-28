@@ -10,6 +10,7 @@ import course from "./src/routes/course";
 import resources from "./src/routes/resources";
 import post from "./src/routes/post";
 import follow from "./src/routes/follow";
+import suggestions from "./src/routes/suggestions";
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.use("/course", course);
 app.use("/resources", resources);
 app.use("/post", post);
 app.use("/follow", follow);
+app.use("/suggestions", suggestions);
 
 app.get("/", async (req, res) => {
   const testObject = new Parse.Object("test");
