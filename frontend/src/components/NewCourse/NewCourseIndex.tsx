@@ -1,4 +1,5 @@
 import {
+  Badge,
   Box,
   Button,
   Container,
@@ -8,8 +9,14 @@ import {
   FormHelperText,
   FormLabel,
   Heading,
+  HStack,
   Input,
+  Skeleton,
+  Stack,
+  Tag,
+  Text,
   useToast,
+  VStack,
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import React, { useState } from "react";
@@ -20,7 +27,7 @@ import { ErrorType } from "../../types/requests";
 import { ICourse } from "../../types/course";
 import { getConfig, useSession } from "../../utils/auth";
 import CourseCode from "./CourseCode";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { baseURL } from "../../utils/constants";
 
@@ -42,6 +49,19 @@ const NewCourseIndex = () => {
   const handleSubmit = (values: LearnForm) => {
     createCourse.mutate(values.name);
   };
+
+  const { data: suggestions, isFetching } = useQuery(
+    "suggested",
+    async () => {
+      if (!user) throw new Error("User is not defined");
+      const res = await axios.get<{ courseName: string; frequency: number }[]>(
+        `${baseURL}/suggestions/me`,
+        getConfig(user.sessionToken)
+      );
+      return res.data;
+    },
+    { enabled: !!user }
+  );
 
   const createCourse = useMutation(
     async (name: string) => {
@@ -89,7 +109,7 @@ const NewCourseIndex = () => {
           onSubmit={handleSubmit}
           validationSchema={schema}
         >
-          {({ errors, touched }) => (
+          {({ errors, touched, setFieldValue }) => (
             <Form>
               <Flex flexDir="column" gap={10}>
                 <FormControl mt={10} isInvalid={touched.name && !!errors.name}>
@@ -104,6 +124,32 @@ const NewCourseIndex = () => {
                     Node)
                   </FormHelperText>
                   <FormErrorMessage>{errors.name}</FormErrorMessage>
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Suggested Topics</FormLabel>
+                  {isFetching && (
+                    <>
+                      <Skeleton h="20px" w="250px" />
+                    </>
+                  )}
+                  <HStack>
+                    {suggestions &&
+                      !isFetching &&
+                      suggestions.map((suggestion) => (
+                        <Tag
+                          key={suggestion.courseName}
+                          cursor="pointer"
+                          onClick={() =>
+                            setFieldValue("name", suggestion.courseName)
+                          }
+                        >
+                          {suggestion.courseName}
+                        </Tag>
+                      ))}
+                  </HStack>
+                  <FormHelperText>
+                    Based on what your friends are learning
+                  </FormHelperText>
                 </FormControl>
                 <Flex gap={2}>
                   <Button
