@@ -38,6 +38,19 @@ const ProfileIndex = () => {
     { enabled: !!user }
   );
 
+  const { data: status } = useQuery(
+    `status-${id}`,
+    async () => {
+      if (!user) throw new Error("User not defined");
+      const res = await axios.get(
+        `${baseURL}/follow/status/${id}`,
+        getConfig(user?.sessionToken)
+      );
+      return res.data;
+    },
+    { enabled: !!user }
+  );
+
   return (
     <Container maxW="container.xl">
       <Flex mt={4} gap={10}>
@@ -59,17 +72,19 @@ const ProfileIndex = () => {
                 <Text>{profile.email}</Text>
               </VStack>
             )}
-            <Box
-              backgroundColor={invertedBackgroundColor}
-              borderColor={borderColor}
-              borderWidth={1}
-              borderRadius={4}
-              textAlign="center"
-              w={"90%"}
-              p={4}
-            >
-              This is a status
-            </Box>
+            {status && (
+              <Box
+                backgroundColor={invertedBackgroundColor}
+                borderColor={borderColor}
+                borderWidth={1}
+                borderRadius={4}
+                textAlign="center"
+                w={"90%"}
+                p={4}
+              >
+                {status.status}
+              </Box>
+            )}
           </VStack>
           <FollowingIndex width="100%" margin={0} />
         </Box>
