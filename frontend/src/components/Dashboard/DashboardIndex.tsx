@@ -25,7 +25,7 @@ const DashboardIndex = () => {
   const navigate = useNavigate();
   const { isFetching, user } = useSession();
 
-  const { data: courses } = useQuery(
+  const { data: courses, isLoading } = useQuery(
     "courses",
     async () => {
       if (!user) throw new Error();
@@ -55,20 +55,28 @@ const DashboardIndex = () => {
           templateColumns={["1fr", "1fr", "repeat(2, 1fr)", "repeat(3, 1fr)"]}
           gap="1em"
           mt={10}
+          mb={"200px"}
         >
-          {!courses ? (
+          {isLoading ? (
             <>
               <LoadingCard />
               <LoadingCard />
               <LoadingCard />
             </>
           ) : (
+            courses &&
             courses.map((course) => (
               <CourseCard
                 key={course.objectId}
                 link={course.objectId}
                 title={course.name}
-                src={course.images[2] ? course.images[2].regular : FALLBACK_IMG}
+                src={
+                  course.images
+                    ? course.images[2]
+                      ? course.images[2].regular
+                      : FALLBACK_IMG
+                    : FALLBACK_IMG
+                }
               />
             ))
           )}
