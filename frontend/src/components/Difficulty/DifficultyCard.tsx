@@ -7,6 +7,7 @@ import {
   Heading,
   HStack,
   Image,
+  Skeleton,
   Text,
 } from "@chakra-ui/react";
 import React from "react";
@@ -24,6 +25,7 @@ interface Props {
   phrase: string;
   courseTitle: string;
   difficulty: 1 | 2;
+  isLoading: boolean;
 }
 
 const DifficultyCard = ({
@@ -35,6 +37,7 @@ const DifficultyCard = ({
   phrase,
   courseTitle,
   difficulty,
+  isLoading,
 }: Props) => {
   const { backgroundColor, borderColor } = useThemeColor();
 
@@ -54,7 +57,9 @@ const DifficultyCard = ({
         h={{ base: "20vh", sm: "100%" }}
         display="flex"
       >
-        <Image src={src} fit="cover" w="100%" h="100%" />
+        <Skeleton isLoaded={!isLoading} w="100%">
+          <Image src={src} fit="cover" w="100%" h="100%" />
+        </Skeleton>
       </Box>
       <Box
         h="100%"

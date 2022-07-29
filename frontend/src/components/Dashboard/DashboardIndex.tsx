@@ -18,6 +18,9 @@ import { baseURL } from "../../utils/constants";
 import { ICourse } from "../../types/course";
 import LoadingCard from "../Loading/LoadingCard";
 
+export const FALLBACK_IMG =
+  "https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3540&q=80";
+
 const DashboardIndex = () => {
   const navigate = useNavigate();
   const { isFetching, user } = useSession();
@@ -65,7 +68,7 @@ const DashboardIndex = () => {
                 key={course.objectId}
                 link={course.objectId}
                 title={course.name}
-                src={course.images[2].regular}
+                src={course.images[2] ? course.images[2].regular : FALLBACK_IMG}
               />
             ))
           )}

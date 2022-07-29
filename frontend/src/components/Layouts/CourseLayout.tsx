@@ -7,6 +7,7 @@ import { useQuery } from "react-query";
 import { baseURL } from "../../utils/constants";
 import axios from "axios";
 import { ICourse } from "../../types/course";
+import { FALLBACK_IMG } from "../Dashboard/DashboardIndex";
 
 const CourseLayout = () => {
   const { id } = useParams();
@@ -32,8 +33,8 @@ const CourseLayout = () => {
         <Skeleton h={"40vh"} />
       ) : (
         <Banner
-          src={data?.images[0].regular || ""}
-          fallback={data?.images[0].thumb}
+          src={data?.images[0] ? data?.images[0].regular : FALLBACK_IMG}
+          fallback={data?.images[0] ? data?.images[0].thumb : FALLBACK_IMG}
         />
       )}
       <Container maxW={"container.xl"} mt="2rem">

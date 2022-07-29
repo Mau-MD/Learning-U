@@ -7,6 +7,7 @@ import { baseURL } from "../../utils/constants";
 import DifficultyCard from "./DifficultyCard";
 import { useQuery } from "react-query";
 import axios from "axios";
+import { FALLBACK_IMG } from "../Dashboard/DashboardIndex";
 
 const DifficultyIndex = () => {
   const [searchParams] = useSearchParams();
@@ -50,9 +51,10 @@ const DifficultyIndex = () => {
       </Heading>
       <Box display="flex" flexDir="column" my="1em" gap="1em" mb="20vh">
         <DifficultyCard
+          isLoading={isLoading}
           title="Beginners"
           progress={progress ? progress["1"] : undefined}
-          src={data?.images[2] ? data?.images[2].small : ""}
+          src={data?.images[2] ? data?.images[2].small : FALLBACK_IMG}
           phrase="You can do it!"
           courseId={id || ""}
           courseTitle={name || ""}
@@ -60,9 +62,10 @@ const DifficultyIndex = () => {
           difficulty={1}
         />
         <DifficultyCard
+          isLoading={isLoading}
           title="Advanced"
           progress={progress ? progress["2"] : undefined}
-          src={data?.images[3] ? data?.images[3].small : ""}
+          src={data?.images[3] ? data?.images[3].small : FALLBACK_IMG}
           courseId={id || ""}
           courseTitle={name || ""}
           phrase="Let's go"
