@@ -32,8 +32,8 @@ post.post("/", async (req: RequestWUser, res, next) => {
   }
 });
 
-post.get("/from/:username", async (req: RequestWUser, res, next) => {
-  const { username } = req.params;
+post.get("/from/:id", async (req: RequestWUser, res, next) => {
+  const { id } = req.params;
   const { limit, skip } = req.query;
 
   if (
@@ -46,11 +46,7 @@ post.get("/from/:username", async (req: RequestWUser, res, next) => {
     return;
   }
 
-  const posts = await getPostsByUsername(
-    username,
-    parseInt(limit),
-    parseInt(skip)
-  );
+  const posts = await getPostsByUser(id, parseInt(limit), parseInt(skip));
   res.send(posts);
 });
 

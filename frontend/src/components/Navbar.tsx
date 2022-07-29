@@ -53,7 +53,7 @@ const Navbar = () => {
               Feed
             </Button>
             <Button
-              onClick={() => navigate(`profile/${user?.username}`)}
+              onClick={() => navigate(`profile/${user?.objectId}`)}
               variant="link"
             >
               Profile
