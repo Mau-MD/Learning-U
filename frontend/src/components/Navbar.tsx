@@ -52,7 +52,12 @@ const Navbar = () => {
             <Button onClick={() => navigate("/feed")} variant="link">
               Feed
             </Button>
-            <Button variant="link">Profile</Button>
+            <Button
+              onClick={() => navigate(`profile/${user?.username}`)}
+              variant="link"
+            >
+              Profile
+            </Button>
           </Box>
         </Box>
         <Box>
