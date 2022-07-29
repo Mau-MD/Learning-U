@@ -22,9 +22,10 @@ import SetStatusForm from "./SetStatusForm";
 interface Props {
   width: string;
   margin: number;
+  userId?: string;
 }
 
-const FollowingIndex = ({ width = "30%", margin = 10 }: Props) => {
+const FollowingIndex = ({ width = "30%", margin = 10, userId }: Props) => {
   const { backgroundColor, borderColor } = useThemeColor();
   const { user } = useSession();
 
@@ -37,11 +38,15 @@ const FollowingIndex = ({ width = "30%", margin = 10 }: Props) => {
     isFetching,
     isLoading,
   } = useQuery(
-    "following",
+    `${userId ? "following-" + userId : "following"}`,
     async () => {
       if (!user) throw new Error("User not defined");
+
+      const url = userId
+        ? `follow/status/by/${userId}`
+        : "follow/following/status";
       const res = await axios.get<IFollowing[]>(
-        `${baseURL}/follow/following/status`,
+        `${baseURL}/${url}`,
         getConfig(user.sessionToken)
       );
       return res.data;
@@ -75,22 +80,24 @@ const FollowingIndex = ({ width = "30%", margin = 10 }: Props) => {
         {isFetching && <Spinner />}
       </HStack>
 
-      <HStack w={"100%"} mt={5}>
-        <Button
-          w={"100%"}
-          onClick={() => handleTabChange("status")}
-          isActive={tabSelected === "status"}
-        >
-          Status
-        </Button>
-        <Button
-          w={"100%"}
-          onClick={() => handleTabChange("follow")}
-          isActive={tabSelected === "follow"}
-        >
-          Follow
-        </Button>
-      </HStack>
+      {!userId && (
+        <HStack w={"100%"} mt={5}>
+          <Button
+            w={"100%"}
+            onClick={() => handleTabChange("status")}
+            isActive={tabSelected === "status"}
+          >
+            Status
+          </Button>
+          <Button
+            w={"100%"}
+            onClick={() => handleTabChange("follow")}
+            isActive={tabSelected === "follow"}
+          >
+            Follow
+          </Button>
+        </HStack>
+      )}
       {tabSelected === "status" && <SetStatusForm />}
       {tabSelected === "follow" && <FollowForm />}
       {isLoading && (
@@ -109,6 +116,7 @@ const FollowingIndex = ({ width = "30%", margin = 10 }: Props) => {
               username={followingStatus.user.username}
               status={followingStatus.status}
               userId={followingStatus.user.objectId}
+              showDeleteButton={!userId}
             />
           ))}
       </VStack>
