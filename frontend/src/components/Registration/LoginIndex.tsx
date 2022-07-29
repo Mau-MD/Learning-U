@@ -13,11 +13,11 @@ import axios, { AxiosError } from "axios";
 import { Field, Form, Formik } from "formik";
 import React from "react";
 import { useMutation } from "react-query";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useThemeColor from "../../hooks/useThemeColor";
 import { ErrorType } from "../../types/requests";
 import { IUser } from "../../types/user";
-import { persistUser } from "../../utils/auth";
+import { persistUser, useSession } from "../../utils/auth";
 import { baseURL } from "../../utils/constants";
 import * as Yup from "yup";
 
@@ -35,6 +35,7 @@ const LoginIndex = () => {
   const { backgroundColor, borderColor } = useThemeColor();
 
   const toast = useToast();
+  const navigate = useNavigate();
   const handleOnSubmit = (values: ILoginForm) => {
     handleLogin.mutate(values);
   };
@@ -47,6 +48,7 @@ const LoginIndex = () => {
     {
       onSuccess: (user) => {
         persistUser(user);
+        navigate("/dashboard", { replace: true });
         window.location.reload();
       },
       onError: (error: AxiosError<ErrorType>) => {
