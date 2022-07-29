@@ -41,7 +41,7 @@ export const getUserCoursesWithLimits = async (
   query.limit(limit);
   query.skip(skip);
 
-  const courses = await query.findAll();
+  const courses = await query.find();
 
   return courses;
 };
