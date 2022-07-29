@@ -22,9 +22,15 @@ interface Props {
   username: string;
   userId: string;
   status: string;
+  showDeleteButton?: boolean;
 }
 
-const FollowingCard = ({ username, userId, status }: Props) => {
+const FollowingCard = ({
+  username,
+  userId,
+  status,
+  showDeleteButton = true,
+}: Props) => {
   const { borderColor, invertedBackgroundColor } = useThemeColor();
 
   const queryClient = useQueryClient();
@@ -77,14 +83,16 @@ const FollowingCard = ({ username, userId, status }: Props) => {
         <Text>{username}</Text>
         <Text fontSize={"13px"}>{status}</Text>
       </Flex>
-      <IconButton
-        icon={<BiTrash />}
-        aria-label="Unfollow user"
-        size="sm"
-        colorScheme="red"
-        isLoading={unfollowUser.isLoading}
-        onClick={() => unfollowUser.mutate(userId)}
-      />
+      {showDeleteButton && (
+        <IconButton
+          icon={<BiTrash />}
+          aria-label="Unfollow user"
+          size="sm"
+          colorScheme="red"
+          isLoading={unfollowUser.isLoading}
+          onClick={() => unfollowUser.mutate(userId)}
+        />
+      )}
     </HStack>
   );
 };
