@@ -25,10 +25,10 @@ import NewPostForm from "./NewPostForm";
 const POST_PER_FETCH = 5;
 
 interface Props {
-  username?: string;
+  userId?: string;
 }
 
-const FeedIndex = ({ username }: Props) => {
+const FeedIndex = ({ userId }: Props) => {
   const { user } = useSession();
 
   const [openFeedForm, setOpenFeedForm] = useState(false);
@@ -39,12 +39,12 @@ const FeedIndex = ({ username }: Props) => {
     isFetching,
     isLoading,
   } = useInfiniteQuery(
-    `${username ? "posts-" + username : "posts"}`,
+    `${userId ? "posts-" + userId : "posts"}`,
     async ({ pageParam = 0 }) => {
       if (!user) {
         throw new Error("User is not defined");
       }
-      const url = username ? `post/from/${username}` : "post/following";
+      const url = userId ? `post/from/${userId}` : "post/following";
 
       const res = await axios.get<IPost[]>(
         `${baseURL}/${url}?${createSearchParams({
@@ -87,9 +87,11 @@ const FeedIndex = ({ username }: Props) => {
         <Heading>Feed</Heading>
         {isFetching && <Spinner />}
       </HStack>
-      <Button mt={5} onClick={() => setOpenFeedForm(!openFeedForm)}>
-        {openFeedForm ? "Close" : "Create a post"}
-      </Button>
+      {userId === user?.objectId && (
+        <Button mt={5} onClick={() => setOpenFeedForm(!openFeedForm)}>
+          {openFeedForm ? "Close" : "Create a post"}
+        </Button>
+      )}
       {openFeedForm && <NewPostForm />}
       {isLoading && (
         <Stack mt={10}>

@@ -90,7 +90,7 @@ const ProfileIndex = () => {
           </VStack>
           <FollowingIndex width="100%" margin={0} userId={id} />
         </Box>
-        <FeedIndex username={id} />
+        <FeedIndex userId={id} />
       </Flex>
     </Container>
   );
