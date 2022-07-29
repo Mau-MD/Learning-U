@@ -19,6 +19,7 @@ import { createSearchParams } from "react-router-dom";
 import { IPost } from "../../types/post";
 import { getConfig, useSession } from "../../utils/auth";
 import { baseURL } from "../../utils/constants";
+import { debounce } from "../../utils/debounce";
 import FeedCard from "./FeedCard";
 import NewPostForm from "./NewPostForm";
 
@@ -72,14 +73,14 @@ const FeedIndex = ({ userId }: Props) => {
     };
   }, []);
 
-  const handlePageBottom = () => {
+  const handlePageBottom = debounce(() => {
     if (
       window.innerHeight + window.scrollY >= document.body.offsetHeight &&
       !isFetching
     ) {
       fetchNextPage();
     }
-  };
+  }, 500);
 
   const renderCreatePostButton = () => {
     if (!userId || user?.objectId === userId)
@@ -123,11 +124,9 @@ const FeedIndex = ({ userId }: Props) => {
             ))
           )}
       </VStack>
-      {isFetching && (
-        <Center mb={5}>
-          <Spinner />
-        </Center>
-      )}
+      <Center mb={5} opacity={isFetching ? 1 : 0}>
+        <Spinner />
+      </Center>
     </Box>
   );
 };
