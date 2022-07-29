@@ -6,9 +6,14 @@ import {
   getFollowersIds,
   unfollowUser,
 } from "../following/following";
-import { findStatusByMultipleUsers, setStatus } from "../following/status";
+import {
+  findStatusByMultipleUsers,
+  findStatusByUser,
+  setStatus,
+} from "../following/status";
 import { getAuthUser } from "../middleware/getAuthUser";
 import { RequestWUser } from "../types/user";
+import { getUserById } from "../user/user";
 import { BadRequestError } from "../utils/errors";
 
 const follow = express.Router();
@@ -51,6 +56,13 @@ follow.get("/following/status", async (req: RequestWUser, res, next) => {
   const following = await getFollowersAsUserObjects(user);
   const status = await findStatusByMultipleUsers(following);
   res.send(status);
+});
+
+follow.get("/status/:id", async (req: RequestWUser, res, next) => {
+  const { id } = req.params;
+  const user = (await getUserById(id)) as Parse.User<Parse.Attributes>;
+  const status = await findStatusByUser(user);
+  res.send(status[0]);
 });
 
 follow.delete("/:userId", async (req: RequestWUser, res, next) => {
