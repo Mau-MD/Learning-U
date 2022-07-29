@@ -19,7 +19,12 @@ import FollowForm from "./FollowForm";
 import FollowingCard from "./FollowingCard";
 import SetStatusForm from "./SetStatusForm";
 
-const FollowingIndex = () => {
+interface Props {
+  width: string;
+  margin: number;
+}
+
+const FollowingIndex = ({ width = "30%", margin = 10 }: Props) => {
   const { backgroundColor, borderColor } = useThemeColor();
   const { user } = useSession();
 
@@ -54,13 +59,13 @@ const FollowingIndex = () => {
 
   return (
     <Box
-      w="30%"
+      w={width}
       h="85vh"
       backgroundColor={backgroundColor}
       borderColor={borderColor}
       borderWidth={1}
       padding={5}
-      margin={10}
+      margin={margin}
       marginRight={0}
     >
       <HStack gap={2}>
