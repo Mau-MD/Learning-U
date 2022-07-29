@@ -45,13 +45,14 @@ course.post("/new", async (req: RequestWUser, res, next) => {
 
 course.get("/me", async (req: RequestWUser, res, next) => {
   const { user } = req;
-  const { limit, skip } = req.query;
+  const { limit, skip, query } = req.query;
 
   if (
     !limit ||
     typeof limit !== "string" ||
     !skip ||
-    typeof skip !== "string"
+    typeof skip !== "string" ||
+    typeof query !== "string"
   ) {
     next(new BadRequestError("Missing parameters"));
     return;
@@ -60,7 +61,8 @@ course.get("/me", async (req: RequestWUser, res, next) => {
   const courses = await getUserCoursesWithLimits(
     user,
     parseInt(limit),
-    parseInt(skip)
+    parseInt(skip),
+    query
   );
   res.send(courses);
 });

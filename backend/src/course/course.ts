@@ -31,13 +31,15 @@ export const getUserCourses = async (user: Parse.Object<Parse.Attributes>) => {
 export const getUserCoursesWithLimits = async (
   user: Parse.Object<Parse.Attributes>,
   limit: number,
-  skip: number
+  skip: number,
+  searchQuery: string
 ) => {
   const Course = Parse.Object.extend("Course");
   const query = new Parse.Query(Course);
 
   query.equalTo("user", user);
   query.descending("createdAt");
+  query.contains("title", searchQuery);
   query.limit(limit);
   query.skip(skip);
 
