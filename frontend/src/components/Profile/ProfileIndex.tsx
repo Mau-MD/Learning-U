@@ -7,6 +7,8 @@ import {
   VStack,
   Text,
   Flex,
+  Skeleton,
+  Spinner,
 } from "@chakra-ui/react";
 import axios from "axios";
 import React from "react";
@@ -25,7 +27,7 @@ const ProfileIndex = () => {
   const { id } = useParams();
   const { user } = useSession();
 
-  const { data: profile } = useQuery(
+  const { data: profile, isLoading } = useQuery(
     `${id}`,
     async () => {
       if (!user) throw new Error("User not defined");
@@ -38,7 +40,7 @@ const ProfileIndex = () => {
     { enabled: !!user }
   );
 
-  const { data: status } = useQuery(
+  const { data: status, isLoading: isLoadingStatus } = useQuery(
     `status-${id}`,
     async () => {
       if (!user) throw new Error("User not defined");
@@ -66,14 +68,20 @@ const ProfileIndex = () => {
             gap={3}
             mb={5}
           >
-            <Avatar name={profile.username} />
-            {profile && (
-              <VStack>
-                <Heading size={"md"}>{profile.username}</Heading>
-                <Text>{profile.email}</Text>
-              </VStack>
+            {isLoading || !profile ? (
+              <Spinner />
+            ) : (
+              <>
+                <Avatar name={profile.username} />
+                {profile && (
+                  <VStack>
+                    <Heading size={"md"}>{profile.username}</Heading>
+                    <Text>{profile.email}</Text>
+                  </VStack>
+                )}
+              </>
             )}
-            {status && (
+            {status ? (
               <Box
                 backgroundColor={invertedBackgroundColor}
                 borderColor={borderColor}
@@ -86,6 +94,8 @@ const ProfileIndex = () => {
               >
                 {status.status}
               </Box>
+            ) : (
+              <Spinner />
             )}
           </VStack>
           <FollowingIndex width="100%" margin={0} userId={id} />
