@@ -45,20 +45,22 @@ const Navbar = () => {
           <Box>
             <Text fontWeight="bold">Learning U</Text>
           </Box>
-          <Box display="flex" gap={2}>
-            <Button onClick={() => navigate("/dashboard")} variant="link">
-              Dashboard
-            </Button>
-            <Button onClick={() => navigate("/feed")} variant="link">
-              Feed
-            </Button>
-            <Button
-              onClick={() => navigate(`profile/${user?.objectId}`)}
-              variant="link"
-            >
-              Profile
-            </Button>
-          </Box>
+          {user && (
+            <Box display="flex" gap={2}>
+              <Button onClick={() => navigate("/dashboard")} variant="link">
+                Dashboard
+              </Button>
+              <Button onClick={() => navigate("/feed")} variant="link">
+                Feed
+              </Button>
+              <Button
+                onClick={() => navigate(`profile/${user?.objectId}`)}
+                variant="link"
+              >
+                Profile
+              </Button>
+            </Box>
+          )}
         </Box>
         <Box>
           <IconButton
