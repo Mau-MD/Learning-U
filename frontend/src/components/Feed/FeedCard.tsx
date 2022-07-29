@@ -95,7 +95,7 @@ const FeedCard = ({
             onClose={onClose}
             courseId={courseId}
             courseName={courseName || ""}
-            courseCreatedAt={createdAt}
+            courseCreatedAt={courseCreatedAt || ""}
             isOpen={isOpen}
           />
         </Flex>
