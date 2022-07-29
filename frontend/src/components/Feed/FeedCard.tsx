@@ -35,11 +35,6 @@ interface Props {
   userId: string;
 }
 
-interface CloneForm {
-  name: string;
-  code: string;
-}
-
 const FeedCard = ({
   content,
   courseName,
@@ -56,48 +51,6 @@ const FeedCard = ({
   const { user } = useSession();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const cloneCourse = useMutation(
-    async ({ name, code }: CloneForm) => {
-      if (!user) {
-        throw new Error("User not defined");
-        return;
-      }
-      const res = await axios.post<ICourse>(
-        `${baseURL}/course/clone/${code}`,
-        {
-          name,
-        },
-        getConfig(user?.sessionToken)
-      );
-      return res.data;
-    },
-    {
-      onSuccess: (course) => {
-        toast({
-          status: "success",
-          title: "Course cloned!",
-          description: "The course has successfully been cloned",
-          isClosable: true,
-        });
-        navigate(`/courses/${course?.objectId}/difficulty`);
-      },
-      onError: (error: AxiosError<ErrorType>) => {
-        toast({
-          title: "An error ocurred",
-          description: error.response?.data.message,
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-        });
-      },
-    }
-  );
-
-  const handleCloneCourse = () => {
-    if (!courseId || !courseName) return;
-    cloneCourse.mutate({ code: courseId, name: courseName });
-  };
 
   return (
     <HStack
@@ -137,9 +90,7 @@ const FeedCard = ({
               </Text>
             )}
           </Box>
-          <Button onClick={() => onOpen()} isLoading={cloneCourse.isLoading}>
-            Clone Course
-          </Button>
+          <Button onClick={() => onOpen()}>Clone Course</Button>
           <CloneModal
             onClose={onClose}
             courseId={courseId}
