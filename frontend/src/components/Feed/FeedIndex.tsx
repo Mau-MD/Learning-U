@@ -81,17 +81,23 @@ const FeedIndex = ({ userId }: Props) => {
     }
   };
 
-  return (
-    <Box w="100%">
-      <HStack mt={10} gap={3}>
-        <Heading>Feed</Heading>
-        {isFetching && <Spinner />}
-      </HStack>
-      {userId === user?.objectId && (
+  const renderCreatePostButton = () => {
+    if (!userId || user?.objectId === userId)
+      return (
         <Button mt={5} onClick={() => setOpenFeedForm(!openFeedForm)}>
           {openFeedForm ? "Close" : "Create a post"}
         </Button>
-      )}
+      );
+    return <></>;
+  };
+
+  return (
+    <Box w="100%" mt={userId ? 0 : 10}>
+      <HStack gap={3}>
+        <Heading>Feed</Heading>
+        {isFetching && <Spinner />}
+      </HStack>
+      {renderCreatePostButton()}
       {openFeedForm && <NewPostForm />}
       {isLoading && (
         <Stack mt={10}>
