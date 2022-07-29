@@ -1,5 +1,6 @@
 import Parse from "parse/node";
 import { getFollowersAsUserObjects } from "../following/following";
+import { getUserByUsername } from "../user/user";
 
 export const createPost = (
   content: string,
@@ -76,12 +77,4 @@ export const getFollowingPosts = async (
   query.limit(limit);
   query.includeAll();
   return await query.find();
-};
-
-export const getUserByUsername = async (username: string) => {
-  const User = Parse.Object.extend("User");
-  const query = new Parse.Query(User);
-
-  query.equalTo("username", username);
-  return await query.first();
 };
