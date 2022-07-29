@@ -58,7 +58,6 @@ const DifficultyIndex = () => {
           phrase="You can do it!"
           courseId={id || ""}
           courseTitle={name || ""}
-          started
           difficulty={1}
         />
         <DifficultyCard
