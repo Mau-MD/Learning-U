@@ -66,7 +66,7 @@ const ProfileIndex = () => {
             gap={3}
             mb={5}
           >
-            <Avatar />
+            <Avatar name={profile.username} />
             {profile && (
               <VStack>
                 <Heading size={"md"}>{profile.username}</Heading>

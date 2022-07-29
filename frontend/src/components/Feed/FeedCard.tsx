@@ -105,7 +105,7 @@ const FeedCard = ({
     >
       <Flex flexDir="column" p={4} gap={4} minW={courseId ? "80%" : "100%"}>
         <Flex alignItems="center" gap={4}>
-          <Avatar />
+          <Avatar name={username} />
           <Flex flexDirection="column">
             <HashLink
               to={`/profile/${userId}#profile`}

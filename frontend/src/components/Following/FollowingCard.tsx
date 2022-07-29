@@ -78,7 +78,7 @@ const FollowingCard = ({
       borderRadius={4}
       px={3}
     >
-      <Avatar size={"sm"} />
+      <Avatar size={"sm"} name={username} />
       <Flex p={2} w="100%" flexDir={"column"}>
         <Text>{username}</Text>
         <Text fontSize={"13px"}>{status}</Text>
