@@ -52,7 +52,7 @@ const ProfileIndex = () => {
   );
 
   return (
-    <Container maxW="container.xl">
+    <Container maxW="container.xl" id="profile">
       <Flex mt={4} gap={10}>
         <Box w={"30%"}>
           <VStack
@@ -61,7 +61,8 @@ const ProfileIndex = () => {
             borderWidth={1}
             borderRadius={4}
             h={"30vh"}
-            p={10}
+            py={10}
+            px={4}
             gap={3}
             mb={5}
           >
@@ -80,13 +81,14 @@ const ProfileIndex = () => {
                 borderRadius={4}
                 textAlign="center"
                 w={"90%"}
-                p={4}
+                px={4}
+                py={2}
               >
                 {status.status}
               </Box>
             )}
           </VStack>
-          <FollowingIndex width="100%" margin={0} />
+          <FollowingIndex width="100%" margin={0} userId={id} />
         </Box>
         <FeedIndex username={id} />
       </Flex>
