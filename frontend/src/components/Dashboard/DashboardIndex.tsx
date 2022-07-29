@@ -8,13 +8,14 @@ import {
   Heading,
   HStack,
   Image,
+  Input,
   Skeleton,
   Spinner,
   Stack,
   Text,
   VStack,
 } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import React, { ReactEventHandler, useEffect, useState } from "react";
 import { useInfiniteQuery, useQuery } from "react-query";
 import { createSearchParams, useNavigate } from "react-router-dom";
 import { getConfig, useSession } from "../../utils/auth";
@@ -24,6 +25,7 @@ import { baseURL } from "../../utils/constants";
 import { ICourse } from "../../types/course";
 import LoadingCard from "../Loading/LoadingCard";
 import NoData from "./NoData";
+import { debounce } from "../../utils/debounce";
 
 export const FALLBACK_IMG =
   "https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3540&q=80";
@@ -33,13 +35,15 @@ const DashboardIndex = () => {
   const navigate = useNavigate();
   const { user } = useSession();
 
+  const [searchQuery, setSearchQuery] = useState("");
+
   const {
     data: courses,
     fetchNextPage,
     isFetching,
     isLoading,
   } = useInfiniteQuery(
-    "courses",
+    ["courses", searchQuery],
     async ({ pageParam = 0 }) => {
       if (!user) {
         throw new Error("User is not defined");
@@ -48,6 +52,7 @@ const DashboardIndex = () => {
         `${baseURL}/course/me?${createSearchParams({
           limit: `${COURSES_PER_FETCH}`,
           skip: `${pageParam}`,
+          query: searchQuery,
         })}`,
         getConfig(user?.sessionToken)
       );
@@ -71,20 +76,30 @@ const DashboardIndex = () => {
     };
   }, []);
 
-  const handlePageBottom = () => {
+  const handlePageBottom = debounce(() => {
     if (
       window.innerHeight + window.scrollY >= document.body.offsetHeight &&
       !isFetching
     ) {
       fetchNextPage();
     }
-  };
+  }, 500);
+
+  const handleSearchChange = debounce(
+    (query: string) => setSearchQuery(query.toLocaleLowerCase()),
+    300
+  );
+
   return (
     <Container maxW="container.xl">
       <Flex flexDir={"column"} gap={4}>
         <Heading as="h1" fontWeight="bold" fontSize="4xl" mt={10}>
           Learning Dashboard
         </Heading>
+        <Input
+          placeholder="Search here!"
+          onChange={(e) => handleSearchChange(e.currentTarget.value)}
+        />
         <Button w="fit-content" onClick={() => navigate("new")}>
           I want to learn something new...
         </Button>
