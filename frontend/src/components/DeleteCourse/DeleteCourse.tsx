@@ -19,7 +19,7 @@ import React, { useState } from "react";
 import { IResource } from "../../types/resource";
 import { getConfig, useSession } from "../../utils/auth";
 import { baseURL } from "../../utils/constants";
-import VideoCardToDelete from "./VideoCardToDelete";
+import VideoCardPreview from "./VideoCardPreview";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { ErrorType } from "../../types/requests";
 
@@ -141,7 +141,7 @@ const DeleteCourse = ({ isOpen, onClose, courseId }: Props) => {
             ) : (
               resources &&
               resources.map((resource) => (
-                <VideoCardToDelete
+                <VideoCardPreview
                   key={resource.objectId}
                   title={resource.title}
                   objectId={resource.videoId}

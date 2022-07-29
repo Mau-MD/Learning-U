@@ -10,7 +10,7 @@ interface Props {
   objectId: string;
   onClick?: (objectId: string) => void;
 }
-const VideoCardToDelete = ({
+const VideoCardPreview = ({
   src,
   title,
   objectId,
@@ -53,4 +53,4 @@ const VideoCardToDelete = ({
   );
 };
 
-export default VideoCardToDelete;
+export default VideoCardPreview;
