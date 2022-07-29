@@ -55,8 +55,9 @@ const ProfileIndex = () => {
 
   return (
     <Container maxW="container.xl" id="profile">
-      <Flex mt={4} gap={10}>
+      <Flex gap={10} mt={10}>
         <Box w={"30%"}>
+          <Heading mb={5}>Profile</Heading>
           <VStack
             backgroundColor={backgroundColor}
             borderColor={borderColor}

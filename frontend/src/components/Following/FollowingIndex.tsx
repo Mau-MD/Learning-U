@@ -20,8 +20,8 @@ import FollowingCard from "./FollowingCard";
 import SetStatusForm from "./SetStatusForm";
 
 interface Props {
-  width: string;
-  margin: number;
+  width?: string;
+  margin?: number;
   userId?: string;
 }
 
