@@ -23,7 +23,12 @@ import FeedCard from "./FeedCard";
 import NewPostForm from "./NewPostForm";
 
 const POST_PER_FETCH = 5;
-const FeedIndex = () => {
+
+interface Props {
+  username?: string;
+}
+
+const FeedIndex = ({ username }: Props) => {
   const { user } = useSession();
 
   const [openFeedForm, setOpenFeedForm] = useState(false);
@@ -34,14 +39,15 @@ const FeedIndex = () => {
     isFetching,
     isLoading,
   } = useInfiniteQuery(
-    "posts",
+    `${username ? "posts-" + username : "posts"}`,
     async ({ pageParam = 0 }) => {
       if (!user) {
         throw new Error("User is not defined");
       }
+      const url = username ? `post/from/${username}` : "post/following";
 
       const res = await axios.get<IPost[]>(
-        `${baseURL}/post/following?${createSearchParams({
+        `${baseURL}/${url}?${createSearchParams({
           limit: `${POST_PER_FETCH}`,
           skip: `${pageParam}`,
         })}`,
