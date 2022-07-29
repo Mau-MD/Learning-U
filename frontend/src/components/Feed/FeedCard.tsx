@@ -18,7 +18,9 @@ import { ICourse } from "../../types/course";
 import { ErrorType } from "../../types/requests";
 import { getConfig, useSession } from "../../utils/auth";
 import { baseURL } from "../../utils/constants";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
+import { scrollWithOffset } from "../../utils/scrollWithOffset";
 
 interface Props {
   username: string;
@@ -28,6 +30,7 @@ interface Props {
   courseDifficulty?: number;
   createdAt: string;
   courseCreatedAt?: string;
+  userId: string;
 }
 
 interface CloneForm {
@@ -42,6 +45,7 @@ const FeedCard = ({
   createdAt,
   courseId,
   courseCreatedAt,
+  userId,
 }: Props) => {
   const { backgroundColor, borderColor } = useThemeColor();
 
@@ -103,7 +107,13 @@ const FeedCard = ({
         <Flex alignItems="center" gap={4}>
           <Avatar />
           <Flex flexDirection="column">
-            <Text fontWeight="bold">{username}</Text>
+            <HashLink
+              to={`/profile/${userId}#profile`}
+              smooth
+              scroll={(el) => scrollWithOffset(el, -20)}
+            >
+              <Text fontWeight="bold">{username}</Text>
+            </HashLink>
             <Text fontSize={14}>
               {formatDistanceToNow(new Date(createdAt))} ago
             </Text>

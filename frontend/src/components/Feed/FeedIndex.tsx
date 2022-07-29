@@ -106,6 +106,7 @@ const FeedIndex = ({ username }: Props) => {
                 key={post.objectId}
                 content={post.content}
                 username={post.user.username}
+                userId={post.user.objectId}
                 createdAt={post.createdAt}
                 courseId={post.course?.objectId}
                 courseName={post.course?.name}
