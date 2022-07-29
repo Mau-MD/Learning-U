@@ -9,13 +9,14 @@ import {
   HStack,
   Image,
   Skeleton,
+  Spinner,
   Stack,
   Text,
   VStack,
 } from "@chakra-ui/react";
-import React from "react";
-import { useQuery } from "react-query";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useInfiniteQuery, useQuery } from "react-query";
+import { createSearchParams, useNavigate } from "react-router-dom";
 import { getConfig, useSession } from "../../utils/auth";
 import CourseCard from "./CourseCard";
 import axios from "axios";
@@ -27,27 +28,57 @@ import NoData from "./NoData";
 export const FALLBACK_IMG =
   "https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3540&q=80";
 
+const COURSES_PER_FETCH = 6;
 const DashboardIndex = () => {
   const navigate = useNavigate();
-  const { isFetching, user } = useSession();
+  const { user } = useSession();
 
-  const { data: courses, isLoading } = useQuery(
+  const {
+    data: courses,
+    fetchNextPage,
+    isFetching,
+    isLoading,
+  } = useInfiniteQuery(
     "courses",
-    async () => {
-      if (!user) throw new Error();
-
+    async ({ pageParam = 0 }) => {
+      if (!user) {
+        throw new Error("User is not defined");
+      }
       const res = await axios.get<ICourse[]>(
-        `${baseURL}/course/me`,
+        `${baseURL}/course/me?${createSearchParams({
+          limit: `${COURSES_PER_FETCH}`,
+          skip: `${pageParam}`,
+        })}`,
         getConfig(user?.sessionToken)
       );
 
-      return res.data;
+      return { data: res.data, currentPage: pageParam };
     },
     {
-      enabled: !isFetching,
+      getNextPageParam: (params) => {
+        if (params.data.length < COURSES_PER_FETCH) return undefined;
+        return params.currentPage + params.data.length;
+      },
+      enabled: !!user,
     }
   );
 
+  useEffect(() => {
+    window.addEventListener("scroll", handlePageBottom);
+
+    return () => {
+      window.removeEventListener("scroll", handlePageBottom);
+    };
+  }, []);
+
+  const handlePageBottom = () => {
+    if (
+      window.innerHeight + window.scrollY >= document.body.offsetHeight &&
+      !isFetching
+    ) {
+      fetchNextPage();
+    }
+  };
   return (
     <Container maxW="container.xl">
       <Flex flexDir={"column"} gap={4}>
@@ -57,7 +88,7 @@ const DashboardIndex = () => {
         <Button w="fit-content" onClick={() => navigate("new")}>
           I want to learn something new...
         </Button>
-        {courses && courses.length === 0 && <NoData />}
+        {courses && courses.pages[0].data.length === 0 && <NoData />}
         <Grid
           templateColumns={["1fr", "1fr", "repeat(2, 1fr)", "repeat(3, 1fr)"]}
           gap="1em"
@@ -72,20 +103,29 @@ const DashboardIndex = () => {
             </>
           ) : (
             courses &&
-            courses.map((course) => (
-              <CourseCard
-                key={course.objectId}
-                link={course.objectId}
-                title={course.name}
-                src={
-                  course.images
-                    ? course.images[2]
-                      ? course.images[2].regular
+            courses.pages.map((page) =>
+              page.data.map((course) => (
+                <CourseCard
+                  key={course.objectId}
+                  link={course.objectId}
+                  title={course.name}
+                  src={
+                    course.images
+                      ? course.images[2]
+                        ? course.images[2].regular
+                        : FALLBACK_IMG
                       : FALLBACK_IMG
-                    : FALLBACK_IMG
-                }
-              />
-            ))
+                  }
+                />
+              ))
+            )
+          )}
+          {isFetching && (
+            <>
+              <LoadingCard />
+              <LoadingCard />
+              <LoadingCard />
+            </>
           )}
         </Grid>
       </Flex>
