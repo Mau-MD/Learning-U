@@ -1,12 +1,17 @@
 import {
+  Box,
   Button,
+  Center,
   Container,
   Flex,
   Grid,
   Heading,
   HStack,
+  Image,
   Skeleton,
   Stack,
+  Text,
+  VStack,
 } from "@chakra-ui/react";
 import React from "react";
 import { useQuery } from "react-query";
@@ -17,6 +22,7 @@ import axios from "axios";
 import { baseURL } from "../../utils/constants";
 import { ICourse } from "../../types/course";
 import LoadingCard from "../Loading/LoadingCard";
+import NoData from "./NoData";
 
 export const FALLBACK_IMG =
   "https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3540&q=80";
@@ -51,6 +57,7 @@ const DashboardIndex = () => {
         <Button w="fit-content" onClick={() => navigate("new")}>
           I want to learn something new...
         </Button>
+        {courses && courses.length === 0 && <NoData />}
         <Grid
           templateColumns={["1fr", "1fr", "repeat(2, 1fr)", "repeat(3, 1fr)"]}
           gap="1em"
