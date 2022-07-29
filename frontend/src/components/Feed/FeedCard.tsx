@@ -7,6 +7,7 @@ import {
   Heading,
   HStack,
   Text,
+  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import React from "react";
@@ -21,6 +22,7 @@ import { baseURL } from "../../utils/constants";
 import { Link, useNavigate } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import { scrollWithOffset } from "../../utils/scrollWithOffset";
+import CloneModal from "./CloneModal";
 
 interface Props {
   username: string;
@@ -52,6 +54,8 @@ const FeedCard = ({
   const toast = useToast();
   const navigate = useNavigate();
   const { user } = useSession();
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const cloneCourse = useMutation(
     async ({ name, code }: CloneForm) => {
@@ -108,7 +112,7 @@ const FeedCard = ({
           <Avatar name={username} />
           <Flex flexDirection="column">
             <HashLink
-              to={`/profile/${userId}#profile`}
+              to={`/profile/${userId}#top`}
               smooth
               scroll={(el) => scrollWithOffset(el, -20)}
             >
@@ -133,12 +137,16 @@ const FeedCard = ({
               </Text>
             )}
           </Box>
-          <Button
-            onClick={() => handleCloneCourse()}
-            isLoading={cloneCourse.isLoading}
-          >
+          <Button onClick={() => onOpen()} isLoading={cloneCourse.isLoading}>
             Clone Course
           </Button>
+          <CloneModal
+            onClose={onClose}
+            courseId={courseId}
+            courseName={courseName || ""}
+            courseCreatedAt={createdAt}
+            isOpen={isOpen}
+          />
         </Flex>
       )}
     </HStack>
