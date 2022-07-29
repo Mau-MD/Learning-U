@@ -12,6 +12,7 @@ import RequireAuth from "./components/Registration/RequireAuth";
 import NewCourseIndex from "./components/NewCourse/NewCourseIndex";
 import FeedIndex from "./components/Feed/FeedIndex";
 import FollowingLayout from "./components/Following/FollowingLayout";
+import ProfileIndex from "./components/Profile/ProfileIndex";
 
 function App() {
   return (
@@ -53,6 +54,16 @@ function App() {
           }
         >
           <Route index element={<FeedIndex />} />
+        </Route>
+        <Route
+          path="profile/:id"
+          element={
+            <RequireAuth>
+              <Outlet />
+            </RequireAuth>
+          }
+        >
+          <Route index element={<ProfileIndex />} />
         </Route>
       </Routes>
     </BrowserRouter>
