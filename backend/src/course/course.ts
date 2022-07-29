@@ -39,7 +39,7 @@ export const getUserCoursesWithLimits = async (
 
   query.equalTo("user", user);
   query.descending("createdAt");
-  query.contains("title", searchQuery);
+  query.matches("name", new RegExp(searchQuery), "i");
   query.limit(limit);
   query.skip(skip);
 
