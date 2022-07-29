@@ -12,6 +12,7 @@ import {
   setStatus,
 } from "../following/status";
 import { getAuthUser } from "../middleware/getAuthUser";
+import { getFollowingPosts } from "../post/post";
 import { RequestWUser } from "../types/user";
 import { getUserById } from "../user/user";
 import { BadRequestError } from "../utils/errors";
@@ -48,6 +49,14 @@ follow.post("/status", async (req: RequestWUser, res, next) => {
   }
 
   res.send(await setStatus(user, status));
+});
+
+follow.get("/status/by/:id", async (req: RequestWUser, res, next) => {
+  const { id } = req.params;
+  const user = (await getUserById(id)) as Parse.User<Parse.Attributes>;
+  const following = await getFollowersAsUserObjects(user);
+  const status = await findStatusByMultipleUsers(following);
+  res.send(status);
 });
 
 follow.get("/following/status", async (req: RequestWUser, res, next) => {
