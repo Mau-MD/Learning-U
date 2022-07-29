@@ -41,6 +41,24 @@ export const getPostsByUser = async (
   return await query.find();
 };
 
+export const getPostsByUsername = async (
+  username: string,
+  limit: number,
+  skip: number
+) => {
+  const Post = Parse.Object.extend("Post");
+
+  const query = new Parse.Query(Post);
+  const user = await getUserByUsername(username);
+
+  query.equalTo("user", user);
+  query.descending("createdAt");
+  query.skip(skip);
+  query.limit(limit);
+  query.includeAll();
+  return await query.find();
+};
+
 export const getFollowingPosts = async (
   user: Parse.User<Parse.Attributes>,
   limit: number,
@@ -58,4 +76,12 @@ export const getFollowingPosts = async (
   query.limit(limit);
   query.includeAll();
   return await query.find();
+};
+
+export const getUserByUsername = async (username: string) => {
+  const User = Parse.Object.extend("User");
+  const query = new Parse.Query(User);
+
+  query.equalTo("username", username);
+  return await query.first();
 };

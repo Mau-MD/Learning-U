@@ -1,6 +1,11 @@
 import express from "express";
 import { getAuthUser } from "../middleware/getAuthUser";
-import { createPost, getFollowingPosts, getPostsByUser } from "../post/post";
+import {
+  createPost,
+  getFollowingPosts,
+  getPostsByUser,
+  getPostsByUsername,
+} from "../post/post";
 import { RequestWUser } from "../types/user";
 import { BadRequestError } from "../utils/errors";
 
@@ -25,6 +30,28 @@ post.post("/", async (req: RequestWUser, res, next) => {
     next(new BadRequestError(err));
     return;
   }
+});
+
+post.get("/from/:username", async (req: RequestWUser, res, next) => {
+  const { username } = req.params;
+  const { limit, skip } = req.query;
+
+  if (
+    !limit ||
+    typeof limit !== "string" ||
+    !skip ||
+    typeof skip !== "string"
+  ) {
+    next(new BadRequestError("Missing parameters"));
+    return;
+  }
+
+  const posts = await getPostsByUsername(
+    username,
+    parseInt(limit),
+    parseInt(skip)
+  );
+  res.send(posts);
 });
 
 post.get("/me", async (req: RequestWUser, res, next) => {
