@@ -16,6 +16,7 @@ import { getConfig, useSession } from "../../utils/auth";
 import { baseURL } from "../../utils/constants";
 import { Select } from "chakra-react-select";
 import { ErrorType } from "../../types/requests";
+import { createSearchParams } from "react-router-dom";
 
 interface PostValues {
   content: string;
@@ -48,10 +49,15 @@ const NewPostForm = () => {
       if (!user) throw new Error();
 
       const res = await axios.get<ICourse[]>(
-        `${baseURL}/course/me`,
+        `${baseURL}/course/me?${createSearchParams({
+          skip: "0",
+          limit: "100",
+          query: "",
+        })}`,
         getConfig(user?.sessionToken)
       );
 
+      console.log(res.data);
       return convertCoursesToValueLabel(res.data);
     },
     {
