@@ -7,6 +7,7 @@ import {
   getCourseByUserAndId,
   getProgressByCourse,
   getUserCourses,
+  getUserCoursesWithLimits,
   saveResources,
 } from "../course/course";
 import { getAuthUser } from "../middleware/getAuthUser";
@@ -44,8 +45,23 @@ course.post("/new", async (req: RequestWUser, res, next) => {
 
 course.get("/me", async (req: RequestWUser, res, next) => {
   const { user } = req;
+  const { limit, skip } = req.query;
 
-  const courses = await getUserCourses(user);
+  if (
+    !limit ||
+    typeof limit !== "string" ||
+    !skip ||
+    typeof skip !== "string"
+  ) {
+    next(new BadRequestError("Missing parameters"));
+    return;
+  }
+
+  const courses = await getUserCoursesWithLimits(
+    user,
+    parseInt(limit),
+    parseInt(skip)
+  );
   res.send(courses);
 });
 
