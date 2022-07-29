@@ -6,16 +6,16 @@ import useThemeColor from "../../hooks/useThemeColor";
 interface Props {
   src: string;
   title: string;
-  active: boolean;
+  active?: boolean;
   objectId: string;
-  onClick: (objectId: string) => void;
+  onClick?: (objectId: string) => void;
 }
 const VideoCardToDelete = ({
   src,
   title,
   objectId,
   onClick,
-  active,
+  active = false,
 }: Props) => {
   const { backgroundColor, borderColor } = useThemeColor();
 
@@ -26,10 +26,16 @@ const VideoCardToDelete = ({
       borderWidth={active ? 5 : 1}
       borderRadius={4}
       transition={"all 0.3s"}
-      onClick={() => onClick(objectId)}
+      onClick={() => onClick && onClick(objectId)}
     >
       <Box w="100%" h="150px">
-        <Image src={src} w="full" h="full" objectFit="cover" cursor="pointer" />
+        <Image
+          src={src}
+          h="full"
+          w="full"
+          objectFit="cover"
+          cursor={onClick ? "pointer" : "default"}
+        />
       </Box>
       <Box
         display="flex"
