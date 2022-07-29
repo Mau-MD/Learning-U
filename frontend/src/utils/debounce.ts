@@ -1,7 +1,7 @@
-export const debounce = (func: () => void, timeout: number) => {
+export const debounce = (func: (...args: any[]) => void, timeout: number) => {
   let timer: NodeJS.Timeout;
 
-  return (...args: []) => {
+  return (...args: any[]) => {
     clearTimeout(timer);
     timer = setTimeout(() => func.apply(this, args), timeout);
   };
