@@ -21,7 +21,6 @@ interface Props {
   progress: number | undefined;
   src: string;
   courseId: string;
-  started?: boolean;
   phrase: string;
   courseTitle: string;
   difficulty: 1 | 2;
@@ -33,7 +32,6 @@ const DifficultyCard = ({
   progress,
   courseId,
   src,
-  started = false,
   phrase,
   courseTitle,
   difficulty,
@@ -88,12 +86,11 @@ const DifficultyCard = ({
               scroll={(el) => scrollWithOffset(el)}
             >
               <Button w={{ base: "100%", sm: "fit-content" }}>
-                {started ? "Continue Learning" : "Start Course"}
+                {progress && progress > 0
+                  ? "Continue Learning"
+                  : "Start Course"}
               </Button>
             </HashLink>
-            <Button w={{ base: "100%", sm: "fit-content" }}>
-              Refresh Resources
-            </Button>
           </Box>
         </Box>
         <Box display="flex" alignItems="center">
