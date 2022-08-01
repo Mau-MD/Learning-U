@@ -16,6 +16,7 @@ import React from "react";
 import { createSearchParams, Link } from "react-router-dom";
 import useThemeColor from "../../hooks/useThemeColor";
 import DeleteCourse from "../DeleteCourse/DeleteCourse";
+import CloneModal from "../Feed/CloneModal";
 import Popover from "../Popover/Popover";
 import Tooltip from "../Popover/Tooltip";
 import Share from "../Share/Share";
@@ -24,9 +25,17 @@ interface Props {
   link: string;
   title: string;
   src: string;
+  createdAt?: string;
+  cloneButton?: boolean;
 }
 
-const CourseCard = ({ title, link, src }: Props) => {
+const CourseCard = ({
+  title,
+  link,
+  src,
+  createdAt = "",
+  cloneButton = false,
+}: Props) => {
   const { backgroundColor, borderColor } = useThemeColor();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -34,6 +43,11 @@ const CourseCard = ({ title, link, src }: Props) => {
     isOpen: isOpenDeleteCourse,
     onOpen: onOpenDeleteCourse,
     onClose: onCloseDeleteCourse,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenCloneModal,
+    onOpen: onOpenCloneModal,
+    onClose: onCloseCloneModal,
   } = useDisclosure();
 
   return (
@@ -45,7 +59,19 @@ const CourseCard = ({ title, link, src }: Props) => {
       w="100%"
     >
       <Box>
-        <Tooltip render={<Popover id={link} courseName={title} />}>
+        {!cloneButton ? (
+          <Tooltip render={<Popover id={link} courseName={title} />}>
+            <Box w="100%px" h="200px">
+              <Image
+                src={src}
+                cursor="pointer"
+                w="100%"
+                h="100%"
+                objectFit={"cover"}
+              />
+            </Box>
+          </Tooltip>
+        ) : (
           <Box w="100%px" h="200px">
             <Image
               src={src}
@@ -55,7 +81,7 @@ const CourseCard = ({ title, link, src }: Props) => {
               objectFit={"cover"}
             />
           </Box>
-        </Tooltip>
+        )}
         <Flex
           padding={4}
           justifyContent={"space-between"}
@@ -65,36 +91,49 @@ const CourseCard = ({ title, link, src }: Props) => {
             {title}
           </Heading>
           <Box>
-            <Link
-              to={{
-                pathname: `/courses/${link}/difficulty`,
-                search: createSearchParams({ name: title }).toString(),
-              }}
-            >
-              <Button mr={2} colorScheme="blue">
-                Go
-              </Button>
-            </Link>
-            <Menu>
-              <MenuButton
-                as={IconButton}
-                aria-label="Options"
-                icon={<HamburgerIcon />}
-              ></MenuButton>
-              <MenuList>
-                <MenuItem onClick={() => onOpen()}>Share course</MenuItem>
-                <MenuItem onClick={() => onOpenDeleteCourse()}>
-                  Delete course
-                </MenuItem>
-              </MenuList>
-              <Share isOpen={isOpen} onClose={onClose} code={link} />
-              <DeleteCourse
-                isOpen={isOpenDeleteCourse}
-                onClose={onCloseDeleteCourse}
-                courseId={link}
-              />
-            </Menu>
+            {cloneButton ? (
+              <Button onClick={() => onOpenCloneModal()}>Clone Course</Button>
+            ) : (
+              <>
+                <Link
+                  to={{
+                    pathname: `/courses/${link}/difficulty`,
+                    search: createSearchParams({ name: title }).toString(),
+                  }}
+                >
+                  <Button mr={2} colorScheme="blue">
+                    Go
+                  </Button>
+                </Link>
+                <Menu>
+                  <MenuButton
+                    as={IconButton}
+                    aria-label="Options"
+                    icon={<HamburgerIcon />}
+                  ></MenuButton>
+                  <MenuList>
+                    <MenuItem onClick={() => onOpen()}>Share course</MenuItem>
+                    <MenuItem onClick={() => onOpenDeleteCourse()}>
+                      Delete course
+                    </MenuItem>
+                  </MenuList>
+                  <Share isOpen={isOpen} onClose={onClose} code={link} />
+                  <DeleteCourse
+                    isOpen={isOpenDeleteCourse}
+                    onClose={onCloseDeleteCourse}
+                    courseId={link}
+                  />
+                </Menu>
+              </>
+            )}
           </Box>
+          <CloneModal
+            onClose={onCloseCloneModal}
+            courseId={link}
+            courseName={title}
+            courseCreatedAt={createdAt || ""}
+            isOpen={isOpenCloneModal}
+          />
         </Flex>
       </Box>
     </Box>
