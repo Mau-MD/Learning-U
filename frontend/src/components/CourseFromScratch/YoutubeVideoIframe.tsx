@@ -12,7 +12,7 @@ const YoutubeVideoIframe = ({ url }: Props) => {
       src={url}
       title="YouTube video player"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-    ></iframe>
+    />
   );
 };
 
