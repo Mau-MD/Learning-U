@@ -10,8 +10,14 @@ import {
   Button,
   Text,
   ModalFooter,
+  useToast,
 } from "@chakra-ui/react";
+import axios, { AxiosError } from "axios";
 import React from "react";
+import { useMutation } from "react-query";
+import { ErrorType } from "../../types/requests";
+import { getConfig, useSession } from "../../utils/auth";
+import { baseURL } from "../../utils/constants";
 
 interface Props {
   isOpen: boolean;
@@ -19,6 +25,43 @@ interface Props {
   courseId: string;
 }
 const MakeFeaturedModal = ({ isOpen, onClose, courseId }: Props) => {
+  const { user } = useSession();
+  const toast = useToast();
+
+  const makeFeatured = useMutation(
+    async (courseId: string) => {
+      if (!user) throw new Error("User isn not defined");
+
+      const res = await axios.post(
+        `${baseURL}/course/makeFeatured/${courseId}`,
+        null,
+        getConfig(user.sessionToken)
+      );
+
+      return res.data;
+    },
+    {
+      onSuccess: () => {
+        toast({
+          status: "success",
+          title: "Course made featured!",
+          description: "Your course is now available to the public!",
+          isClosable: true,
+        });
+        onClose();
+      },
+      onError: (error: AxiosError<ErrorType>) => {
+        toast({
+          title: "An error ocurred",
+          description: error.response?.data.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      },
+    }
+  );
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -32,8 +75,16 @@ const MakeFeaturedModal = ({ isOpen, onClose, courseId }: Props) => {
           </Text>
         </ModalBody>
         <ModalFooter>
-          <Button mr={3}>Close</Button>
-          <Button colorScheme={"green"}>Make featured!</Button>
+          <Button mr={3} onClick={() => onClose()}>
+            Close
+          </Button>
+          <Button
+            colorScheme={"green"}
+            isLoading={makeFeatured.isLoading}
+            onClick={() => makeFeatured.mutate(courseId)}
+          >
+            Make featured!
+          </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
