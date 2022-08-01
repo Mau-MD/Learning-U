@@ -18,7 +18,7 @@ export const makeAnExistingCourseFeautured = async (
   const featuredCourse = await cloneCourse(
     course.get("name"),
     courseId,
-    undefined,
+    user,
     true
   );
 
