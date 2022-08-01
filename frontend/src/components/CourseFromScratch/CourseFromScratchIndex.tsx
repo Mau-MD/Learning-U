@@ -5,6 +5,7 @@ import {
   Container,
   Flex,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Heading,
   HStack,
@@ -12,40 +13,15 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import Banner from "../Hub/Banner";
 import * as Yup from "yup";
 import { Field, Form, Formik } from "formik";
+import { StringMatcher } from "cypress/types/net-stubbing";
+import { debounce } from "../../utils/debounce";
 
-// export const youtubeRegExp =
-//   /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|\?v=)([^#&?]*).*/;
-
-// const schema = Yup.object({
-//   beginnerUrl1: Yup.string().matches(
-//     youtubeRegExp,
-//     "This is not a valid Youtube URL"
-//   ),
-//   beginnerUrl2: Yup.string().matches(
-//     youtubeRegExp,
-//     "This is not a valid Youtube URL"
-//   ),
-//   beginnerUrl3: Yup.string().matches(
-//     youtubeRegExp,
-//     "This is not a valid Youtube URL"
-//   ),
-//   advancedUrl1: Yup.string().matches(
-//     youtubeRegExp,
-//     "This is not a valid Youtube URL"
-//   ),
-//   advancedUrl2: Yup.string().matches(
-//     youtubeRegExp,
-//     "This is not a valid Youtube URL"
-//   ),
-//   advancedUrl3: Yup.string().matches(
-//     youtubeRegExp,
-//     "This is not a valid Youtube URL"
-//   ),
-// });
+export const youtubeRegExp =
+  /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|\?v=)([^#&?]*).*/;
 
 interface CreateCourseForm {
   beginnerUrl1: string;
@@ -57,10 +33,67 @@ interface CreateCourseForm {
   name: string;
 }
 
+type EmbedVideos = Omit<CreateCourseForm, "name">;
+
+const emptyForm: EmbedVideos = {
+  beginnerUrl1: "",
+  beginnerUrl2: "",
+  beginnerUrl3: "",
+  advancedUrl1: "",
+  advancedUrl2: "",
+  advancedUrl3: "",
+};
+
 const CourseFromScratchIndex = () => {
+  const [embedVideos, setEmbedVideos] = useState<EmbedVideos>(emptyForm);
+
+  const checkIfValidYoutubeURL = (
+    str: string | undefined,
+    field: keyof EmbedVideos
+  ) => {
+    const match = str?.match(youtubeRegExp);
+    if (match) {
+      setEmbedVideos((embedVideos) => {
+        return { ...embedVideos, [field]: str };
+      });
+      return true;
+    }
+    setEmbedVideos((embedVideos) => {
+      return { ...embedVideos, [field]: "" };
+    });
+    return false;
+  };
+
+  const schema = Yup.object({
+    beginnerUrl1: Yup.string().test({
+      test: (str) => checkIfValidYoutubeURL(str, "beginnerUrl1"),
+      message: "This is not a valid Youtube URL",
+    }),
+    beginnerUrl2: Yup.string().test({
+      test: (str) => checkIfValidYoutubeURL(str, "beginnerUrl2"),
+      message: "This is not a valid Youtube URL",
+    }),
+    beginnerUrl3: Yup.string().test({
+      test: (str) => checkIfValidYoutubeURL(str, "beginnerUrl3"),
+      message: "This is not a valid Youtube URL",
+    }),
+    advancedUrl1: Yup.string().test({
+      test: (str) => checkIfValidYoutubeURL(str, "advancedUrl1"),
+      message: "This is not a valid Youtube URL",
+    }),
+    advancedUrl2: Yup.string().test({
+      test: (str) => checkIfValidYoutubeURL(str, "advancedUrl2"),
+      message: "This is not a valid Youtube URL",
+    }),
+    advancedUrl3: Yup.string().test({
+      test: (str) => checkIfValidYoutubeURL(str, "advancedUrl3"),
+      message: "This is not a valid Youtube URL",
+    }),
+  });
   const handleFormSubmit = (values: CreateCourseForm) => {
     console.log(values);
   };
+
   return (
     <>
       <Banner src="https://images.unsplash.com/photo-1521302200778-33500795e128?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2370&q=80" />
@@ -82,9 +115,11 @@ const CourseFromScratchIndex = () => {
             name: "",
           }}
           onSubmit={handleFormSubmit}
+          validationSchema={schema}
         >
-          {() => (
+          {({ touched, errors }) => (
             <Form>
+              <pre>{JSON.stringify(embedVideos, null, 2)}</pre>
               <FormControl mt={10}>
                 <FormLabel>Course Name</FormLabel>
                 <Field as={Input} name="name" />
@@ -92,32 +127,57 @@ const CourseFromScratchIndex = () => {
               <Flex gap={5} mt={10}>
                 <VStack w="full">
                   <Badge size={"large"}>Beginners Course</Badge>
-                  <FormControl>
+                  <iframe
+                    width="560"
+                    height="315"
+                    src="https://www.youtube.com/embed/IZ83uU0ltaE"
+                    title="YouTube video player"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  ></iframe>
+                  <FormControl
+                    isInvalid={touched.beginnerUrl1 && !!errors.beginnerUrl1}
+                  >
                     <FormLabel>Youtube Tutorial #1</FormLabel>
                     <Field as={Input} name="beginnerUrl1" />
+                    <FormErrorMessage>{errors.beginnerUrl1}</FormErrorMessage>
                   </FormControl>
-                  <FormControl>
+                  <FormControl
+                    isInvalid={touched.beginnerUrl2 && !!errors.beginnerUrl2}
+                  >
                     <FormLabel>Youtube Tutorial #2</FormLabel>
                     <Field as={Input} name="beginnerUrl2" />
+                    <FormErrorMessage>{errors.beginnerUrl2}</FormErrorMessage>
                   </FormControl>
-                  <FormControl>
+                  <FormControl
+                    isInvalid={touched.beginnerUrl3 && !!errors.beginnerUrl3}
+                  >
                     <FormLabel>Youtube Tutorial #3</FormLabel>
                     <Field as={Input} name="beginnerUrl3" />
+                    <FormErrorMessage>{errors.beginnerUrl3}</FormErrorMessage>
                   </FormControl>
                 </VStack>
                 <VStack w="full">
                   <Badge size={"large"}>Advanced Course</Badge>
-                  <FormControl>
+                  <FormControl
+                    isInvalid={touched.advancedUrl1 && !!errors.advancedUrl1}
+                  >
                     <FormLabel>Youtube Tutorial #1</FormLabel>
                     <Field as={Input} name="advancedUrl1" />
+                    <FormErrorMessage>{errors.advancedUrl1}</FormErrorMessage>
                   </FormControl>
-                  <FormControl>
+                  <FormControl
+                    isInvalid={touched.advancedUrl2 && !!errors.advancedUrl2}
+                  >
                     <FormLabel>Youtube Tutorial #2</FormLabel>
                     <Field as={Input} name="advancedUrl2" />
+                    <FormErrorMessage>{errors.advancedUrl2}</FormErrorMessage>
                   </FormControl>
-                  <FormControl>
+                  <FormControl
+                    isInvalid={touched.advancedUrl3 && !!errors.advancedUrl3}
+                  >
                     <FormLabel>Youtube Tutorial #3</FormLabel>
                     <Field as={Input} name="advancedUrl3" />
+                    <FormErrorMessage>{errors.advancedUrl3}</FormErrorMessage>
                   </FormControl>
                 </VStack>
               </Flex>
