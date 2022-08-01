@@ -18,6 +18,7 @@ import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { createSearchParams, Link } from "react-router-dom";
 import useThemeColor from "../../hooks/useThemeColor";
 import DeleteCourse from "../DeleteCourse/DeleteCourse";
+import MakeFeaturedModal from "../Featured/MakeFeaturedModal";
 import CloneModal from "../Feed/CloneModal";
 import Popover from "../Popover/Popover";
 import Tooltip from "../Popover/Tooltip";
@@ -52,6 +53,11 @@ const CourseCard = ({
     isOpen: isOpenCloneModal,
     onOpen: onOpenCloneModal,
     onClose: onCloseCloneModal,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenMakeFeaturedModal,
+    onOpen: onOpenMakeFeaturedModal,
+    onClose: onCloseMakeFeaturedModal,
   } = useDisclosure();
 
   return (
@@ -121,6 +127,9 @@ const CourseCard = ({
                     icon={<HamburgerIcon />}
                   ></MenuButton>
                   <MenuList>
+                    <MenuItem onClick={() => onOpenMakeFeaturedModal()}>
+                      Make course featured
+                    </MenuItem>
                     <MenuItem onClick={() => onOpen()}>Share course</MenuItem>
                     <MenuItem onClick={() => onOpenDeleteCourse()}>
                       Delete course
@@ -145,6 +154,11 @@ const CourseCard = ({
               isOpen={isOpenCloneModal}
             />
           )}
+          <MakeFeaturedModal
+            isOpen={isOpenMakeFeaturedModal}
+            onClose={onCloseMakeFeaturedModal}
+            courseId={link}
+          />
         </Flex>
       </Box>
     </Box>
