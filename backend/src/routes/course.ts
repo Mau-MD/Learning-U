@@ -10,6 +10,7 @@ import {
   getUserCoursesWithLimits,
   saveResources,
 } from "../course/course";
+import { makeAnExistingCourseFeautured } from "../course/featured";
 import { getAuthUser } from "../middleware/getAuthUser";
 import { RequestWUser } from "../types/user";
 import { BadRequestError } from "../utils/errors";
@@ -114,6 +115,14 @@ course.delete("/:courseId", async (req: RequestWUser, res, next) => {
   const deletedCourse = await deleteCourse(courseId, dislikedVideos);
 
   res.send(deletedCourse);
+});
+
+course.post("/makeFeatured/:courseId", async (req: RequestWUser, res, next) => {
+  const { user } = req;
+  const { courseId } = req.params;
+
+  const featuredCourse = await makeAnExistingCourseFeautured(courseId, user);
+  res.send(featuredCourse);
 });
 
 export default course;
