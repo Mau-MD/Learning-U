@@ -13,6 +13,7 @@ import NewCourseIndex from "./components/NewCourse/NewCourseIndex";
 import FeedIndex from "./components/Feed/FeedIndex";
 import FollowingLayout from "./components/Following/FollowingLayout";
 import ProfileIndex from "./components/Profile/ProfileIndex";
+import FeaturedIndex from "./components/Featured/FeaturedIndex";
 
 function App() {
   return (
@@ -33,6 +34,16 @@ function App() {
         >
           <Route index element={<DashboardIndex />} />
           <Route path="new" element={<NewCourseIndex />} />
+        </Route>
+        <Route
+          path="featured"
+          element={
+            <RequireAuth>
+              <Outlet />
+            </RequireAuth>
+          }
+        >
+          <Route index element={<FeaturedIndex />} />
         </Route>
         <Route
           path="courses/:id"
