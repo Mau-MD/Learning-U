@@ -11,6 +11,7 @@ import {
   HStack,
   Input,
   Text,
+  useToast,
   VStack,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
@@ -20,6 +21,12 @@ import { Field, Form, Formik } from "formik";
 import { StringMatcher } from "cypress/types/net-stubbing";
 import { debounce } from "../../utils/debounce";
 import YoutubeVideoIframe from "./YoutubeVideoIframe";
+import { useMutation } from "react-query";
+import axios, { AxiosError } from "axios";
+import { baseURL } from "../../utils/constants";
+import { getConfig, useSession } from "../../utils/auth";
+import { ErrorType } from "../../types/requests";
+import { ValueContainerProps } from "chakra-react-select";
 
 export const youtubeRegExp =
   /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|\?v=)([^#&?]*).*/;
@@ -47,6 +54,8 @@ const emptyForm: EmbedVideos = {
 
 const CourseFromScratchIndex = () => {
   const [embedVideos, setEmbedVideos] = useState<EmbedVideos>(emptyForm);
+  const { user } = useSession();
+  const toast = useToast();
 
   const checkIfValidYoutubeURL = (
     str: string | undefined,
@@ -94,9 +103,53 @@ const CourseFromScratchIndex = () => {
       message: "This is not a valid Youtube URL",
     }),
   });
+
   const handleFormSubmit = (values: CreateCourseForm) => {
-    console.log(values);
+    // this removes name attribute from object
+    const urls = Object.entries(values).reduce((prev: EmbedVideos[], curr) => {
+      const [key, val] = curr;
+      if (key === "name") {
+        return prev;
+      }
+      return [...prev, val];
+    }, []);
+
+    createCourse.mutate({ urls, name: values.name });
   };
+
+  const createCourse = useMutation(
+    async ({ urls, name }: { urls: EmbedVideos[]; name: string }) => {
+      if (!user) throw new Error("User is not defined");
+
+      const res = await axios.post(
+        `${baseURL}/course/fromScratch`,
+        {
+          urls,
+          name,
+        },
+        getConfig(user.sessionToken)
+      );
+      return res.data;
+    },
+    {
+      onSuccess: () => {
+        toast({
+          status: "success",
+          title: "Course created!",
+          description: `A brand new course has been created`,
+          isClosable: true,
+        });
+      },
+      onError: (error: AxiosError<ErrorType>) => {
+        toast({
+          status: "error",
+          title: "Error deleting course",
+          description: error.response?.data.message,
+          isClosable: true,
+        });
+      },
+    }
+  );
 
   return (
     <>
