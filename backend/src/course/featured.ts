@@ -1,6 +1,11 @@
 // A featured course is just a
 
 import Parse from "parse/node";
+import {
+  checkIfUrlIsValidAndReturnId,
+  getVideoDetailByIds,
+} from "../rating/youtube";
+import { createResource } from "../resources/resources";
 import { cloneCourse } from "./clone";
 import { createCourse, getCourseByUserAndId } from "./course";
 
@@ -17,7 +22,7 @@ export const makeAnExistingCourseFeautured = async (
     true
   );
 
-  return course;
+  return featuredCourse;
 };
 
 export const getAllFeaturedCourses = async (
@@ -37,4 +42,41 @@ export const getAllFeaturedCourses = async (
   const courses = await query.find();
 
   return courses;
+};
+
+export const createCourseFromScratch = async (
+  urls: string[],
+  name: string,
+  user: Parse.User<Parse.Attributes>
+) => {
+  const course = await createCourse(name, user);
+  course.set("featured", true);
+  course.set("likes", 0);
+
+  await course.save();
+
+  const videosIds = urls.map((url) => checkIfUrlIsValidAndReturnId(url));
+
+  const videoDetails = await getVideoDetailByIds(videosIds, 100);
+
+  for (const [idx, details] of videoDetails.data.items.entries()) {
+    const video = createResource({
+      type: "video",
+      level: idx < 3 ? 1 : 2,
+      videoId: details.id,
+      status: "not started",
+      title: details.snippet.title,
+      description: details.snippet.description,
+      url: `https://youtube.com/video/${details.id}`,
+      thumbnail: details.snippet.thumbnails.high.url,
+      channel: details.snippet.channelTitle,
+      feedback: 0,
+      course,
+      user,
+    });
+
+    await video.save();
+  }
+
+  return videoDetails;
 };
