@@ -1,4 +1,4 @@
-// A featured course is essentially a course without an owner. So no user is associated with it. And it's shared publicly with all the users
+// A featured course is just a
 
 import Parse from "parse/node";
 import { cloneCourse } from "./clone";
@@ -12,10 +12,10 @@ export const makeAnExistingCourseFeautured = async (
 
   const featuredCourse = await cloneCourse(
     course.get("name"),
-    course.get("objectId"),
-    null,
+    courseId,
+    undefined,
     true
   );
 
-  return featuredCourse;
+  return course;
 };
