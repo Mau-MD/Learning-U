@@ -14,6 +14,7 @@ import FeedIndex from "./components/Feed/FeedIndex";
 import FollowingLayout from "./components/Following/FollowingLayout";
 import ProfileIndex from "./components/Profile/ProfileIndex";
 import FeaturedIndex from "./components/Featured/FeaturedIndex";
+import CourseFromScratchIndex from "./components/CourseFromScratch/CourseFromScratchIndex";
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
           }
         >
           <Route index element={<FeaturedIndex />} />
+          <Route path="new" element={<CourseFromScratchIndex />} />
         </Route>
         <Route
           path="courses/:id"
