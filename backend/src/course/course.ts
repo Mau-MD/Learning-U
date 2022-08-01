@@ -22,6 +22,7 @@ export const getUserCourses = async (user: Parse.Object<Parse.Attributes>) => {
   const query = new Parse.Query(Course);
 
   query.equalTo("user", user);
+  query.notEqualTo("featured", true);
 
   const courses = await query.findAll();
 
@@ -41,6 +42,7 @@ export const getUserCoursesWithLimits = async (
   query.descending("createdAt");
   query.matches("name", new RegExp(searchQuery), "i");
   query.limit(limit);
+  query.notEqualTo("featured", true);
   query.skip(skip);
 
   const courses = await query.find();
