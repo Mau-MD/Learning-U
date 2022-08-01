@@ -10,7 +10,10 @@ import {
   getUserCoursesWithLimits,
   saveResources,
 } from "../course/course";
-import { makeAnExistingCourseFeautured } from "../course/featured";
+import {
+  getAllFeaturedCourses,
+  makeAnExistingCourseFeautured,
+} from "../course/featured";
 import { getAuthUser } from "../middleware/getAuthUser";
 import { RequestWUser } from "../types/user";
 import { BadRequestError } from "../utils/errors";
@@ -115,6 +118,32 @@ course.delete("/:courseId", async (req: RequestWUser, res, next) => {
   const deletedCourse = await deleteCourse(courseId, dislikedVideos);
 
   res.send(deletedCourse);
+});
+
+course.get("/featured", async (req: RequestWUser, res, next) => {
+  const { user } = req;
+  const { courseId } = req.params;
+
+  const { limit, skip, query } = req.query;
+
+  if (
+    !limit ||
+    typeof limit !== "string" ||
+    !skip ||
+    typeof skip !== "string" ||
+    typeof query !== "string"
+  ) {
+    next(new BadRequestError("Missing parameters"));
+    return;
+  }
+
+  const featuredCourse = await getAllFeaturedCourses(
+    parseInt(limit),
+    parseInt(skip),
+    query
+  );
+
+  res.send(featuredCourse);
 });
 
 course.post("/makeFeatured/:courseId", async (req: RequestWUser, res, next) => {
