@@ -6,10 +6,11 @@ import {
   Grid,
   Heading,
   HStack,
+  Input,
   Text,
 } from "@chakra-ui/react";
 import axios from "axios";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useInfiniteQuery } from "react-query";
 import { createSearchParams } from "react-router-dom";
 import { ICourse } from "../../types/course";
@@ -26,13 +27,14 @@ const COURSES_PER_FETCH = 6;
 const FeaturedIndex = () => {
   const { user } = useSession();
 
+  const [searchQuery, setSearchQuery] = useState("");
   const {
     data: courses,
     fetchNextPage,
     isFetching,
     isLoading,
   } = useInfiniteQuery(
-    "featured",
+    ["featured", searchQuery],
     async ({ pageParam = 0 }) => {
       if (!user) {
         throw new Error("User is not defined");
@@ -41,7 +43,7 @@ const FeaturedIndex = () => {
         `${baseURL}/course/featured/get?${createSearchParams({
           limit: `${COURSES_PER_FETCH}`,
           skip: `${pageParam}`,
-          query: "",
+          query: searchQuery,
         })}`,
         getConfig(user?.sessionToken)
       );
@@ -74,6 +76,11 @@ const FeaturedIndex = () => {
     }
   }, 500);
 
+  const handleSearchChange = debounce(
+    (query: string) => setSearchQuery(query.toLocaleLowerCase()),
+    300
+  );
+
   return (
     <>
       <Banner src="https://images.unsplash.com/photo-1514820720301-4c4790309f46?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2832&q=80" />
@@ -83,6 +90,10 @@ const FeaturedIndex = () => {
             Featured Courses
           </Heading>
           <Text>Courses submitted by the community </Text>
+          <Input
+            placeholder="Search any featured course!"
+            onChange={(e) => handleSearchChange(e.currentTarget.value)}
+          />
           <HStack>
             <Button>Submit an existing course</Button>
             <Button>Create a new course</Button>
