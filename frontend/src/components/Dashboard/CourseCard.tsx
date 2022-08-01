@@ -136,13 +136,15 @@ const CourseCard = ({
               </>
             )}
           </Box>
-          <CloneModal
-            onClose={onCloseCloneModal}
-            courseId={link}
-            courseName={title}
-            courseCreatedAt={createdAt || ""}
-            isOpen={isOpenCloneModal}
-          />
+          {cloneButton && (
+            <CloneModal
+              onClose={onCloseCloneModal}
+              courseId={link}
+              courseName={title}
+              courseCreatedAt={createdAt || ""}
+              isOpen={isOpenCloneModal}
+            />
+          )}
         </Flex>
       </Box>
     </Box>
