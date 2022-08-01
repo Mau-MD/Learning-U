@@ -1,5 +1,6 @@
 import { ChevronDownIcon, HamburgerIcon } from "@chakra-ui/icons";
 import {
+  Text,
   Box,
   Button,
   Flex,
@@ -12,11 +13,15 @@ import {
   MenuItem,
   MenuList,
   useDisclosure,
+  VStack,
 } from "@chakra-ui/react";
+import { userInfo } from "os";
 import React from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { createSearchParams, Link } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
 import useThemeColor from "../../hooks/useThemeColor";
+import { IUser } from "../../types/user";
 import DeleteCourse from "../DeleteCourse/DeleteCourse";
 import MakeFeaturedModal from "../Featured/MakeFeaturedModal";
 import CloneModal from "../Feed/CloneModal";
@@ -28,6 +33,7 @@ interface Props {
   link: string;
   title: string;
   src: string;
+  createdBy: IUser;
   liked?: boolean;
   createdAt?: string;
   cloneButton?: boolean;
@@ -37,6 +43,7 @@ const CourseCard = ({
   title,
   link,
   src,
+  createdBy,
   liked = false,
   createdAt = "",
   cloneButton = false,
@@ -97,9 +104,16 @@ const CourseCard = ({
           justifyContent={"space-between"}
           alignItems={"center"}
         >
-          <Heading as="h2" fontSize={"md"}>
-            {title}
-          </Heading>
+          <VStack align={"start"}>
+            <Heading as="h2" fontSize={"md"}>
+              {title}
+            </Heading>
+            {cloneButton && (
+              <HashLink to={`/profile/${createdBy.objectId}#top`}>
+                <Text fontSize="sm">Created By: {createdBy.username}</Text>
+              </HashLink>
+            )}
+          </VStack>
           <Box>
             {cloneButton ? (
               <HStack gap={3}>

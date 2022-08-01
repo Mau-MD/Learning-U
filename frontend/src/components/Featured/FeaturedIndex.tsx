@@ -119,6 +119,7 @@ const FeaturedIndex = () => {
                     key={course.objectId}
                     link={course.objectId}
                     title={course.name}
+                    createdBy={course.user}
                     src={
                       course.images
                         ? course.images[2]
