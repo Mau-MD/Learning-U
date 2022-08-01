@@ -95,7 +95,6 @@ const FeaturedIndex = () => {
             onChange={(e) => handleSearchChange(e.currentTarget.value)}
           />
           <HStack>
-            <Button>Submit an existing course</Button>
             <Button>Create a new course</Button>
           </HStack>
           <Grid
