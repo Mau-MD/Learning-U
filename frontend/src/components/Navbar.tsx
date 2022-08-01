@@ -53,6 +53,9 @@ const Navbar = () => {
               <Button onClick={() => navigate("/feed")} variant="link">
                 Feed
               </Button>
+              <Button onClick={() => navigate("/featured")} variant="link">
+                Featured
+              </Button>
               <Button
                 onClick={() => navigate(`profile/${user?.objectId}`)}
                 variant="link"
