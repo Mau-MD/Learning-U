@@ -12,6 +12,7 @@ import {
   saveResources,
 } from "../course/course";
 import {
+  createCourseFromScratch,
   getAllFeaturedCourses,
   makeAnExistingCourseFeautured,
 } from "../course/featured";
@@ -151,6 +152,19 @@ course.post("/makeFeatured/:courseId", async (req: RequestWUser, res, next) => {
 
   const featuredCourse = await makeAnExistingCourseFeautured(courseId, user);
   res.send(featuredCourse);
+});
+
+course.post("/fromScratch", async (req: RequestWUser, res, next) => {
+  const { user } = req;
+  const { urls, name } = req.body;
+
+  if (!urls || urls.length !== 6 || !name) {
+    next(new BadRequestError("Missing params"));
+    return;
+  }
+
+  const course = await createCourseFromScratch(urls, name, user);
+  res.send(course);
 });
 
 export default course;
