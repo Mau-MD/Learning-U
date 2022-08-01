@@ -110,7 +110,9 @@ const CourseCard = ({
             </Heading>
             {cloneButton && (
               <HashLink to={`/profile/${createdBy.objectId}#top`}>
-                <Text fontSize="sm">Created By: {createdBy.username}</Text>
+                <Button variant="link" fontSize="sm">
+                  Created By: {createdBy.username}
+                </Button>
               </HashLink>
             )}
           </VStack>
