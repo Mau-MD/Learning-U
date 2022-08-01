@@ -123,7 +123,6 @@ const CourseFromScratchIndex = () => {
         >
           {({ touched, errors }) => (
             <Form>
-              <pre>{JSON.stringify(embedVideos, null, 2)}</pre>
               <FormControl mt={10}>
                 <FormLabel>Course Name</FormLabel>
                 <Field as={Input} name="name" />
@@ -131,7 +130,6 @@ const CourseFromScratchIndex = () => {
               <Flex gap={5} mt={10}>
                 <VStack w="full">
                   <Badge size={"large"}>Beginners Course</Badge>
-                  <YoutubeVideoIframe url={embedVideos.beginnerUrl1} />
                   <FormControl
                     isInvalid={touched.beginnerUrl1 && !!errors.beginnerUrl1}
                   >
@@ -139,6 +137,9 @@ const CourseFromScratchIndex = () => {
                     <Field as={Input} name="beginnerUrl1" />
                     <FormErrorMessage>{errors.beginnerUrl1}</FormErrorMessage>
                   </FormControl>
+                  {embedVideos.beginnerUrl1 && (
+                    <YoutubeVideoIframe url={embedVideos.beginnerUrl1} />
+                  )}
                   <FormControl
                     isInvalid={touched.beginnerUrl2 && !!errors.beginnerUrl2}
                   >
@@ -146,6 +147,9 @@ const CourseFromScratchIndex = () => {
                     <Field as={Input} name="beginnerUrl2" />
                     <FormErrorMessage>{errors.beginnerUrl2}</FormErrorMessage>
                   </FormControl>
+                  {embedVideos.beginnerUrl2 && (
+                    <YoutubeVideoIframe url={embedVideos.beginnerUrl2} />
+                  )}
                   <FormControl
                     isInvalid={touched.beginnerUrl3 && !!errors.beginnerUrl3}
                   >
@@ -153,6 +157,9 @@ const CourseFromScratchIndex = () => {
                     <Field as={Input} name="beginnerUrl3" />
                     <FormErrorMessage>{errors.beginnerUrl3}</FormErrorMessage>
                   </FormControl>
+                  {embedVideos.beginnerUrl3 && (
+                    <YoutubeVideoIframe url={embedVideos.beginnerUrl3} />
+                  )}
                 </VStack>
                 <VStack w="full">
                   <Badge size={"large"}>Advanced Course</Badge>
@@ -163,6 +170,9 @@ const CourseFromScratchIndex = () => {
                     <Field as={Input} name="advancedUrl1" />
                     <FormErrorMessage>{errors.advancedUrl1}</FormErrorMessage>
                   </FormControl>
+                  {embedVideos.advancedUrl1 && (
+                    <YoutubeVideoIframe url={embedVideos.advancedUrl1} />
+                  )}
                   <FormControl
                     isInvalid={touched.advancedUrl2 && !!errors.advancedUrl2}
                   >
@@ -170,6 +180,9 @@ const CourseFromScratchIndex = () => {
                     <Field as={Input} name="advancedUrl2" />
                     <FormErrorMessage>{errors.advancedUrl2}</FormErrorMessage>
                   </FormControl>
+                  {embedVideos.advancedUrl2 && (
+                    <YoutubeVideoIframe url={embedVideos.advancedUrl2} />
+                  )}
                   <FormControl
                     isInvalid={touched.advancedUrl3 && !!errors.advancedUrl3}
                   >
@@ -177,6 +190,9 @@ const CourseFromScratchIndex = () => {
                     <Field as={Input} name="advancedUrl3" />
                     <FormErrorMessage>{errors.advancedUrl3}</FormErrorMessage>
                   </FormControl>
+                  {embedVideos.advancedUrl3 && (
+                    <YoutubeVideoIframe url={embedVideos.advancedUrl3} />
+                  )}
                 </VStack>
               </Flex>
               <Button type="submit" colorScheme={"green"} w="100%" mt={10}>
