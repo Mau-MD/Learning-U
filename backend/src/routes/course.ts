@@ -1,3 +1,4 @@
+import { zhCN } from "date-fns/locale";
 import express from "express";
 import { cloneCourse } from "../course/clone";
 import {
@@ -17,6 +18,7 @@ import {
 import { getAuthUser } from "../middleware/getAuthUser";
 import { RequestWUser } from "../types/user";
 import { BadRequestError } from "../utils/errors";
+import { parseObjectsToJson } from "../utils/parseToJason";
 
 const course = express.Router();
 
@@ -120,7 +122,7 @@ course.delete("/:courseId", async (req: RequestWUser, res, next) => {
   res.send(deletedCourse);
 });
 
-course.get("/featured", async (req: RequestWUser, res, next) => {
+course.get("/featured/get", async (req: RequestWUser, res, next) => {
   const { limit, skip, query } = req.query;
 
   if (
@@ -134,13 +136,13 @@ course.get("/featured", async (req: RequestWUser, res, next) => {
     return;
   }
 
-  const featuredCourse = await getAllFeaturedCourses(
+  const featuredCourses = await getAllFeaturedCourses(
     parseInt(limit),
     parseInt(skip),
     query
   );
 
-  res.send(featuredCourse);
+  res.send(featuredCourses);
 });
 
 course.post("/makeFeatured/:courseId", async (req: RequestWUser, res, next) => {
