@@ -19,3 +19,22 @@ export const makeAnExistingCourseFeautured = async (
 
   return course;
 };
+
+export const getAllFeaturedCourses = async (
+  limit: number,
+  skip: number,
+  searchQuery: string
+) => {
+  const Course = Parse.Object.extend("Course");
+  const query = new Parse.Query(Course);
+
+  query.equalTo("isFeautured", true);
+  query.descending("createdAt");
+  query.matches("name", new RegExp(searchQuery), "i");
+  query.limit(limit);
+  query.skip(skip);
+
+  const courses = await query.find();
+
+  return courses;
+};
