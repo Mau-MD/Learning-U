@@ -4,6 +4,7 @@ import {
   Button,
   Flex,
   Heading,
+  HStack,
   IconButton,
   Image,
   Menu,
@@ -13,6 +14,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import React from "react";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { createSearchParams, Link } from "react-router-dom";
 import useThemeColor from "../../hooks/useThemeColor";
 import DeleteCourse from "../DeleteCourse/DeleteCourse";
@@ -25,6 +27,7 @@ interface Props {
   link: string;
   title: string;
   src: string;
+  liked?: boolean;
   createdAt?: string;
   cloneButton?: boolean;
 }
@@ -33,6 +36,7 @@ const CourseCard = ({
   title,
   link,
   src,
+  liked = false,
   createdAt = "",
   cloneButton = false,
 }: Props) => {
@@ -92,7 +96,12 @@ const CourseCard = ({
           </Heading>
           <Box>
             {cloneButton ? (
-              <Button onClick={() => onOpenCloneModal()}>Clone Course</Button>
+              <HStack gap={3}>
+                <Box cursor={"pointer"}>
+                  {liked ? <AiFillHeart /> : <AiOutlineHeart />}
+                </Box>
+                <Button onClick={() => onOpenCloneModal()}>Clone Course</Button>
+              </HStack>
             ) : (
               <>
                 <Link
