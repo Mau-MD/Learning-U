@@ -12,7 +12,7 @@ import {
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useInfiniteQuery } from "react-query";
-import { createSearchParams } from "react-router-dom";
+import { createSearchParams, Link } from "react-router-dom";
 import { ICourse } from "../../types/course";
 import { getConfig, useSession } from "../../utils/auth";
 import { baseURL } from "../../utils/constants";
@@ -95,7 +95,9 @@ const FeaturedIndex = () => {
             onChange={(e) => handleSearchChange(e.currentTarget.value)}
           />
           <HStack>
-            <Button>Create a new course</Button>
+            <Link to="/featured/new">
+              <Button>Create a new course from scratch</Button>
+            </Link>
           </HStack>
           <Grid
             templateColumns={["1fr", "1fr", "repeat(2, 1fr)", "repeat(3, 1fr)"]}
