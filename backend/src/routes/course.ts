@@ -121,9 +121,6 @@ course.delete("/:courseId", async (req: RequestWUser, res, next) => {
 });
 
 course.get("/featured", async (req: RequestWUser, res, next) => {
-  const { user } = req;
-  const { courseId } = req.params;
-
   const { limit, skip, query } = req.query;
 
   if (
