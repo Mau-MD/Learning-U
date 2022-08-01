@@ -16,9 +16,17 @@ export const SCORE_PER_SHARE = 1;
 export const cloneCourse = async (
   courseName: string,
   courseId: string,
-  user: Parse.User<Parse.Attributes>
+  user: Parse.User<Parse.Attributes>,
+  isFeatured?: boolean
 ) => {
   const course = await createCourse(courseName, user);
+
+  // this means the course will be public and without a user linked to it
+  if (isFeatured) {
+    course.set("featured", isFeatured);
+    course.set("likes", 0);
+  }
+
   const resources = parseObjectsToJson(await getResourcesFromCourse(courseId));
 
   if (!resources || resources.length === 0) {
@@ -45,7 +53,8 @@ export const cloneCourse = async (
     await newResource.save();
   }
 
-  await updateFeedbackForEveryResource(resources);
+  // We dont want to give positive feedback to resources if the user is making the course public
+  !isFeatured && (await updateFeedbackForEveryResource(resources));
   return course;
 };
 
