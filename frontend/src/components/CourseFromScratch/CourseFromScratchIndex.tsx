@@ -19,6 +19,7 @@ import * as Yup from "yup";
 import { Field, Form, Formik } from "formik";
 import { StringMatcher } from "cypress/types/net-stubbing";
 import { debounce } from "../../utils/debounce";
+import YoutubeVideoIframe from "./YoutubeVideoIframe";
 
 export const youtubeRegExp =
   /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|\?v=)([^#&?]*).*/;
@@ -54,7 +55,10 @@ const CourseFromScratchIndex = () => {
     const match = str?.match(youtubeRegExp);
     if (match) {
       setEmbedVideos((embedVideos) => {
-        return { ...embedVideos, [field]: str };
+        return {
+          ...embedVideos,
+          [field]: `https://www.youtube.com/embed/${match[2]}?autoplay=0`,
+        };
       });
       return true;
     }
@@ -127,13 +131,7 @@ const CourseFromScratchIndex = () => {
               <Flex gap={5} mt={10}>
                 <VStack w="full">
                   <Badge size={"large"}>Beginners Course</Badge>
-                  <iframe
-                    width="560"
-                    height="315"
-                    src="https://www.youtube.com/embed/IZ83uU0ltaE"
-                    title="YouTube video player"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  ></iframe>
+                  <YoutubeVideoIframe url={embedVideos.beginnerUrl1} />
                   <FormControl
                     isInvalid={touched.beginnerUrl1 && !!errors.beginnerUrl1}
                   >
