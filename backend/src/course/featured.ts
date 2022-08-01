@@ -1,5 +1,6 @@
 // A featured course is just a
 
+import { quartersInYear } from "date-fns";
 import Parse from "parse/node";
 import {
   checkIfUrlIsValidAndReturnId,
@@ -38,6 +39,7 @@ export const getAllFeaturedCourses = async (
   query.matches("name", new RegExp(searchQuery), "i");
   query.limit(limit);
   query.skip(skip);
+  query.include("user");
 
   const courses = await query.find();
 
