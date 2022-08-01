@@ -28,8 +28,8 @@ export const getAllFeaturedCourses = async (
   const Course = Parse.Object.extend("Course");
   const query = new Parse.Query(Course);
 
-  query.equalTo("isFeautured", true);
-  query.descending("createdAt");
+  query.equalTo("featured", true);
+  query.descending("likes");
   query.matches("name", new RegExp(searchQuery), "i");
   query.limit(limit);
   query.skip(skip);
