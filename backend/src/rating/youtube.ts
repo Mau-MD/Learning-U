@@ -25,3 +25,12 @@ export const getVideoDataFromJson = () => {
   const jsonPath = path.join(__dirname, "youtube-data.json");
   return JSON.parse(readFileSync(jsonPath, { encoding: "utf-8" }));
 };
+
+export const checkIfUrlIsValidAndReturnId = (url: string) => {
+  var youtubeRegExp =
+    /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
+  const matches = url.match(youtubeRegExp);
+
+  if (matches) return matches[2];
+  return undefined;
+};
