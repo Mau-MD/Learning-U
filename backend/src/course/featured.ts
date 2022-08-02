@@ -9,6 +9,7 @@ import {
 import { createResource } from "../resources/resources";
 import { cloneCourse } from "./clone";
 import { createCourse, getCourseByUserAndId } from "./course";
+import { getLikesUser, incrementCourseLikes } from "./likes";
 
 export const makeAnExistingCourseFeautured = async (
   courseId: string,
@@ -81,4 +82,26 @@ export const createCourseFromScratch = async (
   }
 
   return videoDetails;
+};
+
+export const likeFeaturedCourse = async (
+  courseId: string,
+  user: Parse.User<Parse.Attributes>
+) => {
+  const LikeUser = new Parse.Object("LikeUser");
+
+  const Course = new Parse.Object("Course");
+  Course.set("objectId", courseId);
+
+  const hasBeenLikedBefore = await getLikesUser(user, Course);
+  if (hasBeenLikedBefore) {
+    throw new Error("You already liked this course");
+  }
+
+  LikeUser.set("course", Course);
+  LikeUser.set("user", user);
+
+  await LikeUser.save();
+
+  await incrementCourseLikes(Course, 1);
 };
