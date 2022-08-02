@@ -7,6 +7,7 @@ import {
   getVideoDetailByIds,
 } from "../rating/youtube";
 import { createResource } from "../resources/resources";
+import { parseObjectToJson } from "../utils/parseToJason";
 import { cloneCourse } from "./clone";
 import { createCourse, getCourseByUserAndId } from "./course";
 import { getLikesUser, incrementCourseLikes } from "./likes";
@@ -30,7 +31,8 @@ export const makeAnExistingCourseFeautured = async (
 export const getAllFeaturedCourses = async (
   limit: number,
   skip: number,
-  searchQuery: string
+  searchQuery: string,
+  user: Parse.User<Parse.Attributes>
 ) => {
   const Course = Parse.Object.extend("Course");
   const query = new Parse.Query(Course);
@@ -44,7 +46,23 @@ export const getAllFeaturedCourses = async (
 
   const courses = await query.find();
 
-  return courses;
+  return mapIfUserHasLikedBefore(courses, user);
+};
+
+export const mapIfUserHasLikedBefore = async (
+  courses: Parse.Object<Parse.Attributes>[],
+  user: Parse.Object<Parse.Attributes>
+) => {
+  // cannot use map since it doesn't support async await
+  const likedCourses = [];
+  for (const course of courses) {
+    const likedByUser = await getLikesUser(user, course);
+    likedCourses.push({
+      ...parseObjectToJson(course),
+      likedByUser: !!likedByUser,
+    });
+  }
+  return likedCourses;
 };
 
 export const createCourseFromScratch = async (

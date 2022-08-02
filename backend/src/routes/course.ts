@@ -126,6 +126,7 @@ course.delete("/:courseId", async (req: RequestWUser, res, next) => {
 });
 
 course.get("/featured/get", async (req: RequestWUser, res, next) => {
+  const { user } = req;
   const { limit, skip, query } = req.query;
 
   if (
@@ -142,7 +143,8 @@ course.get("/featured/get", async (req: RequestWUser, res, next) => {
   const featuredCourses = await getAllFeaturedCourses(
     parseInt(limit),
     parseInt(skip),
-    query
+    query,
+    user
   );
 
   res.send(featuredCourses);
