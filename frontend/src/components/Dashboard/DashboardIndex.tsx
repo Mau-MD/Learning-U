@@ -26,6 +26,8 @@ import { ICourse } from "../../types/course";
 import LoadingCard from "../Loading/LoadingCard";
 import NoData from "./NoData";
 import { debounce } from "../../utils/debounce";
+import { useTour } from "../../hooks/useTour";
+import GuidedPopover from "../GuidedPopover/GuidedPopover";
 
 export const FALLBACK_IMG =
   "https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3540&q=80";
@@ -36,6 +38,13 @@ const DashboardIndex = () => {
   const { user } = useSession();
 
   const [searchQuery, setSearchQuery] = useState("");
+  const { currStep, nextStep, stepNum, startTour } = useTour([
+    {
+      title: "Create new courses!",
+      content:
+        "Click this button to start making courses. You can create a course about any topic you want! Let's create our first course",
+    },
+  ]);
 
   const {
     data: courses,
@@ -69,6 +78,7 @@ const DashboardIndex = () => {
   );
 
   useEffect(() => {
+    startTour();
     window.addEventListener("scroll", handlePageBottom);
 
     return () => {
@@ -100,13 +110,20 @@ const DashboardIndex = () => {
           placeholder="Search here!"
           onChange={(e) => handleSearchChange(e.currentTarget.value)}
         />
-        <Button
-          w="fit-content"
-          onClick={() => navigate("new")}
-          test-id="create-course-btn"
+        <GuidedPopover
+          content={currStep.content}
+          title={currStep.title}
+          isOpen={stepNum === 0}
+          onClose={nextStep}
         >
-          I want to learn something new...
-        </Button>
+          <Button
+            w="fit-content"
+            onClick={() => navigate("new")}
+            test-id="create-course-btn"
+          >
+            I want to learn something new...
+          </Button>
+        </GuidedPopover>
         {courses && courses.pages[0].data.length === 0 && <NoData />}
         <Grid
           templateColumns={["1fr", "1fr", "repeat(2, 1fr)", "repeat(3, 1fr)"]}
