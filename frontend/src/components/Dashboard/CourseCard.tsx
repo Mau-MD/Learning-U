@@ -14,20 +14,27 @@ import {
   MenuList,
   useDisclosure,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
+import axios, { AxiosError } from "axios";
 import { userInfo } from "os";
 import React from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import { useMutation, useQueryClient } from "react-query";
 import { createSearchParams, Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import useThemeColor from "../../hooks/useThemeColor";
+import { ErrorType } from "../../types/requests";
 import { IUser } from "../../types/user";
+import { getConfig, useSession } from "../../utils/auth";
+import { baseURL } from "../../utils/constants";
 import DeleteCourse from "../DeleteCourse/DeleteCourse";
 import MakeFeaturedModal from "../Featured/MakeFeaturedModal";
 import CloneModal from "../Feed/CloneModal";
 import Popover from "../Popover/Popover";
 import Tooltip from "../Popover/Tooltip";
 import Share from "../Share/Share";
+import { motion } from "framer-motion";
 
 interface Props {
   link: string;
@@ -37,6 +44,8 @@ interface Props {
   liked?: boolean;
   createdAt?: string;
   cloneButton?: boolean;
+  likes?: number;
+  isLoading?: boolean;
 }
 
 const CourseCard = ({
@@ -47,8 +56,11 @@ const CourseCard = ({
   liked = false,
   createdAt = "",
   cloneButton = false,
+  likes = 0,
+  isLoading,
 }: Props) => {
   const { backgroundColor, borderColor } = useThemeColor();
+  const { user } = useSession();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -66,6 +78,97 @@ const CourseCard = ({
     onOpen: onOpenMakeFeaturedModal,
     onClose: onCloseMakeFeaturedModal,
   } = useDisclosure();
+
+  const queryClient = useQueryClient();
+  const toast = useToast();
+
+  const likeCourse = useMutation(
+    async (courseId: string) => {
+      if (!user) throw new Error("User is not defined");
+
+      const res = await axios.post(
+        `${baseURL}/course/featured/like/${courseId}`,
+        null,
+        getConfig(user?.sessionToken)
+      );
+
+      return res.data;
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("featured");
+        toast({
+          status: "success",
+          title: "Like added",
+          description: "You now like that course!",
+          isClosable: true,
+        });
+      },
+      onError: (error: AxiosError<ErrorType>) => {
+        toast({
+          status: "error",
+          title: "Error deleting course",
+          description: error.response?.data.message,
+          isClosable: true,
+        });
+      },
+    }
+  );
+  const dislikedCourse = useMutation(
+    async (courseId: string) => {
+      if (!user) throw new Error("User is not defined");
+
+      const res = await axios.post(
+        `${baseURL}/course/featured/dislike/${courseId}`,
+        null,
+        getConfig(user?.sessionToken)
+      );
+
+      return res.data;
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("featured");
+        toast({
+          status: "success",
+          title: "Like removed",
+          description: "You no longer like that course!",
+          isClosable: true,
+        });
+      },
+      onError: (error: AxiosError<ErrorType>) => {
+        toast({
+          status: "error",
+          title: "Error removing like",
+          description: error.response?.data.message,
+          isClosable: true,
+        });
+      },
+    }
+  );
+  const handleLikeToggle = () => {
+    if (!liked) {
+      likeCourse.mutate(link);
+      return;
+    }
+    dislikedCourse.mutate(link);
+  };
+
+  const renderAnimatedHeart = () => {
+    if (likeCourse.isLoading || dislikedCourse.isLoading || isLoading) {
+      return (
+        <motion.div
+          animate={{
+            scale: [1, 1.2, 1],
+          }}
+          transition={{ repeat: Infinity }}
+        >
+          {liked ? <AiFillHeart /> : <AiOutlineHeart />}
+        </motion.div>
+      );
+    }
+    return liked ? <AiFillHeart /> : <AiOutlineHeart />;
+  };
 
   return (
     <Box
@@ -119,9 +222,12 @@ const CourseCard = ({
           <Box>
             {cloneButton ? (
               <HStack gap={3}>
-                <Box cursor={"pointer"}>
-                  {liked ? <AiFillHeart /> : <AiOutlineHeart />}
-                </Box>
+                <HStack>
+                  <Text>{likes}</Text>
+                  <Box cursor={"pointer"} onClick={() => handleLikeToggle()}>
+                    {renderAnimatedHeart()}
+                  </Box>
+                </HStack>
                 <Button onClick={() => onOpenCloneModal()}>Clone Course</Button>
               </HStack>
             ) : (
