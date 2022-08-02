@@ -33,7 +33,7 @@ interface Props {
   link: string;
   title: string;
   src: string;
-  createdBy: IUser;
+  createdBy?: IUser;
   liked?: boolean;
   createdAt?: string;
   cloneButton?: boolean;
@@ -109,9 +109,9 @@ const CourseCard = ({
               {title}
             </Heading>
             {cloneButton && (
-              <HashLink to={`/profile/${createdBy.objectId}#top`}>
+              <HashLink to={`/profile/${createdBy?.objectId}#top`}>
                 <Button variant="link" fontSize="sm">
-                  Created By: {createdBy.username}
+                  Created By: {createdBy?.username}
                 </Button>
               </HashLink>
             )}

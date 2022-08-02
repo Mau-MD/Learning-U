@@ -86,12 +86,17 @@ const LoginIndex = () => {
                 <Heading as="h1">Welcome back!</Heading>
                 <FormControl isInvalid={touched.username && !!errors.username}>
                   <FormLabel>Username or email</FormLabel>
-                  <Field as={Input} name="username" />
+                  <Field as={Input} name="username" test-id="login-input" />
                   <FormErrorMessage>{errors.username}</FormErrorMessage>
                 </FormControl>
                 <FormControl isInvalid={touched.password && !!errors.password}>
                   <FormLabel>Password</FormLabel>
-                  <Field as={Input} name="password" type="password" />
+                  <Field
+                    as={Input}
+                    name="password"
+                    type="password"
+                    test-id="login-password"
+                  />
                   <FormErrorMessage>{errors.password}</FormErrorMessage>
                 </FormControl>
               </Flex>
@@ -104,7 +109,11 @@ const LoginIndex = () => {
                     Don{"'"}t have an account yet? Register here!
                   </Link>
                 </Button>
-                <Button type="submit" isLoading={handleLogin.isLoading}>
+                <Button
+                  type="submit"
+                  isLoading={handleLogin.isLoading}
+                  test-id="login-button"
+                >
                   Login
                 </Button>
               </Flex>
