@@ -51,6 +51,7 @@ const FeaturedIndex = () => {
     data: courses,
     fetchNextPage,
     isFetching,
+    isFetchingNextPage,
     isLoading,
   } = useInfiniteQuery(
     ["featured", searchQuery],
@@ -164,11 +165,13 @@ const FeaturedIndex = () => {
                     cloneButton
                     createdAt={course.createdAt}
                     liked={course.likedByUser}
+                    likes={course.likes}
+                    isLoading={isFetching}
                   />
                 ))
               )
             )}
-            {isFetching && (
+            {isFetchingNextPage && (
               <>
                 <LoadingCard />
                 <LoadingCard />
