@@ -15,6 +15,7 @@ import React from "react";
 
 interface Props {
   isOpen: boolean;
+  prevStep?: () => void;
   onClose: () => void;
   title: string;
   content: string;
@@ -23,6 +24,7 @@ interface Props {
 
 const GuidedPopover = ({
   isOpen,
+  prevStep,
   onClose,
   title,
   content,
@@ -33,8 +35,7 @@ const GuidedPopover = ({
       returnFocusOnClose={false}
       isOpen={isOpen}
       onClose={onClose}
-      placement="right"
-      closeOnBlur={false}
+      placement="auto"
     >
       <PopoverTrigger>{children}</PopoverTrigger>
       <PopoverContent>
@@ -44,7 +45,12 @@ const GuidedPopover = ({
         <PopoverBody>{content}</PopoverBody>
         <PopoverFooter display="flex" justifyContent="flex-end">
           <ButtonGroup size="sm">
-            <Button colorScheme="red" onClick={onClose}>
+            {prevStep && (
+              <Button colorScheme="blue" onClick={prevStep}>
+                Previous Step
+              </Button>
+            )}
+            <Button colorScheme="green" onClick={onClose}>
               Next Step
             </Button>
           </ButtonGroup>
