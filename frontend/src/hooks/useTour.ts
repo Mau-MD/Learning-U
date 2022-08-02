@@ -12,12 +12,17 @@ export const useTour = (steps: Steps[]) => {
     setStep((step) => step + 1);
   };
 
+  const prevStep = () => {
+    setStep((step) => step - 1);
+  };
+
   const startTour = () => {
     setStep(0);
   };
 
   return {
     stepNum,
+    prevStep,
     nextStep,
     startTour,
     currStep: steps[stepNum] || { title: "", content: "" },
