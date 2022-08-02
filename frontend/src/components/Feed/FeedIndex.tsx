@@ -85,7 +85,11 @@ const FeedIndex = ({ userId }: Props) => {
   const renderCreatePostButton = () => {
     if (!userId || user?.objectId === userId)
       return (
-        <Button mt={5} onClick={() => setOpenFeedForm(!openFeedForm)}>
+        <Button
+          mt={5}
+          onClick={() => setOpenFeedForm(!openFeedForm)}
+          test-id="create-post-btn"
+        >
           {openFeedForm ? "Close" : "Create a post"}
         </Button>
       );

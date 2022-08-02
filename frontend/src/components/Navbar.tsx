@@ -50,7 +50,11 @@ const Navbar = () => {
               <Button onClick={() => navigate("/dashboard")} variant="link">
                 Dashboard
               </Button>
-              <Button onClick={() => navigate("/feed")} variant="link">
+              <Button
+                onClick={() => navigate("/feed")}
+                variant="link"
+                test-id="feed-navbar"
+              >
                 Feed
               </Button>
               <Button onClick={() => navigate("/featured")} variant="link">

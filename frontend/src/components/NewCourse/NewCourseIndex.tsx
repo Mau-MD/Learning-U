@@ -118,6 +118,7 @@ const NewCourseIndex = () => {
                     as={Input}
                     name="name"
                     disabled={createCourse.isLoading}
+                    test-id="new-course-input"
                   />
                   <FormHelperText>
                     Write the topic you would like to learn (E.g. React, NextJs,
@@ -165,6 +166,7 @@ const NewCourseIndex = () => {
                     type="submit"
                     isDisabled={openCode}
                     isLoading={createCourse.isLoading}
+                    test-id="new-course-btn"
                   >
                     Generate Course!
                   </Button>

@@ -115,7 +115,7 @@ const NewPostForm = () => {
           <VStack mt={5}>
             <FormControl>
               <FormLabel>Write anything below!</FormLabel>
-              <Field as={Textarea} name="content" />
+              <Field as={Textarea} name="content" test-id="new-post-textarea" />
             </FormControl>
             <FormControl>
               <FormLabel>Select a Course</FormLabel>
@@ -132,6 +132,7 @@ const NewPostForm = () => {
                 mt={3}
                 colorScheme="blue"
                 isLoading={uploadPost.isLoading}
+                test-id="new-post-submit-btn"
               >
                 Submit
               </Button>

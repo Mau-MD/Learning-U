@@ -80,10 +80,15 @@ const FollowForm = () => {
           <VStack mt={4}>
             <FormControl isInvalid={touched.username && !!errors.username}>
               <FormLabel>Follow someone</FormLabel>
-              <Field as={Input} name="username" />
+              <Field as={Input} name="username" test-id="follow-input" />
               <FormErrorMessage>{errors.username}</FormErrorMessage>
             </FormControl>
-            <Button type="submit" w={"100%"} isLoading={followUser.isLoading}>
+            <Button
+              type="submit"
+              w={"100%"}
+              isLoading={followUser.isLoading}
+              test-id="submit-follow-btn"
+            >
               Follow!
             </Button>
           </VStack>

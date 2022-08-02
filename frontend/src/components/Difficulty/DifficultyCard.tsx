@@ -85,7 +85,10 @@ const DifficultyCard = ({
               smooth
               scroll={(el) => scrollWithOffset(el)}
             >
-              <Button w={{ base: "100%", sm: "fit-content" }}>
+              <Button
+                w={{ base: "100%", sm: "fit-content" }}
+                test-id="start-course-btn"
+              >
                 {progress && progress > 0
                   ? "Continue Learning"
                   : "Start Course"}

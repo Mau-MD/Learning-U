@@ -100,7 +100,11 @@ const DashboardIndex = () => {
           placeholder="Search here!"
           onChange={(e) => handleSearchChange(e.currentTarget.value)}
         />
-        <Button w="fit-content" onClick={() => navigate("new")}>
+        <Button
+          w="fit-content"
+          onClick={() => navigate("new")}
+          test-id="create-course-btn"
+        >
           I want to learn something new...
         </Button>
         {courses && courses.pages[0].data.length === 0 && <NoData />}

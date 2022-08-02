@@ -93,6 +93,7 @@ const FollowingIndex = ({ width = "30%", margin = 10, userId }: Props) => {
             w={"100%"}
             onClick={() => handleTabChange("follow")}
             isActive={tabSelected === "follow"}
+            test-id="follow-btn"
           >
             Follow
           </Button>
