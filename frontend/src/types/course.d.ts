@@ -6,4 +6,5 @@ export interface ICourse extends DbObject {
   name: string;
   user: IUser;
   images: IUnsplashLinks[];
+  likes: number;
 }
