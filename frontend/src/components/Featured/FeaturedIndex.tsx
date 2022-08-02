@@ -13,12 +13,14 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useInfiniteQuery } from "react-query";
 import { createSearchParams, Link } from "react-router-dom";
+import { useTour } from "../../hooks/useTour";
 import { ICourse } from "../../types/course";
 import { getConfig, useSession } from "../../utils/auth";
 import { baseURL } from "../../utils/constants";
 import { debounce } from "../../utils/debounce";
 import CourseCard from "../Dashboard/CourseCard";
 import DashboardIndex, { FALLBACK_IMG } from "../Dashboard/DashboardIndex";
+import GuidedPopover from "../GuidedPopover/GuidedPopover";
 import Banner from "../Hub/Banner";
 import LoadingCard from "../Loading/LoadingCard";
 
@@ -28,6 +30,20 @@ const FeaturedIndex = () => {
   const { user } = useSession();
 
   const [searchQuery, setSearchQuery] = useState("");
+
+  const { currStep, nextStep, prevStep, stepNum, startTour } = useTour([
+    {
+      title: "Featured Courses",
+      content:
+        "These are courses submitted by the community! You can like, see who posted them and even search.",
+    },
+    {
+      title: "Custom Courses",
+      content:
+        "Don't like the automatically generated courses? You can create your own and share it to the community!",
+    },
+  ]);
+
   const {
     data: courses,
     fetchNextPage,
@@ -60,6 +76,7 @@ const FeaturedIndex = () => {
   );
 
   useEffect(() => {
+    startTour();
     window.addEventListener("scroll", handlePageBottom);
 
     return () => {
@@ -89,15 +106,30 @@ const FeaturedIndex = () => {
           <Heading as="h1" fontWeight="bold" fontSize="4xl" mt={10}>
             Featured Courses
           </Heading>
-          <Text>Courses submitted by the community </Text>
+          <GuidedPopover
+            content={currStep.content}
+            title={currStep.title}
+            isOpen={stepNum === 0}
+            onClose={nextStep}
+          >
+            <Text>Courses submitted by the community </Text>
+          </GuidedPopover>
           <Input
             placeholder="Search any featured course!"
             onChange={(e) => handleSearchChange(e.currentTarget.value)}
           />
           <HStack>
-            <Link to="/featured/new">
-              <Button>Create a new course from scratch</Button>
-            </Link>
+            <GuidedPopover
+              content={currStep.content}
+              title={currStep.title}
+              isOpen={stepNum === 1}
+              prevStep={prevStep}
+              onClose={nextStep}
+            >
+              <Link to="/featured/new">
+                <Button>Create a new course from scratch</Button>
+              </Link>
+            </GuidedPopover>
           </HStack>
           <Grid
             templateColumns={["1fr", "1fr", "repeat(2, 1fr)", "repeat(3, 1fr)"]}
