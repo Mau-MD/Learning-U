@@ -58,7 +58,7 @@ const FeaturedIndex = () => {
       if (!user) {
         throw new Error("User is not defined");
       }
-      const res = await axios.get<ICourse[]>(
+      const res = await axios.get<Array<ICourse & { likedByUser: boolean }>>(
         `${baseURL}/course/featured/get?${createSearchParams({
           limit: `${COURSES_PER_FETCH}`,
           skip: `${pageParam}`,
@@ -163,7 +163,7 @@ const FeaturedIndex = () => {
                     }
                     cloneButton
                     createdAt={course.createdAt}
-                    liked={false}
+                    liked={course.likedByUser}
                   />
                 ))
               )
