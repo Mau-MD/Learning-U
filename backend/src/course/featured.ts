@@ -102,6 +102,22 @@ export const likeFeaturedCourse = async (
   LikeUser.set("user", user);
 
   await LikeUser.save();
+  return await incrementCourseLikes(Course, 1);
+};
 
-  await incrementCourseLikes(Course, 1);
+export const dislikeFeaturedCourse = async (
+  courseId: string,
+  user: Parse.User<Parse.Attributes>
+) => {
+  const Course = new Parse.Object("Course");
+  Course.set("objectId", courseId);
+
+  const likeUser = await getLikesUser(user, Course);
+
+  if (!likeUser) {
+    throw new Error("You haven't like this course before");
+  }
+
+  await likeUser.destroy();
+  return await incrementCourseLikes(Course, -1);
 };
