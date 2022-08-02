@@ -14,6 +14,7 @@ import {
 import {
   createCourseFromScratch,
   getAllFeaturedCourses,
+  likeFeaturedCourse,
   makeAnExistingCourseFeautured,
 } from "../course/featured";
 import { getAuthUser } from "../middleware/getAuthUser";
@@ -166,5 +167,19 @@ course.post("/fromScratch", async (req: RequestWUser, res, next) => {
   const course = await createCourseFromScratch(urls, name, user);
   res.send(course);
 });
+
+course.post(
+  "/featured/like/:courseId",
+  async (req: RequestWUser, res, next) => {
+    const { user } = req;
+    const { courseId } = req.params;
+
+    try {
+      res.send(await likeFeaturedCourse(courseId, user));
+    } catch (err) {
+      next(new BadRequestError(err.message));
+    }
+  }
+);
 
 export default course;
