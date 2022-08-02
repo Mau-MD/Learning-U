@@ -18,7 +18,7 @@ interface Props {
   prevStep?: () => void;
   onClose: () => void;
   title: string;
-  content: string;
+  content: React.ReactNode;
   children: React.ReactNode;
 }
 

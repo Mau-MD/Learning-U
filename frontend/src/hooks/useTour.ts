@@ -1,8 +1,8 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
 interface Steps {
   title: string;
-  content: string;
+  content: React.ReactNode;
 }
 
 export const useTour = (steps: Steps[]) => {
