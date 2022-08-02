@@ -9,12 +9,14 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import useThemeColor from "../../hooks/useThemeColor";
+import { useTour } from "../../hooks/useTour";
 import { IFollowing } from "../../types/following";
 import { getConfig, useSession } from "../../utils/auth";
 import { baseURL } from "../../utils/constants";
+import GuidedPopover from "../GuidedPopover/GuidedPopover";
 import FollowForm from "./FollowForm";
 import FollowingCard from "./FollowingCard";
 import SetStatusForm from "./SetStatusForm";
@@ -32,6 +34,22 @@ const FollowingIndex = ({ width = "30%", margin = 10, userId }: Props) => {
   const [tabSelected, setTabSelected] = useState<"none" | "status" | "follow">(
     "none"
   );
+
+  const { currStep, prevStep, nextStep, stepNum, startTour } = useTour([
+    {
+      title: "Status",
+      content:
+        "Update your status here. The status get's updated automatically when you start learning a course.",
+    },
+    {
+      title: "Following",
+      content: "Follow new people to see what are they learning!",
+    },
+  ]);
+
+  useEffect(() => {
+    startTour();
+  }, []);
 
   const {
     data: status,
@@ -82,21 +100,36 @@ const FollowingIndex = ({ width = "30%", margin = 10, userId }: Props) => {
 
       {!userId && (
         <HStack w={"100%"} mt={5}>
-          <Button
-            w={"100%"}
-            onClick={() => handleTabChange("status")}
-            isActive={tabSelected === "status"}
+          <GuidedPopover
+            content={currStep.content}
+            title={currStep.title}
+            isOpen={stepNum === 0}
+            onClose={nextStep}
           >
-            Status
-          </Button>
-          <Button
-            w={"100%"}
-            onClick={() => handleTabChange("follow")}
-            isActive={tabSelected === "follow"}
-            test-id="follow-btn"
+            <Button
+              w={"100%"}
+              onClick={() => handleTabChange("status")}
+              isActive={tabSelected === "status"}
+            >
+              Status
+            </Button>
+          </GuidedPopover>
+          <GuidedPopover
+            content={currStep.content}
+            title={currStep.title}
+            isOpen={stepNum === 1}
+            prevStep={prevStep}
+            onClose={nextStep}
           >
-            Follow
-          </Button>
+            <Button
+              w={"100%"}
+              onClick={() => handleTabChange("follow")}
+              isActive={tabSelected === "follow"}
+              test-id="follow-btn"
+            >
+              Follow
+            </Button>
+          </GuidedPopover>
         </HStack>
       )}
       {tabSelected === "status" && <SetStatusForm />}
