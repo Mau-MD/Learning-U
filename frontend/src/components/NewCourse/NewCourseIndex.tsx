@@ -19,7 +19,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Banner from "../Hub/Banner";
 import * as Yup from "yup";
 import axios, { AxiosError } from "axios";
@@ -30,6 +30,8 @@ import CourseCode from "./CourseCode";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { baseURL } from "../../utils/constants";
+import { useTour } from "../../hooks/useTour";
+import GuidedPopover from "../GuidedPopover/GuidedPopover";
 
 interface LearnForm {
   name: string;
@@ -43,6 +45,27 @@ const NewCourseIndex = () => {
   const toast = useToast();
   const navigate = useNavigate();
   const { user } = useSession();
+  const { currStep, prevStep, nextStep, stepNum, startTour } = useTour([
+    {
+      title: "Let's create a course",
+      content:
+        "This input form is free! You can input any text, like Vue.js React, even Barista Coffee!",
+    },
+    {
+      title: "Create courses based on course codes",
+      content:
+        "All courses are created automatically. This means that a course you create today, might not be the same as one you create tomorrow. If you really liked a course, though, you can create an exact copy of it using the course code!",
+    },
+    {
+      title: "Click here to create a course!",
+      content:
+        "Let's find the perfect tutorials. Click here to begin the course creation.",
+    },
+  ]);
+
+  useEffect(() => {
+    startTour();
+  }, []);
 
   const [openCode, setOpenCode] = useState(false);
 
@@ -112,20 +135,30 @@ const NewCourseIndex = () => {
           {({ errors, touched, setFieldValue }) => (
             <Form>
               <Flex flexDir="column" gap={10}>
-                <FormControl mt={10} isInvalid={touched.name && !!errors.name}>
-                  <FormLabel>What do you want to learn?</FormLabel>
-                  <Field
-                    as={Input}
-                    name="name"
-                    disabled={createCourse.isLoading}
-                    test-id="new-course-input"
-                  />
-                  <FormHelperText>
-                    Write the topic you would like to learn (E.g. React, NextJs,
-                    Node)
-                  </FormHelperText>
-                  <FormErrorMessage>{errors.name}</FormErrorMessage>
-                </FormControl>
+                <GuidedPopover
+                  content={currStep.content}
+                  title={currStep.title}
+                  isOpen={stepNum === 0}
+                  onClose={nextStep}
+                >
+                  <FormControl
+                    mt={10}
+                    isInvalid={touched.name && !!errors.name}
+                  >
+                    <FormLabel>What do you want to learn?</FormLabel>
+                    <Field
+                      as={Input}
+                      name="name"
+                      disabled={createCourse.isLoading}
+                      test-id="new-course-input"
+                    />
+                    <FormHelperText>
+                      Write the topic you would like to learn (E.g. React,
+                      NextJs, Node)
+                    </FormHelperText>
+                    <FormErrorMessage>{errors.name}</FormErrorMessage>
+                  </FormControl>
+                </GuidedPopover>
                 <FormControl>
                   <FormLabel>Suggested Topics</FormLabel>
                   {isFetching && (
@@ -153,23 +186,39 @@ const NewCourseIndex = () => {
                   </FormHelperText>
                 </FormControl>
                 <Flex gap={2}>
-                  <Button
-                    w="100%"
-                    type="button"
-                    onClick={() => setOpenCode(!openCode)}
+                  <GuidedPopover
+                    content={currStep.content}
+                    title={currStep.title}
+                    isOpen={stepNum === 1}
+                    prevStep={prevStep}
+                    onClose={nextStep}
                   >
-                    I have a course code
-                  </Button>
-                  <Button
-                    w="100%"
-                    colorScheme="green"
-                    type="submit"
-                    isDisabled={openCode}
-                    isLoading={createCourse.isLoading}
-                    test-id="new-course-btn"
+                    <Button
+                      w="100%"
+                      type="button"
+                      onClick={() => setOpenCode(!openCode)}
+                    >
+                      I have a course code
+                    </Button>
+                  </GuidedPopover>
+                  <GuidedPopover
+                    content={currStep.content}
+                    title={currStep.title}
+                    isOpen={stepNum === 2}
+                    prevStep={prevStep}
+                    onClose={nextStep}
                   >
-                    Generate Course!
-                  </Button>
+                    <Button
+                      w="100%"
+                      colorScheme="green"
+                      type="submit"
+                      isDisabled={openCode}
+                      isLoading={createCourse.isLoading}
+                      test-id="new-course-btn"
+                    >
+                      Generate Course!
+                    </Button>
+                  </GuidedPopover>
                 </Flex>
               </Flex>
             </Form>
