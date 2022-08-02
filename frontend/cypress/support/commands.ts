@@ -35,3 +35,14 @@
 //     }
 //   }
 // }
+
+Cypress.Commands.add("login", (username: string, password: string) => {
+  cy.visit("/login");
+  const loginInput = cy.get("[test-id='login-input'");
+  loginInput.type(username);
+  const loginPassowrd = cy.get("[test-id='login-password'");
+  loginPassowrd.type(password);
+  const loginButton = cy.get("[test-id='login-button'");
+  loginButton.click();
+  cy.url().should("include", "dashboard");
+});
