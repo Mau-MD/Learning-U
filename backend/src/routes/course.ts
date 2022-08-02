@@ -13,6 +13,7 @@ import {
 } from "../course/course";
 import {
   createCourseFromScratch,
+  dislikeFeaturedCourse,
   getAllFeaturedCourses,
   likeFeaturedCourse,
   makeAnExistingCourseFeautured,
@@ -176,6 +177,20 @@ course.post(
 
     try {
       res.send(await likeFeaturedCourse(courseId, user));
+    } catch (err) {
+      next(new BadRequestError(err.message));
+    }
+  }
+);
+
+course.post(
+  "/featured/dislike/:courseId",
+  async (req: RequestWUser, res, next) => {
+    const { user } = req;
+    const { courseId } = req.params;
+
+    try {
+      res.send(await dislikeFeaturedCourse(courseId, user));
     } catch (err) {
       next(new BadRequestError(err.message));
     }
