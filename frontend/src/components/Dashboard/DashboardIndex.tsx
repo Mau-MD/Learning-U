@@ -38,13 +38,16 @@ const DashboardIndex = () => {
   const { user } = useSession();
 
   const [searchQuery, setSearchQuery] = useState("");
-  const { currStep, nextStep, stepNum, startTour } = useTour([
-    {
-      title: "Create new courses!",
-      content:
-        "Click this button to start making courses. You can create a course about any topic you want! Let's create our first course",
-    },
-  ]);
+  const { currStep, nextStep, stepNum } = useTour(
+    [
+      {
+        title: "Create new courses!",
+        content:
+          "Click this button to start making courses. You can create a course about any topic you want! Let's create our first course",
+      },
+    ],
+    "dashboard"
+  );
 
   const {
     data: courses,
@@ -78,7 +81,6 @@ const DashboardIndex = () => {
   );
 
   useEffect(() => {
-    startTour();
     window.addEventListener("scroll", handlePageBottom);
 
     return () => {

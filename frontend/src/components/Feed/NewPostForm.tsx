@@ -36,26 +36,25 @@ const NewPostForm = () => {
   const queryClient = useQueryClient();
   const formikRef = useRef<FormikProps<PostValues> | null>(null);
 
-  const { currStep, prevStep, nextStep, stepNum, startTour } = useTour([
-    {
-      title: "Feed",
-      content: "Here you can post about anything. Be creative!",
-    },
-    {
-      title: "Course linking",
-      content:
-        "You can even link your courses here, so your followers can clone it if they want to!",
-    },
-    {
-      title: "Automatic posting",
-      content:
-        "Whenever you mark a Tutorial as completed, a post will be published here with the course linked.",
-    },
-  ]);
-
-  useEffect(() => {
-    startTour();
-  }, []);
+  const { currStep, prevStep, nextStep, stepNum } = useTour(
+    [
+      {
+        title: "Feed",
+        content: "Here you can post about anything. Be creative!",
+      },
+      {
+        title: "Course linking",
+        content:
+          "You can even link your courses here, so your followers can clone it if they want to!",
+      },
+      {
+        title: "Automatic posting",
+        content:
+          "Whenever you mark a Tutorial as completed, a post will be published here with the course linked.",
+      },
+    ],
+    "post"
+  );
 
   const convertCoursesToValueLabel = (courses: ICourse[]) => {
     return courses.map((course) => {

@@ -31,18 +31,21 @@ const FeaturedIndex = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { currStep, nextStep, prevStep, stepNum, startTour } = useTour([
-    {
-      title: "Featured Courses",
-      content:
-        "These are courses submitted by the community! You can like, see who posted them and even search.",
-    },
-    {
-      title: "Custom Courses",
-      content:
-        "Don't like the automatically generated courses? You can create your own and share it to the community!",
-    },
-  ]);
+  const { currStep, nextStep, prevStep, stepNum } = useTour(
+    [
+      {
+        title: "Featured Courses",
+        content:
+          "These are courses submitted by the community! You can like, see who posted them and even search.",
+      },
+      {
+        title: "Custom Courses",
+        content:
+          "Don't like the automatically generated courses? You can create your own and share it to the community!",
+      },
+    ],
+    "featured"
+  );
 
   const {
     data: courses,
@@ -76,7 +79,6 @@ const FeaturedIndex = () => {
   );
 
   useEffect(() => {
-    startTour();
     window.addEventListener("scroll", handlePageBottom);
 
     return () => {

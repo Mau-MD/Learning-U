@@ -35,21 +35,20 @@ const FollowingIndex = ({ width = "30%", margin = 10, userId }: Props) => {
     "none"
   );
 
-  const { currStep, prevStep, nextStep, stepNum, startTour } = useTour([
-    {
-      title: "Status",
-      content:
-        "Update your status here. The status get's updated automatically when you start learning a course.",
-    },
-    {
-      title: "Following",
-      content: "Follow new people to see what are they learning!",
-    },
-  ]);
-
-  useEffect(() => {
-    startTour();
-  }, []);
+  const { currStep, prevStep, nextStep, stepNum } = useTour(
+    [
+      {
+        title: "Status",
+        content:
+          "Update your status here. The status get's updated automatically when you start learning a course.",
+      },
+      {
+        title: "Following",
+        content: "Follow new people to see what are they learning!",
+      },
+    ],
+    "following"
+  );
 
   const {
     data: status,

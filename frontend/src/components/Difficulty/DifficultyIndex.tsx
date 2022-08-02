@@ -17,21 +17,21 @@ const DifficultyIndex = () => {
   const name = searchParams.get("name");
 
   const { user, isFetching } = useSession();
-  const { currStep, prevStep, nextStep, stepNum, startTour } = useTour([
-    {
-      title: "Difficulties",
-      content:
-        "When you create a course, it makes two different courses. Try checking both! ",
-    },
-    {
-      title: "Progress",
-      content: "You can also track your progress here! Try reach that 100%",
-    },
-  ]);
+  const { currStep, prevStep, nextStep, stepNum } = useTour(
+    [
+      {
+        title: "Difficulties",
+        content:
+          "When you create a course, it makes two different courses. Try checking both! ",
+      },
+      {
+        title: "Progress",
+        content: "You can also track your progress here! Try reach that 100%",
+      },
+    ],
+    "difficulty"
+  );
 
-  useEffect(() => {
-    startTour();
-  }, []);
   const { data, isLoading } = useQuery(
     `${id}`,
     async () => {

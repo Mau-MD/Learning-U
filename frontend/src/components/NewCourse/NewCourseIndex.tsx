@@ -45,27 +45,26 @@ const NewCourseIndex = () => {
   const toast = useToast();
   const navigate = useNavigate();
   const { user } = useSession();
-  const { currStep, prevStep, nextStep, stepNum, startTour } = useTour([
-    {
-      title: "Let's create a course",
-      content:
-        "This input form is free! You can input any text, like Vue.js React, even Barista Coffee!",
-    },
-    {
-      title: "Create courses based on course codes",
-      content:
-        "All courses are created automatically. This means that a course you create today, might not be the same as one you create tomorrow. If you really liked a course, though, you can create an exact copy of it using the course code!",
-    },
-    {
-      title: "Click here to create a course!",
-      content:
-        "Let's find the perfect tutorials. Click here to begin the course creation.",
-    },
-  ]);
-
-  useEffect(() => {
-    startTour();
-  }, []);
+  const { currStep, prevStep, nextStep, stepNum } = useTour(
+    [
+      {
+        title: "Let's create a course",
+        content:
+          "This input form is free! You can input any text, like Vue.js React, even Barista Coffee!",
+      },
+      {
+        title: "Create courses based on course codes",
+        content:
+          "All courses are created automatically. This means that a course you create today, might not be the same as one you create tomorrow. If you really liked a course, though, you can create an exact copy of it using the course code!",
+      },
+      {
+        title: "Click here to create a course!",
+        content:
+          "Let's find the perfect tutorials. Click here to begin the course creation.",
+      },
+    ],
+    "new-course"
+  );
 
   const [openCode, setOpenCode] = useState(false);
 
