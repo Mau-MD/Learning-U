@@ -2,9 +2,10 @@ import express from "express";
 import dotenv from "dotenv";
 import Parse from "parse/node";
 
-import auth from "./routes/auth";
+import auth from "./src/routes/auth";
 import cors from "cors";
-import { NotFoundError } from "./utils/errors";
+import { NotFoundError } from "./src/utils/errors";
+import debug from "./src/routes/debug";
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/auth", auth);
+app.use("/debug", debug);
 
 app.get("/", async (req, res) => {
   const testObject = new Parse.Object("test");
