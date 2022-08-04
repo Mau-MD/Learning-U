@@ -27,6 +27,8 @@
     "react-query": "^3.39.1",
     "react-router-dom": "^6.3.0",
     "react-router-hash-link": "^2.4.3",
+    "victory": "^36.5.3",
+    "victory-chart": "^36.5.3",
     "yup": "^0.32.11"
   },
   "devDependencies": {
