@@ -3,9 +3,11 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import DifficultyIndex from "./components/Difficulty/DifficultyIndex";
 import Home from "./components/Home";
 import HubIndex from "./components/Hub/HubIndex";
+import CourseLayout from "./components/Layouts/CourseLayout";
 import Navbar from "./components/Navbar";
 import LoginIndex from "./components/Registration/LoginIndex";
 import RegisterIndex from "./components/Registration/RegisterIndex";
+import RequireAuth from "./components/Registration/RequireAuth";
 
 function App() {
   return (
@@ -16,7 +18,14 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<RegisterIndex />} />
         <Route path="/login" element={<LoginIndex />} />
-        <Route path="courses">
+        <Route
+          path="courses"
+          element={
+            <RequireAuth>
+              <CourseLayout />
+            </RequireAuth>
+          }
+        >
           <Route path="difficulty/:id" element={<DifficultyIndex />} />
           <Route path="hub/:id" element={<HubIndex />} />
         </Route>
