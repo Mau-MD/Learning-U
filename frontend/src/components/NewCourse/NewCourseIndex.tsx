@@ -32,6 +32,8 @@ import { useNavigate } from "react-router-dom";
 import { baseURL } from "../../utils/constants";
 import { useTour } from "../../hooks/useTour";
 import GuidedPopover from "../GuidedPopover/GuidedPopover";
+import { VictoryArea, VictoryChart, VictoryPolarAxis } from "victory";
+import { truncate } from "../../utils/truncate";
 
 interface LearnForm {
   name: string;
@@ -117,10 +119,18 @@ const NewCourseIndex = () => {
     }
   );
 
+  const addElipsisToLongNames = (
+    suggestions: { courseName: string; frequency: number }[]
+  ) => {
+    return suggestions.map((suggestion) => {
+      return { ...suggestion, courseName: truncate(suggestion.courseName, 10) };
+    });
+  };
+
   return (
     <>
       <Banner src="https://images.unsplash.com/photo-1513258496099-48168024aec0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2370&q=80" />
-      <Container maxW="container.xl">
+      <Container maxW="container.xl" mb={10}>
         <Heading as="h1" fontWeight="bold" fontSize="4xl" mt={10}>
           {createCourse.isLoading
             ? "We are creating a custom course just for you! Please wait."
@@ -176,13 +186,53 @@ const NewCourseIndex = () => {
                             setFieldValue("name", suggestion.courseName)
                           }
                         >
-                          {suggestion.courseName}
+                          ({suggestion.frequency}) {suggestion.courseName}
                         </Tag>
                       ))}
                   </HStack>
                   <FormHelperText>
                     Based on what your friends are learning
                   </FormHelperText>
+                  <Box w="40%" mt={4}>
+                    {suggestions && (
+                      <VictoryChart polar>
+                        <VictoryArea
+                          style={{
+                            data: {
+                              stroke: "white",
+                              color: "white",
+                              fill: "white",
+                            },
+                          }}
+                          data={addElipsisToLongNames(suggestions)}
+                          x="courseName"
+                          y="frequency"
+                        />
+                        <VictoryPolarAxis
+                          style={{
+                            axisLabel: {
+                              stroke: "white",
+                              color: "white",
+                              fill: "white",
+                            },
+                            tickLabels: {
+                              color: "white",
+                              fill: "white",
+                            },
+                            grid: {
+                              stroke: "white",
+                              color: "white",
+                              fill: "white",
+                            },
+                            axis: {
+                              stroke: "white",
+                              color: "white",
+                            },
+                          }}
+                        />
+                      </VictoryChart>
+                    )}
+                  </Box>
                 </FormControl>
                 <Flex gap={2}>
                   <GuidedPopover
