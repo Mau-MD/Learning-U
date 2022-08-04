@@ -15,30 +15,29 @@ interface Props {
 }
 
 const ResourceGroup = ({ title, kind, data, courseId, courseName }: Props) => {
-  const { currStep, prevStep, nextStep, stepNum, startTour } = useTour([
-    {
-      title: "Video Tutorials!",
-      content:
-        "These are the videos that were generated. Try to watch them all!",
-    },
-    {
-      title: "In progress status",
-      content: "Clicking a video will automatically mark it as In Progress.",
-    },
-    {
-      title: "Finished status",
-      content: (
-        <Text>
-          Click on this <Badge colorScheme="blue">In progress</Badge> badge to
-          mark the video as <Badge colorScheme={"green"}>Completed</Badge>.
-        </Text>
-      ),
-    },
-  ]);
-
-  useEffect(() => {
-    startTour();
-  }, []);
+  const { currStep, prevStep, nextStep, stepNum } = useTour(
+    [
+      {
+        title: "Video Tutorials!",
+        content:
+          "These are the videos that were generated. Try to watch them all!",
+      },
+      {
+        title: "In progress status",
+        content: "Clicking a video will automatically mark it as In Progress.",
+      },
+      {
+        title: "Finished status",
+        content: (
+          <Text>
+            Click on this <Badge colorScheme="blue">In progress</Badge> badge to
+            mark the video as <Badge colorScheme={"green"}>Completed</Badge>.
+          </Text>
+        ),
+      },
+    ],
+    "hub"
+  );
 
   return (
     <Box>
