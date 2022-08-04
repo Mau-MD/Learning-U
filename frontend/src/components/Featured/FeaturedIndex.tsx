@@ -88,8 +88,10 @@ const FeaturedIndex = () => {
   }, []);
 
   const handlePageBottom = debounce(() => {
+    const SCROLL_OFFSET = 20;
     if (
-      window.innerHeight + window.scrollY >= document.body.offsetHeight &&
+      window.innerHeight + window.scrollY >=
+        document.body.offsetHeight - SCROLL_OFFSET &&
       !isFetching
     ) {
       fetchNextPage();
