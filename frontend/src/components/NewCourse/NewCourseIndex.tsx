@@ -176,8 +176,7 @@ const NewCourseIndex = () => {
                     </>
                   )}
                   <HStack>
-                    {suggestions &&
-                      !isFetching &&
+                    {suggestions && !isFetching && suggestions.length > 0 ? (
                       suggestions.map((suggestion) => (
                         <Tag
                           key={suggestion.courseName}
@@ -188,13 +187,16 @@ const NewCourseIndex = () => {
                         >
                           ({suggestion.frequency}) {suggestion.courseName}
                         </Tag>
-                      ))}
+                      ))
+                    ) : (
+                      <Text opacity={0.5}>No suggestions at the moment</Text>
+                    )}
                   </HStack>
                   <FormHelperText>
                     Based on what your friends are learning
                   </FormHelperText>
                   <Box w="40%" mt={4}>
-                    {suggestions && (
+                    {suggestions && suggestions.length > 0 && (
                       <VictoryChart polar>
                         <VictoryArea
                           style={{
