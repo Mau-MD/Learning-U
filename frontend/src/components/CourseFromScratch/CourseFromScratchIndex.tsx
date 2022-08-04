@@ -27,6 +27,7 @@ import { baseURL } from "../../utils/constants";
 import { getConfig, useSession } from "../../utils/auth";
 import { ErrorType } from "../../types/requests";
 import { ValueContainerProps } from "chakra-react-select";
+import { useNavigate } from "react-router-dom";
 
 export const youtubeRegExp =
   /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|\?v=)([^#&?]*).*/;
@@ -56,6 +57,7 @@ const CourseFromScratchIndex = () => {
   const [embedVideos, setEmbedVideos] = useState<EmbedVideos>(emptyForm);
   const { user } = useSession();
   const toast = useToast();
+  const navigate = useNavigate();
 
   const checkIfValidYoutubeURL = (
     str: string | undefined,
@@ -139,6 +141,7 @@ const CourseFromScratchIndex = () => {
           description: `A brand new course has been created`,
           isClosable: true,
         });
+        navigate("/featured");
       },
       onError: (error: AxiosError<ErrorType>) => {
         toast({
@@ -248,7 +251,13 @@ const CourseFromScratchIndex = () => {
                   )}
                 </VStack>
               </Flex>
-              <Button type="submit" colorScheme={"green"} w="100%" mt={10}>
+              <Button
+                type="submit"
+                colorScheme={"green"}
+                w="100%"
+                mt={10}
+                isLoading={createCourse.isLoading}
+              >
                 Create Course
               </Button>
             </Form>
