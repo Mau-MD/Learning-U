@@ -17,11 +17,15 @@ resources.get(
   "/byCourse/:courseId/:level",
   async (req: RequestWUser, res, next) => {
     const { courseId, level } = req.params;
-    const courses = await getResourcesFromCourseAndDifficulty(
-      courseId,
-      parseInt(level)
-    );
-    res.send(courses);
+    try {
+      const courses = await getResourcesFromCourseAndDifficulty(
+        courseId,
+        parseInt(level)
+      );
+      res.send(courses);
+    } catch (err) {
+      next(new BadRequestError(err));
+    }
   }
 );
 
@@ -42,18 +46,21 @@ resources.put(
       next(new BadRequestError("Missing params"));
       return;
     }
+    try {
+      const resource = await updateResourceStatus(
+        resourceName,
+        resourceId,
+        status,
+        courseName,
+        courseId,
+        user
+      );
+      const result = await resource.save();
 
-    const resource = await updateResourceStatus(
-      resourceName,
-      resourceId,
-      status,
-      courseName,
-      courseId,
-      user
-    );
-    const result = await resource.save();
-
-    res.send(result);
+      res.send(result);
+    } catch (err) {
+      next(new BadRequestError(err));
+    }
   }
 );
 

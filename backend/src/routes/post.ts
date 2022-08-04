@@ -46,8 +46,12 @@ post.get("/from/:id", async (req: RequestWUser, res, next) => {
     return;
   }
 
-  const posts = await getPostsByUser(id, parseInt(limit), parseInt(skip));
-  res.send(posts);
+  try {
+    const posts = await getPostsByUser(id, parseInt(limit), parseInt(skip));
+    res.send(posts);
+  } catch (err) {
+    next(new BadRequestError(err));
+  }
 });
 
 post.get("/me", async (req: RequestWUser, res, next) => {
@@ -63,8 +67,16 @@ post.get("/me", async (req: RequestWUser, res, next) => {
     return;
   }
 
-  const posts = await getPostsByUser(user.id, parseInt(limit), parseInt(skip));
-  res.send(posts);
+  try {
+    const posts = await getPostsByUser(
+      user.id,
+      parseInt(limit),
+      parseInt(skip)
+    );
+    res.send(posts);
+  } catch (err) {
+    next(new BadRequestError(err));
+  }
 });
 
 post.get("/following", async (req: RequestWUser, res, next) => {
@@ -81,8 +93,16 @@ post.get("/following", async (req: RequestWUser, res, next) => {
     return;
   }
 
-  const posts = await getFollowingPosts(user, parseInt(limit), parseInt(skip));
-  res.send(posts);
+  try {
+    const posts = await getFollowingPosts(
+      user,
+      parseInt(limit),
+      parseInt(skip)
+    );
+    res.send(posts);
+  } catch (err) {
+    next(new BadRequestError(err));
+  }
 });
 
 export default post;

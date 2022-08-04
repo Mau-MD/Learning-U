@@ -28,15 +28,23 @@ export const getResourcesFromCourse = async (courseId: string) => {
 
   query.equalTo("course", course);
 
-  const resources = await query.findAll();
-  return resources;
+  try {
+    const resources = await query.findAll();
+    return resources;
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };
 
 export const findResourceById = async (id: string) => {
   const Resource = Parse.Object.extend("Resource");
   const query = new Parse.Query(Resource);
   query.equalTo("objectId", id);
-  return await query.find();
+  try {
+    return await query.find();
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };
 
 export const getResourcesFromCourseAndDifficulty = async (
@@ -54,8 +62,12 @@ export const getResourcesFromCourseAndDifficulty = async (
   query.equalTo("course", course);
   query.equalTo("level", level);
 
-  const resources = await query.findAll();
-  return resources;
+  try {
+    const resources = await query.findAll();
+    return resources;
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };
 
 export const updateResourceStatus = async (
@@ -70,22 +82,26 @@ export const updateResourceStatus = async (
   Resource.set("objectId", resourceId);
   Resource.set("status", status);
 
-  if (status === "completed") {
-    const resource = await findResourceById(resourceId);
-    updateFeedback(resource[0].get("videoId"), SCORE_PER_COMPLETED);
+  try {
+    if (status === "completed") {
+      const resource = await findResourceById(resourceId);
+      updateFeedback(resource[0].get("videoId"), SCORE_PER_COMPLETED);
 
-    const post = createPost(
-      `Finished ${resourceName} from the course ${courseName}`,
-      user,
-      courseId
-    );
+      const post = createPost(
+        `Finished ${resourceName} from the course ${courseName}`,
+        user,
+        courseId
+      );
 
-    await post.save();
+      await post.save();
+    }
+
+    if (status === "in progress") {
+      await setStatus(user, `${getRandomEmoji()} Studying ${courseName}`);
+    }
+
+    return Resource;
+  } catch (err) {
+    throw new Error(err.message);
   }
-
-  if (status === "in progress") {
-    await setStatus(user, `${getRandomEmoji()} Studying ${courseName}`);
-  }
-
-  return Resource;
 };

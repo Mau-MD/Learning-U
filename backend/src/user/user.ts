@@ -6,7 +6,11 @@ export const getUserById = async (userId: string) => {
 
   query.equalTo("objectId", userId);
   query.select("username", "email");
-  return await query.first();
+  try {
+    return await query.first();
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };
 
 export const getUserByUsername = async (username: string) => {
@@ -14,5 +18,9 @@ export const getUserByUsername = async (username: string) => {
   const query = new Parse.Query(User);
 
   query.equalTo("username", username);
-  return await query.first();
+  try {
+    return await query.first();
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };

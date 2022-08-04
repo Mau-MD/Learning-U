@@ -24,30 +24,41 @@ export interface GroupedFrequency {
 }
 
 export const getSuggestions = async (user: Parse.User<Parse.Attributes>) => {
-  const followingCourses = await getCoursesFromFollowers(user);
-  const followingCoursesJson = parseObjectsToJson(followingCourses);
-  const groupedSimilarCourses = groupSimilarCourses(followingCoursesJson, user);
-  const groupedCoursesWithFrequency = mapCoursesToFrequency(
-    groupedSimilarCourses
-  );
-  return groupedCoursesWithFrequency;
+  try {
+    const followingCourses = await getCoursesFromFollowers(user);
+    const followingCoursesJson = parseObjectsToJson(followingCourses);
+    const groupedSimilarCourses = groupSimilarCourses(
+      followingCoursesJson,
+      user
+    );
+    const groupedCoursesWithFrequency = mapCoursesToFrequency(
+      groupedSimilarCourses
+    );
+    return groupedCoursesWithFrequency;
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };
 
 export const getCoursesFromFollowers = async (
   user: Parse.User<Parse.Attributes>
 ) => {
-  const followers = await getFollowersAsUserObjects(user);
+  try {
+    const followers = await getFollowersAsUserObjects(user);
 
-  const Course = Parse.Object.extend("Course");
-  const query = new Parse.Query(Course);
+    const Course = Parse.Object.extend("Course");
+    const query = new Parse.Query(Course);
 
-  // We also need to look for user courses, since that would be used later when discarding repeated suggested courses
-  query.containedIn("user", [user, ...followers]);
-  query.select("name");
-  query.select("user");
+    // We also need to look for user courses, since that would be used later when discarding repeated suggested courses
+    query.containedIn("user", [user, ...followers]);
+    query.select("name");
+    query.select("user");
 
-  const followingCourses = await query.find();
-  return followingCourses;
+    const followingCourses = await query.find();
+    return followingCourses;
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };
 
 export const groupSimilarCourses = (

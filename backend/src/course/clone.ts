@@ -19,50 +19,60 @@ export const cloneCourse = async (
   user: Parse.User<Parse.Attributes>,
   isFeatured?: boolean
 ) => {
-  const course = await createCourse(courseName, user);
+  try {
+    const course = await createCourse(courseName, user);
 
-  // this means the course will be public and without a user linked to it
-  if (isFeatured) {
-    course.set("featured", isFeatured);
-    course.set("likes", 0);
+    // this means the course will be public and without a user linked to it
+    if (isFeatured) {
+      course.set("featured", isFeatured);
+      course.set("likes", 0);
+    }
+
+    const resources = parseObjectsToJson(
+      await getResourcesFromCourse(courseId)
+    );
+
+    if (!resources || resources.length === 0) {
+      throw new Error("Course doesn't exist");
+    }
+
+    await course.save();
+
+    for (const resource of resources) {
+      const newResource = createResource({
+        type: resource.type,
+        status: "not started",
+        videoId: resource.videoId,
+        url: resource.url,
+        level: resource.level,
+        title: resource.title,
+        description: resource.description,
+        thumbnail: resource.thumbnail,
+        feedback: 0,
+        course,
+        user,
+      });
+
+      await newResource.save();
+    }
+
+    // We dont want to give positive feedback to resources if the user is making the course public
+    !isFeatured && (await updateFeedbackForEveryResource(resources));
+    return course;
+  } catch (err) {
+    throw new Error(err.message);
   }
-
-  const resources = parseObjectsToJson(await getResourcesFromCourse(courseId));
-
-  if (!resources || resources.length === 0) {
-    throw new Error("Course doesn't exist");
-  }
-
-  await course.save();
-
-  for (const resource of resources) {
-    const newResource = createResource({
-      type: resource.type,
-      status: "not started",
-      videoId: resource.videoId,
-      url: resource.url,
-      level: resource.level,
-      title: resource.title,
-      description: resource.description,
-      thumbnail: resource.thumbnail,
-      feedback: 0,
-      course,
-      user,
-    });
-
-    await newResource.save();
-  }
-
-  // We dont want to give positive feedback to resources if the user is making the course public
-  !isFeatured && (await updateFeedbackForEveryResource(resources));
-  return course;
 };
 
 const updateFeedbackForEveryResource = async (
   resources: (Parse.Object.ToJSON<Parse.Attributes> &
     Parse.JSONBaseAttributes)[]
 ) => {
-  for (const resource of resources) {
-    await updateFeedback(resource.videoId, SCORE_PER_SHARE);
+  try {
+    for (const resource of resources) {
+      await updateFeedback(resource.videoId, SCORE_PER_SHARE);
+    }
+  } catch (err) {
+    throw new Error(err.message);
   }
 };

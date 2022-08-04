@@ -4,21 +4,29 @@ export const setStatus = async (
   user: Parse.User<Parse.Attributes>,
   status: string
 ) => {
-  const userStatus = await findStatusByUser(user);
+  try {
+    const userStatus = await findStatusByUser(user);
 
-  if (userStatus.length === 0) {
-    return await createStatus(user, status);
+    if (userStatus.length === 0) {
+      return await createStatus(user, status);
+    }
+
+    userStatus[0].set("status", status);
+    return await userStatus[0].save();
+  } catch (err) {
+    throw new Error(err.message);
   }
-
-  userStatus[0].set("status", status);
-  return await userStatus[0].save();
 };
 
 export const findStatusByUser = async (user: Parse.User<Parse.Attributes>) => {
   const Status = Parse.Object.extend("Status");
   const query = new Parse.Query(Status);
   query.equalTo("user", user);
-  return await query.find();
+  try {
+    return await query.find();
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };
 
 export const createStatus = async (
@@ -28,7 +36,11 @@ export const createStatus = async (
   const Status = new Parse.Object("Status");
   Status.set("status", status);
   Status.set("user", user);
-  return await Status.save();
+  try {
+    return await Status.save();
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };
 
 export const findStatusByMultipleUsers = async (
@@ -38,5 +50,9 @@ export const findStatusByMultipleUsers = async (
   const query = new Parse.Query(Status);
   query.containedIn("user", users);
   query.includeAll();
-  return await query.find();
+  try {
+    return await query.find();
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };

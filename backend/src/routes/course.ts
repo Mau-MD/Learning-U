@@ -36,10 +36,10 @@ course.post("/new", async (req: RequestWUser, res, next) => {
     return;
   }
 
-  const course = await createCourse(name, user);
-  const { beginner, advanced } = await generateResources(name);
-
   try {
+    const course = await createCourse(name, user);
+    const { beginner, advanced } = await generateResources(name);
+
     // Save course first
     const courseData = await course.save();
 
@@ -48,7 +48,7 @@ course.post("/new", async (req: RequestWUser, res, next) => {
 
     res.status(201).send(courseData);
   } catch (error) {
-    next(new BadRequestError(error));
+    next(new BadRequestError(error.message));
   }
 });
 
@@ -67,29 +67,41 @@ course.get("/me", async (req: RequestWUser, res, next) => {
     return;
   }
 
-  const courses = await getUserCoursesWithLimits(
-    user,
-    parseInt(limit),
-    parseInt(skip),
-    query
-  );
-  res.send(courses);
+  try {
+    const courses = await getUserCoursesWithLimits(
+      user,
+      parseInt(limit),
+      parseInt(skip),
+      query
+    );
+    res.send(courses);
+  } catch (err) {
+    next(new BadRequestError(err.message));
+  }
 });
 
 course.get("/:courseId", async (req: RequestWUser, res, next) => {
   const { user } = req;
   const { courseId } = req.params;
 
-  const course = await getCourseByUserAndId(user, courseId);
-  res.send(course);
+  try {
+    const course = await getCourseByUserAndId(user, courseId);
+    res.send(course);
+  } catch (err) {
+    next(new BadRequestError(err.message));
+  }
 });
 
 course.get("/progress/:courseId", async (req: RequestWUser, res, next) => {
   const { user } = req;
   const { courseId } = req.params;
 
-  const progress = await getProgressByCourse(user, courseId);
-  res.send(progress);
+  try {
+    const progress = await getProgressByCourse(user, courseId);
+    res.send(progress);
+  } catch (err) {
+    next(new BadRequestError(err.message));
+  }
 });
 
 course.post("/clone/:courseId", async (req: RequestWUser, res, next) => {
@@ -120,9 +132,13 @@ course.delete("/:courseId", async (req: RequestWUser, res, next) => {
     return;
   }
 
-  const deletedCourse = await deleteCourse(courseId, dislikedVideos);
+  try {
+    const deletedCourse = await deleteCourse(courseId, dislikedVideos);
 
-  res.send(deletedCourse);
+    res.send(deletedCourse);
+  } catch (err) {
+    next(new BadRequestError(err.message));
+  }
 });
 
 course.get("/featured/get", async (req: RequestWUser, res, next) => {
@@ -140,22 +156,29 @@ course.get("/featured/get", async (req: RequestWUser, res, next) => {
     return;
   }
 
-  const featuredCourses = await getAllFeaturedCourses(
-    parseInt(limit),
-    parseInt(skip),
-    query,
-    user
-  );
-
-  res.send(featuredCourses);
+  try {
+    const featuredCourses = await getAllFeaturedCourses(
+      parseInt(limit),
+      parseInt(skip),
+      query,
+      user
+    );
+    res.send(featuredCourses);
+  } catch (err) {
+    next(new BadRequestError(err.message));
+  }
 });
 
 course.post("/makeFeatured/:courseId", async (req: RequestWUser, res, next) => {
   const { user } = req;
   const { courseId } = req.params;
 
-  const featuredCourse = await makeAnExistingCourseFeautured(courseId, user);
-  res.send(featuredCourse);
+  try {
+    const featuredCourse = await makeAnExistingCourseFeautured(courseId, user);
+    res.send(featuredCourse);
+  } catch (err) {
+    next(new BadRequestError(err.message));
+  }
 });
 
 course.post("/fromScratch", async (req: RequestWUser, res, next) => {
@@ -167,8 +190,12 @@ course.post("/fromScratch", async (req: RequestWUser, res, next) => {
     return;
   }
 
-  const course = await createCourseFromScratch(urls, name, user);
-  res.send(course);
+  try {
+    const course = await createCourseFromScratch(urls, name, user);
+    res.send(course);
+  } catch (err) {
+    next(new BadRequestError(err.message));
+  }
 });
 
 course.post(

@@ -24,9 +24,13 @@ export const getUserCourses = async (user: Parse.Object<Parse.Attributes>) => {
   query.equalTo("user", user);
   query.notEqualTo("featured", true);
 
-  const courses = await query.findAll();
+  try {
+    const courses = await query.findAll();
 
-  return courses;
+    return courses;
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };
 
 export const getUserCoursesWithLimits = async (
@@ -45,9 +49,12 @@ export const getUserCoursesWithLimits = async (
   query.notEqualTo("featured", true);
   query.skip(skip);
 
-  const courses = await query.find();
-
-  return courses;
+  try {
+    const courses = await query.find();
+    return courses;
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };
 
 export const getCourseByUserAndId = async (
@@ -60,9 +67,13 @@ export const getCourseByUserAndId = async (
   query.equalTo("user", user);
   query.equalTo("objectId", courseId);
 
-  const course = await query.find();
+  try {
+    const course = await query.find();
 
-  return course[0];
+    return course[0];
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };
 
 export const getProgressByCourse = async (
@@ -80,20 +91,24 @@ export const getProgressByCourse = async (
   query.equalTo("user", user);
   query.equalTo("course", course);
 
-  const resources = await query.findAll();
+  try {
+    const resources = await query.findAll();
 
-  // filter by level
-  const beginnerLevelResources = resources.filter(
-    (resource) => resource.get("level") === 1
-  );
-  const advancedLevelResources = resources.filter(
-    (resource) => resource.get("level") === 2
-  );
+    // filter by level
+    const beginnerLevelResources = resources.filter(
+      (resource) => resource.get("level") === 1
+    );
+    const advancedLevelResources = resources.filter(
+      (resource) => resource.get("level") === 2
+    );
 
-  return {
-    1: calculateCourseCompletition(beginnerLevelResources),
-    2: calculateCourseCompletition(advancedLevelResources),
-  };
+    return {
+      1: calculateCourseCompletition(beginnerLevelResources),
+      2: calculateCourseCompletition(advancedLevelResources),
+    };
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };
 
 export const createCourse = async (
@@ -102,12 +117,16 @@ export const createCourse = async (
 ) => {
   const Course: Parse.Object = new Parse.Object("Course");
 
-  const images = await getImagesByQuery(name);
+  try {
+    const images = await getImagesByQuery(name);
 
-  Course.set("name", name);
-  Course.set("images", images);
-  Course.set("user", user);
-  return Course;
+    Course.set("name", name);
+    Course.set("images", images);
+    Course.set("user", user);
+    return Course;
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };
 
 export const deleteCourse = async (
@@ -117,15 +136,23 @@ export const deleteCourse = async (
   const Course = new Parse.Object("Course");
   Course.set("objectId", courseId);
 
-  giveNegativeFeedbackToDislikedVideos(dislikedVideos);
-  return await Course.destroy();
+  try {
+    await giveNegativeFeedbackToDislikedVideos(dislikedVideos);
+    return await Course.destroy();
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };
 
 export const giveNegativeFeedbackToDislikedVideos = async (
   dislikedVideos: string[]
 ) => {
-  for (const dislikedVideo of dislikedVideos) {
-    await updateFeedback(dislikedVideo, SCORE_PER_DISLIKED_VIDEO);
+  try {
+    for (const dislikedVideo of dislikedVideos) {
+      await updateFeedback(dislikedVideo, SCORE_PER_DISLIKED_VIDEO);
+    }
+  } catch (err) {
+    throw new Error(err.message);
   }
 };
 
@@ -135,43 +162,55 @@ export const saveResources = async (
   level: 1 | 2,
   user: Parse.User<Parse.Attributes>
 ) => {
-  for (const resource of resources) {
-    const video = createResource({
-      type: "video",
-      level,
-      videoId: resource.id,
-      status: "not started",
-      title: resource.snippet.title,
-      description: resource.snippet.description,
-      url: `https://youtube.com/video/${resource.id}`,
-      thumbnail: resource.snippet.thumbnails.high.url,
-      channel: resource.snippet.channelTitle,
-      feedback: 0,
-      course,
-      user,
-    });
+  try {
+    for (const resource of resources) {
+      const video = createResource({
+        type: "video",
+        level,
+        videoId: resource.id,
+        status: "not started",
+        title: resource.snippet.title,
+        description: resource.snippet.description,
+        url: `https://youtube.com/video/${resource.id}`,
+        thumbnail: resource.snippet.thumbnails.high.url,
+        channel: resource.snippet.channelTitle,
+        feedback: 0,
+        course,
+        user,
+      });
 
-    await video.save();
+      await video.save();
+    }
+  } catch (err) {
+    throw new Error(err.message);
   }
 };
 
 export const generateResources = async (name: string) => {
-  return await getBeginnerAndAdvancedCourses(name);
+  try {
+    return await getBeginnerAndAdvancedCourses(name);
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };
 
 const getBeginnerAndAdvancedCourses = async (query: string) => {
-  const beginnerVideos = await getRankedVideos(`beginner ${query} tutorial`);
-  const top3AdvancedVideos = getTop3(
-    await getRankedVideos(`advanced ${query} tutorial`)
-  );
-  const top3BeginnerVideos = getTop3BeginnerVideosWithoutDuplicates(
-    beginnerVideos,
-    top3AdvancedVideos
-  );
-  return {
-    beginner: top3BeginnerVideos,
-    advanced: top3AdvancedVideos,
-  };
+  try {
+    const beginnerVideos = await getRankedVideos(`beginner ${query} tutorial`);
+    const top3AdvancedVideos = getTop3(
+      await getRankedVideos(`advanced ${query} tutorial`)
+    );
+    const top3BeginnerVideos = getTop3BeginnerVideosWithoutDuplicates(
+      beginnerVideos,
+      top3AdvancedVideos
+    );
+    return {
+      beginner: top3BeginnerVideos,
+      advanced: top3AdvancedVideos,
+    };
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };
 
 const getTop3BeginnerVideosWithoutDuplicates = (
@@ -199,22 +238,26 @@ const getTop3 = (rankedVideos: IFinalRankingYoutubeVideo[]) => {
 };
 
 const getRankedVideos = async (query: string) => {
-  const videos = await getVideosByQuery(query, VIDEOS_PER_QUERY);
+  try {
+    const videos = await getVideosByQuery(query, VIDEOS_PER_QUERY);
 
-  const ids = [];
-  for (const video of videos.data.items) {
-    ids.push(video.id.videoId);
+    const ids = [];
+    for (const video of videos.data.items) {
+      ids.push(video.id.videoId);
+    }
+
+    const videosDetailed = await getVideoDetailByIds(ids, VIDEOS_PER_QUERY);
+
+    const rankedVideos = await getFinalRanking(videosDetailed.data.items);
+
+    const sortedRankedVideos = rankedVideos.sort(
+      (a, b) => b.final_score - a.final_score
+    );
+
+    return sortedRankedVideos;
+  } catch (err) {
+    throw new Error(err.message);
   }
-
-  const videosDetailed = await getVideoDetailByIds(ids, VIDEOS_PER_QUERY);
-
-  const rankedVideos = await getFinalRanking(videosDetailed.data.items);
-
-  const sortedRankedVideos = rankedVideos.sort(
-    (a, b) => b.final_score - a.final_score
-  );
-
-  return sortedRankedVideos;
 };
 
 const calculateCourseCompletition = (

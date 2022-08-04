@@ -1,5 +1,6 @@
 import axios from "axios";
 import dotenv from "dotenv";
+import { errorMonitor } from "events";
 import { IUnsplashLinks } from "../types/image";
 
 dotenv.config();
@@ -18,6 +19,6 @@ export const getImagesByQuery = async (query: string) => {
       return { ...image.urls };
     }) as Array<IUnsplashLinks>;
   } catch (err) {
-    console.log(err);
+    throw new Error(err.message);
   }
 };

@@ -48,30 +48,46 @@ follow.post("/status", async (req: RequestWUser, res, next) => {
     return;
   }
 
-  res.send(await setStatus(user, status));
+  try {
+    res.send(await setStatus(user, status));
+  } catch (err) {
+    next(new BadRequestError(err.message));
+  }
 });
 
 follow.get("/status/by/:id", async (req: RequestWUser, res, next) => {
   const { id } = req.params;
-  const user = (await getUserById(id)) as Parse.User<Parse.Attributes>;
-  const following = await getFollowersAsUserObjects(user);
-  const status = await findStatusByMultipleUsers(following);
-  res.send(status);
+  try {
+    const user = (await getUserById(id)) as Parse.User<Parse.Attributes>;
+    const following = await getFollowersAsUserObjects(user);
+    const status = await findStatusByMultipleUsers(following);
+    res.send(status);
+  } catch (err) {
+    next(new BadRequestError(err.message));
+  }
 });
 
 follow.get("/following/status", async (req: RequestWUser, res, next) => {
   const { user } = req;
 
-  const following = await getFollowersAsUserObjects(user);
-  const status = await findStatusByMultipleUsers(following);
-  res.send(status);
+  try {
+    const following = await getFollowersAsUserObjects(user);
+    const status = await findStatusByMultipleUsers(following);
+    res.send(status);
+  } catch (err) {
+    next(new BadRequestError(err.message));
+  }
 });
 
 follow.get("/status/:id", async (req: RequestWUser, res, next) => {
   const { id } = req.params;
-  const user = (await getUserById(id)) as Parse.User<Parse.Attributes>;
-  const status = await findStatusByUser(user);
-  res.send(status[0]);
+  try {
+    const user = (await getUserById(id)) as Parse.User<Parse.Attributes>;
+    const status = await findStatusByUser(user);
+    res.send(status[0]);
+  } catch (err) {
+    next(new BadRequestError(err.message));
+  }
 });
 
 follow.delete("/:userId", async (req: RequestWUser, res, next) => {

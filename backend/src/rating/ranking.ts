@@ -42,16 +42,24 @@ export const WEIGHTS = {
 
 export const getFinalRanking = async (videos: youtube_v3.Schema$Video[]) => {
   const externalRankedVideos = getExternalRanking(videos);
-  const internalRankedVideos = await getInternalRanking(videos);
-  return mergeInternalExternalRanking(
-    externalRankedVideos,
-    internalRankedVideos
-  );
+  try {
+    const internalRankedVideos = await getInternalRanking(videos);
+    return mergeInternalExternalRanking(
+      externalRankedVideos,
+      internalRankedVideos
+    );
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };
 
 export const getInternalRanking = async (videos: youtube_v3.Schema$Video[]) => {
-  const feedback = await getFeedback();
-  return assignFeedbackScoreToFetchedVideos(videos, feedback);
+  try {
+    const feedback = await getFeedback();
+    return assignFeedbackScoreToFetchedVideos(videos, feedback);
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };
 
 export const mergeInternalExternalRanking = (

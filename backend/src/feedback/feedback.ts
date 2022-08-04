@@ -17,15 +17,19 @@ export const updateFeedback = async (
   videoId: string,
   amountToIncrement: number
 ) => {
-  const feedback = await getFeedbackByVideoId(videoId);
+  try {
+    const feedback = await getFeedbackByVideoId(videoId);
 
-  if (!feedback || feedback.length === 0) {
-    const newFeedbackObject = createFeedback(videoId, amountToIncrement);
-    return await newFeedbackObject.save();
+    if (!feedback || feedback.length === 0) {
+      const newFeedbackObject = createFeedback(videoId, amountToIncrement);
+      return await newFeedbackObject.save();
+    }
+
+    feedback[0].increment("feedback", amountToIncrement);
+    return await feedback[0].save();
+  } catch (err) {
+    throw new Error(err.message);
   }
-
-  feedback[0].increment("feedback", amountToIncrement);
-  return await feedback[0].save();
 };
 
 export const getFeedbackByVideoId = async (videoId: string) => {
@@ -33,15 +37,23 @@ export const getFeedbackByVideoId = async (videoId: string) => {
   const query = new Parse.Query(Feedback);
 
   query.equalTo("videoId", videoId);
-  const feedback = await query.find();
-  return feedback;
+  try {
+    const feedback = await query.find();
+    return feedback;
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };
 export const getFeedback = async () => {
   const Feedback = Parse.Object.extend("Feedback");
   const query = new Parse.Query(Feedback);
 
-  const feedback = await query.find();
-  return feedback;
+  try {
+    const feedback = await query.find();
+    return feedback;
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };
 
 export const assignFeedbackScoreToFetchedVideos = (

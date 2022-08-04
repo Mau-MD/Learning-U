@@ -7,21 +7,25 @@ export const followUser = async (
 ) => {
   const Follower = new Parse.Object("Following");
 
-  const targetUser = await findUserByUsername(username);
+  try {
+    const targetUser = await findUserByUsername(username);
 
-  if (!targetUser) {
-    throw new Error("User does not exist");
+    if (!targetUser) {
+      throw new Error("User does not exist");
+    }
+
+    const alreadyFollowing = await checkIfAlreadyFollow(currUser, targetUser);
+    if (alreadyFollowing) {
+      throw new Error("You already follow that user");
+    }
+
+    Follower.set("user", currUser);
+    Follower.set("target", targetUser);
+
+    return Follower;
+  } catch (err) {
+    throw new Error(err.message);
   }
-
-  const alreadyFollowing = await checkIfAlreadyFollow(currUser, targetUser);
-  if (alreadyFollowing) {
-    throw new Error("You already follow that user");
-  }
-
-  Follower.set("user", currUser);
-  Follower.set("target", targetUser);
-
-  return Follower;
 };
 
 export const unfollowUser = async (
@@ -40,20 +44,28 @@ export const unfollowUser = async (
   query.equalTo("user", User);
   query.equalTo("target", TargetUser);
 
-  const followingObject = await query.first();
+  try {
+    const followingObject = await query.first();
 
-  if (!followingObject) throw new Error("You are not following that user");
+    if (!followingObject) throw new Error("You are not following that user");
 
-  return await followingObject.destroy();
+    return await followingObject.destroy();
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };
 
 export const getFollowersAsUserObjects = async (
   user: Parse.User<Parse.Attributes>
 ) => {
-  const followersObject = await getFollowers(user);
-  return followersObject.map((follower) => {
-    return follower.get("target");
-  });
+  try {
+    const followersObject = await getFollowers(user);
+    return followersObject.map((follower) => {
+      return follower.get("target");
+    });
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };
 
 export const getFollowers = async (user: Parse.User<Parse.Attributes>) => {
@@ -61,22 +73,34 @@ export const getFollowers = async (user: Parse.User<Parse.Attributes>) => {
   const query = new Parse.Query(Following);
 
   query.equalTo("user", user);
-  return await query.find();
+  try {
+    return await query.find();
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };
 
 export const getFollowersIds = async (user: Parse.User<Parse.Attributes>) => {
-  const followersObject = await getFollowers(user);
-  return followersObject.map((follow) => {
-    const followJson = follow.toJSON();
-    return followJson.target.objectId;
-  });
+  try {
+    const followersObject = await getFollowers(user);
+    return followersObject.map((follow) => {
+      const followJson = follow.toJSON();
+      return followJson.target.objectId;
+    });
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };
 
 export const findUserByUsername = async (username: string) => {
   const User = Parse.Object.extend("User");
   const query = new Parse.Query(User);
   query.equalTo("username", username);
-  return await query.first();
+  try {
+    return await query.first();
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };
 
 export const checkIfAlreadyFollow = async (
@@ -88,5 +112,9 @@ export const checkIfAlreadyFollow = async (
 
   query.equalTo("user", user);
   query.equalTo("target", targetUser);
-  return await query.first();
+  try {
+    return await query.first();
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };

@@ -8,7 +8,11 @@ export const getLikesUser = async (
   const query = new Parse.Query(LikesUser);
   query.equalTo("user", user);
   query.equalTo("course", course);
-  return await query.first();
+  try {
+    return await query.first();
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };
 
 export const incrementCourseLikes = async (
@@ -16,5 +20,9 @@ export const incrementCourseLikes = async (
   amount: number
 ) => {
   course.increment("likes", amount);
-  return await course.save();
+  try {
+    return await course.save();
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };
