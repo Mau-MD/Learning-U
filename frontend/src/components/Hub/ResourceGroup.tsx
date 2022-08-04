@@ -8,13 +8,12 @@ import VideoCard from "./VideoCard";
 
 interface Props {
   title: string;
-  kind: "video" | "documentation" | "both";
   data: IResource[];
   courseId: string;
   courseName: string;
 }
 
-const ResourceGroup = ({ title, kind, data, courseId, courseName }: Props) => {
+const ResourceGroup = ({ title, data, courseId, courseName }: Props) => {
   const { currStep, prevStep, nextStep, stepNum } = useTour(
     [
       {
@@ -64,27 +63,19 @@ const ResourceGroup = ({ title, kind, data, courseId, courseName }: Props) => {
           templateColumns={["1fr", "1fr", "repeat(2, 1fr)", "repeat(3, 1fr)"]}
           gap="1em"
         >
-          {kind === "video" &&
-            data &&
+          {data &&
             data.map((resource) => (
               <VideoCard
                 key={resource.objectId}
                 objectId={resource.objectId}
                 title={resource.title}
-                src={resource.type === "video" ? resource.thumbnail : ""}
+                src={resource.thumbnail}
                 status={resource.status}
                 href={resource.url}
                 courseId={courseId}
                 courseName={courseName}
               />
             ))}
-          {kind === "documentation" && (
-            <>
-              <DocsCard title="React beginner tutorial" href="yes" />
-              <DocsCard title="React beginner tutorial" href="yes" />
-              <DocsCard title="React beginner tutorial" href="yes" />
-            </>
-          )}
         </Grid>
       </GuidedPopover>
     </Box>

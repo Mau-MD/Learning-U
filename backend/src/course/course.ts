@@ -170,7 +170,6 @@ export const saveResources = async (
   try {
     for (const resource of resources) {
       const video = createResource({
-        type: "video",
         level,
         videoId: resource.id,
         status: "not started",

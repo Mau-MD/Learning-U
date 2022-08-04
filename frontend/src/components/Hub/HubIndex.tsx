@@ -87,7 +87,6 @@ const HubIndex = () => {
           <>
             <ResourceGroup
               title="🎥 Recommended Videos"
-              kind="video"
               data={data}
               courseId={id || ""}
               courseName={title || ""}
