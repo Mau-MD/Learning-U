@@ -195,14 +195,17 @@ export const generateResources = async (name: string) => {
 };
 
 const getBeginnerAndAdvancedCourses = async (query: string) => {
+  const VIDEOS_PER_COURSE = 3;
   try {
     const beginnerVideos = await getRankedVideos(`beginner ${query} tutorial`);
-    const top3AdvancedVideos = getTop3(
-      await getRankedVideos(`advanced ${query} tutorial`)
+    const top3AdvancedVideos = getTopN(
+      await getRankedVideos(`advanced ${query} tutorial`),
+      VIDEOS_PER_COURSE
     );
-    const top3BeginnerVideos = getTop3BeginnerVideosWithoutDuplicates(
+    const top3BeginnerVideos = getTopNBeginnerVideosWithoutDuplicates(
       beginnerVideos,
-      top3AdvancedVideos
+      top3AdvancedVideos,
+      VIDEOS_PER_COURSE
     );
     return {
       beginner: top3BeginnerVideos,
@@ -213,27 +216,32 @@ const getBeginnerAndAdvancedCourses = async (query: string) => {
   }
 };
 
-const getTop3BeginnerVideosWithoutDuplicates = (
+const getTopNBeginnerVideosWithoutDuplicates = (
   beginnerVideos: IFinalRankingYoutubeVideo[],
-  top3AdvancedVideos: IFinalRankingYoutubeVideo[]
+  top3AdvancedVideos: IFinalRankingYoutubeVideo[],
+  n: number
 ) => {
   const selectedBeginnerVideos = new Set();
 
-  const top3BeginnersVideos: IFinalRankingYoutubeVideo[] = [];
+  const topNBeginnersVideos: IFinalRankingYoutubeVideo[] = [];
 
   // We have to iterate over all videos. And then break as soon as we have 3
   for (const video of beginnerVideos) {
     if (top3AdvancedVideos.find((v) => v.id === video.id)) {
       continue;
     }
-    top3BeginnersVideos.push(video);
-    if (top3BeginnersVideos.length === 3) break;
+    topNBeginnersVideos.push(video);
+    if (topNBeginnersVideos.length === n) break;
   }
-  return top3BeginnersVideos;
+  return topNBeginnersVideos;
 };
 
-const getTop3 = (rankedVideos: IFinalRankingYoutubeVideo[]) => {
-  const splicedRankedVideos = rankedVideos.splice(0, 3);
+const getTopN = (rankedVideos: IFinalRankingYoutubeVideo[], n: number) => {
+  if (n > rankedVideos.length) {
+    return rankedVideos;
+  }
+
+  const splicedRankedVideos = rankedVideos.splice(0, n);
   return splicedRankedVideos;
 };
 
