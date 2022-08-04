@@ -13,6 +13,7 @@ import {
 import { createResource } from "../resources/resources";
 import { getImagesByQuery } from "../unsplash/unsplash";
 import { updateFeedback } from "../feedback/feedback";
+import { CourseDifficulty } from "../types/course";
 
 const VIDEOS_PER_QUERY = 100;
 const SCORE_PER_DISLIKED_VIDEO = -2;
@@ -96,15 +97,19 @@ export const getProgressByCourse = async (
 
     // filter by level
     const beginnerLevelResources = resources.filter(
-      (resource) => resource.get("level") === 1
+      (resource) => resource.get("level") === CourseDifficulty.Beginner
     );
     const advancedLevelResources = resources.filter(
-      (resource) => resource.get("level") === 2
+      (resource) => resource.get("level") === CourseDifficulty.Advanced
     );
 
     return {
-      1: calculateCourseCompletition(beginnerLevelResources),
-      2: calculateCourseCompletition(advancedLevelResources),
+      [CourseDifficulty.Beginner]: calculateCourseCompletition(
+        beginnerLevelResources
+      ),
+      [CourseDifficulty.Advanced]: calculateCourseCompletition(
+        advancedLevelResources
+      ),
     };
   } catch (err) {
     throw new Error(err.message);
@@ -159,7 +164,7 @@ export const giveNegativeFeedbackToDislikedVideos = async (
 export const saveResources = async (
   resources: IWeightedYoutubeVideo[],
   course: Parse.Object<Parse.Attributes>,
-  level: 1 | 2,
+  level: CourseDifficulty,
   user: Parse.User<Parse.Attributes>
 ) => {
   try {

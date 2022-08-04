@@ -1,4 +1,4 @@
-import { ICourse } from "./course";
+import { CourseDifficulty, ICourse } from "./course";
 import Parse from "parse/node";
 
 export type IResourceStatus = "not started" | "in progress" | "completed";
@@ -7,7 +7,7 @@ export type IResource =
   | {
       type: "video";
       status: "not started" | "in progress" | "completed";
-      level: 1 | 2;
+      level: CourseDifficulty;
       feedback: number;
       title: string;
       description: string;
@@ -21,7 +21,7 @@ export type IResource =
   | {
       type: "website";
       status: "not started" | "in progress" | "completed";
-      level: 1 | 2;
+      level: CourseDifficulty;
       feedback: number;
       title: string;
       url: string;
