@@ -79,7 +79,6 @@ const NewPostForm = () => {
         getConfig(user?.sessionToken)
       );
 
-      console.log(res.data);
       return convertCoursesToValueLabel(res.data);
     },
     {
@@ -113,6 +112,7 @@ const NewPostForm = () => {
           isClosable: true,
         });
         queryClient.invalidateQueries("posts");
+        queryClient.invalidateQueries(`posts-${user?.objectId}`);
         formikRef.current?.resetForm();
       },
       onError: (error: AxiosError<ErrorType>) => {
