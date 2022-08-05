@@ -7,27 +7,35 @@ import {
   Heading,
   HStack,
   Image,
+  Skeleton,
   Text,
 } from "@chakra-ui/react";
 import React from "react";
 import { HashLink } from "react-router-hash-link";
 import useThemeColor from "../../hooks/useThemeColor";
+import { CourseDifficulty } from "../../types/enums";
 import { scrollWithOffset } from "../../utils/scrollWithOffset";
 
 interface Props {
   title: string;
-  progress: number;
+  progress: number | undefined;
   src: string;
-  started?: boolean;
+  courseId: string;
   phrase: string;
+  courseTitle: string;
+  difficulty: CourseDifficulty;
+  isLoading: boolean;
 }
 
 const DifficultyCard = ({
   title,
   progress,
+  courseId,
   src,
-  started = false,
   phrase,
+  courseTitle,
+  difficulty,
+  isLoading,
 }: Props) => {
   const { backgroundColor, borderColor } = useThemeColor();
 
@@ -47,7 +55,9 @@ const DifficultyCard = ({
         h={{ base: "20vh", sm: "100%" }}
         display="flex"
       >
-        <Image src={src} fit="cover" w="100%" h="100%" />
+        <Skeleton isLoaded={!isLoading} w="100%">
+          <Image src={src} fit="cover" w="100%" h="100%" />
+        </Skeleton>
       </Box>
       <Box
         h="100%"
@@ -71,22 +81,32 @@ const DifficultyCard = ({
           </Box>
           <Box display="flex" flexDir={{ base: "column", md: "row" }} gap="1em">
             <HashLink
-              to="/courses/hub/3#title"
+              to={`/courses/${courseId}/hub?title=${courseTitle}&difficulty=${difficulty}#title`}
               smooth
               scroll={(el) => scrollWithOffset(el)}
             >
-              <Button w={{ base: "100%", sm: "fit-content" }}>
-                {started ? "Continue Learning" : "Start Course"}
+              <Button
+                w={{ base: "100%", sm: "fit-content" }}
+                test-id="start-course-btn"
+              >
+                {progress && progress > 0
+                  ? "Continue Learning"
+                  : "Start Course"}
               </Button>
             </HashLink>
-            <Button w={{ base: "100%", sm: "fit-content" }}>
-              Refresh Resources
-            </Button>
           </Box>
         </Box>
         <Box display="flex" alignItems="center">
-          <CircularProgress value={progress} size="60px">
-            <CircularProgressLabel>{progress}%</CircularProgressLabel>
+          <CircularProgress
+            value={progress}
+            isIndeterminate={progress === undefined}
+            size="60px"
+          >
+            {progress !== undefined && (
+              <CircularProgressLabel>
+                {progress.toFixed()}%
+              </CircularProgressLabel>
+            )}
           </CircularProgress>
         </Box>
       </Box>

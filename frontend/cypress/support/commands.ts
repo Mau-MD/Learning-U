@@ -35,3 +35,31 @@
 //     }
 //   }
 // }
+
+export const uuid = () => Cypress._.uniqueId(Date.now().toString());
+
+Cypress.Commands.add("login", (username: string, password: string) => {
+  cy.visit("/login");
+  const loginInput = cy.get("[test-id='login-input'");
+  loginInput.type(username);
+  const loginPassowrd = cy.get("[test-id='login-password'");
+  loginPassowrd.type(password);
+  const loginButton = cy.get("[test-id='login-button'");
+  loginButton.click();
+  cy.url().should("include", "dashboard");
+});
+
+Cypress.Commands.add(
+  "register",
+  (username: string, password: string, email: string) => {
+    cy.visit("/register");
+    const registerInput = cy.get("[test-id='register-input'");
+    registerInput.type(username);
+    const registerEmail = cy.get("[test-id='register-email'");
+    registerEmail.type(email);
+    const registerPassword = cy.get("[test-id='register-password'");
+    registerPassword.type(password);
+    const registerButton = cy.get("[test-id='register-button'");
+    registerButton.click();
+  }
+);

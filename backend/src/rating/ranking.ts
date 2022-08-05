@@ -3,10 +3,16 @@ import { ExpressError } from "../utils/errors";
 import { parseISO, differenceInCalendarDays } from "date-fns";
 import { normalize } from "../utils/math";
 import {
+  IFinalRankingYoutubeVideo,
+  INormalizedInternalYoutubeVideo,
   INormalizedYoutubeVideo,
   IRawYoutubeVideo,
   IWeightedYoutubeVideo,
 } from "../types/youtube";
+import {
+  assignFeedbackScoreToFetchedVideos,
+  getFeedback,
+} from "../feedback/feedback";
 
 interface IMaxScores {
   dateXViews: number;
@@ -32,6 +38,43 @@ export const WEIGHTS = {
   weight4: 0,
   weight5: 100,
   weight6: 0,
+};
+
+export const getFinalRanking = async (videos: youtube_v3.Schema$Video[]) => {
+  const externalRankedVideos = getExternalRanking(videos);
+  try {
+    const internalRankedVideos = await getInternalRanking(videos);
+    return mergeInternalExternalRanking(
+      externalRankedVideos,
+      internalRankedVideos
+    );
+  } catch (err) {
+    throw new Error(err.message);
+  }
+};
+
+export const getInternalRanking = async (videos: youtube_v3.Schema$Video[]) => {
+  try {
+    const feedback = await getFeedback();
+    return assignFeedbackScoreToFetchedVideos(videos, feedback);
+  } catch (err) {
+    throw new Error(err.message);
+  }
+};
+
+export const mergeInternalExternalRanking = (
+  externalRankedVideos: IWeightedYoutubeVideo[],
+  internalRankedVideos: INormalizedInternalYoutubeVideo[]
+): IFinalRankingYoutubeVideo[] => {
+  if (externalRankedVideos.length !== internalRankedVideos.length) {
+    throw new Error("External and internal ranking doesn't match");
+  }
+  return externalRankedVideos.map((externalVideo, idx) => {
+    const final_score =
+      0.4 * externalVideo.final_external_score +
+      0.6 * internalRankedVideos[idx].internal_score;
+    return { ...externalVideo, ...internalRankedVideos[idx], final_score };
+  });
 };
 
 export const getExternalRanking = (videos: youtube_v3.Schema$Video[]) => {
@@ -110,7 +153,7 @@ export const getWeightedExternalRanking = (
       useOfChapters: video.normalized_score.useOfChapters * WEIGHTS.weight5,
     };
 
-    const final_score =
+    const final_external_score =
       0.5 * (weighted_score.date + weighted_score.dateXLikes) +
       0.3 * weighted_score.dateXViews +
       0.2 * weighted_score.useOfChapters;
@@ -118,7 +161,7 @@ export const getWeightedExternalRanking = (
     return {
       ...video,
       weighted_score,
-      final_score,
+      final_external_score,
     };
   });
 };

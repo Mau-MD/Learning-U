@@ -5,10 +5,10 @@ export const persistUser = (user: IUser) => {
   localStorage.setItem("user", JSON.stringify(user));
 };
 
-export const getCachedUser = (): IUser | null => {
+export const getCachedUser = (): { user: IUser } | null => {
   const userString = localStorage.getItem("user");
   if (!userString) return null;
-  return JSON.parse(userString) as IUser;
+  return JSON.parse(userString);
 };
 
 export const deleteCachedUser = () => {
@@ -30,9 +30,15 @@ export const useSession = () => {
       setIsFetching(false);
       return;
     }
-    setUser(cachedUser);
+    setUser(cachedUser.user);
     setIsFetching(false);
   };
 
   return { user, fetchUser, isFetching };
+};
+
+export const getConfig = (token: string) => {
+  return {
+    headers: { Authorization: token },
+  };
 };

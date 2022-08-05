@@ -3,9 +3,15 @@ import dotenv from "dotenv";
 import Parse from "parse/node";
 
 import auth from "./src/routes/auth";
-import cors from "cors";
 import { NotFoundError } from "./src/utils/errors";
 import debug from "./src/routes/debug";
+import cors from "cors";
+import course from "./src/routes/course";
+import resources from "./src/routes/resources";
+import post from "./src/routes/post";
+import follow from "./src/routes/follow";
+import suggestions from "./src/routes/suggestions";
+import user from "./src/routes/user";
 
 dotenv.config();
 
@@ -19,6 +25,12 @@ app.use(cors());
 
 app.use("/auth", auth);
 app.use("/debug", debug);
+app.use("/course", course);
+app.use("/resources", resources);
+app.use("/post", post);
+app.use("/follow", follow);
+app.use("/suggestions", suggestions);
+app.use("/user", user);
 
 app.get("/", async (req, res) => {
   const testObject = new Parse.Object("test");

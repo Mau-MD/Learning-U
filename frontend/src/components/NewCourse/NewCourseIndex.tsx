@@ -1,4 +1,6 @@
 import {
+  Badge,
+  Box,
   Button,
   Container,
   Flex,
@@ -7,20 +9,31 @@ import {
   FormHelperText,
   FormLabel,
   Heading,
+  HStack,
   Input,
+  Skeleton,
+  Stack,
+  Tag,
+  Text,
   useToast,
+  VStack,
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Banner from "../Hub/Banner";
 import * as Yup from "yup";
-import { useMutation } from "react-query";
 import axios, { AxiosError } from "axios";
-import { baseURL } from "../../utils/constants";
 import { ErrorType } from "../../types/requests";
-import { useNavigate } from "react-router-dom";
 import { ICourse } from "../../types/course";
 import { getConfig, useSession } from "../../utils/auth";
+import CourseCode from "./CourseCode";
+import { useMutation, useQuery } from "react-query";
+import { useNavigate } from "react-router-dom";
+import { baseURL } from "../../utils/constants";
+import { useTour } from "../../hooks/useTour";
+import GuidedPopover from "../GuidedPopover/GuidedPopover";
+import { VictoryArea, VictoryChart, VictoryPolarAxis } from "victory";
+import { truncate } from "../../utils/truncate";
 
 interface LearnForm {
   name: string;
@@ -34,10 +47,45 @@ const NewCourseIndex = () => {
   const toast = useToast();
   const navigate = useNavigate();
   const { user } = useSession();
+  const { currStep, prevStep, nextStep, stepNum } = useTour(
+    [
+      {
+        title: "Let's create a course",
+        content:
+          "This input form is free! You can input any text, like Vue.js React, even Barista Coffee!",
+      },
+      {
+        title: "Create courses based on course codes",
+        content:
+          "All courses are created automatically. This means that a course you create today, might not be the same as one you create tomorrow. If you really liked a course, though, you can create an exact copy of it using the course code!",
+      },
+      {
+        title: "Click here to create a course!",
+        content:
+          "Let's find the perfect tutorials. Click here to begin the course creation.",
+      },
+    ],
+    "new-course"
+  );
+
+  const [openCode, setOpenCode] = useState(false);
 
   const handleSubmit = (values: LearnForm) => {
     createCourse.mutate(values.name);
   };
+
+  const { data: suggestions, isFetching } = useQuery(
+    "suggested",
+    async () => {
+      if (!user) throw new Error("User is not defined");
+      const res = await axios.get<{ courseName: string; frequency: number }[]>(
+        `${baseURL}/suggestions/me`,
+        getConfig(user.sessionToken)
+      );
+      return res.data;
+    },
+    { enabled: !!user }
+  );
 
   const createCourse = useMutation(
     async (name: string) => {
@@ -57,7 +105,7 @@ const NewCourseIndex = () => {
           description: "Your custom course was created successfully!",
           status: "success",
         });
-        navigate(`/course/difficulty/${course.objectId}`);
+        navigate(`/courses/${course.objectId}/difficulty?name=${course.name}`);
       },
       onError: (error: AxiosError<ErrorType>) => {
         toast({
@@ -71,10 +119,18 @@ const NewCourseIndex = () => {
     }
   );
 
+  const addElipsisToLongNames = (
+    suggestions: { courseName: string; frequency: number }[]
+  ) => {
+    return suggestions.map((suggestion) => {
+      return { ...suggestion, courseName: truncate(suggestion.courseName, 10) };
+    });
+  };
+
   return (
     <>
       <Banner src="https://images.unsplash.com/photo-1513258496099-48168024aec0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2370&q=80" />
-      <Container maxW="container.xl">
+      <Container maxW="container.xl" mb={10}>
         <Heading as="h1" fontWeight="bold" fontSize="4xl" mt={10}>
           {createCourse.isLoading
             ? "We are creating a custom course just for you! Please wait."
@@ -85,34 +141,141 @@ const NewCourseIndex = () => {
           onSubmit={handleSubmit}
           validationSchema={schema}
         >
-          {({ errors, touched }) => (
+          {({ errors, touched, setFieldValue }) => (
             <Form>
               <Flex flexDir="column" gap={10}>
-                <FormControl mt={10} isInvalid={touched.name && !!errors.name}>
-                  <FormLabel>What do you want to learn?</FormLabel>
-                  <Field
-                    as={Input}
-                    name="name"
-                    disabled={createCourse.isLoading}
-                  />
-                  <FormHelperText>
-                    Write the topic you would like to learn (E.g. React, NextJs,
-                    Node)
-                  </FormHelperText>
-                  <FormErrorMessage>{errors.name}</FormErrorMessage>
-                </FormControl>
-                <Button
-                  w="100%"
-                  colorScheme="green"
-                  type="submit"
-                  isLoading={createCourse.isLoading}
+                <GuidedPopover
+                  content={currStep.content}
+                  title={currStep.title}
+                  isOpen={stepNum === 0}
+                  onClose={nextStep}
                 >
-                  Generate Course!
-                </Button>
+                  <FormControl
+                    mt={10}
+                    isInvalid={touched.name && !!errors.name}
+                  >
+                    <FormLabel>What do you want to learn?</FormLabel>
+                    <Field
+                      as={Input}
+                      name="name"
+                      disabled={createCourse.isLoading}
+                      test-id="new-course-input"
+                    />
+                    <FormHelperText>
+                      Write the topic you would like to learn (E.g. React,
+                      NextJs, Node)
+                    </FormHelperText>
+                    <FormErrorMessage>{errors.name}</FormErrorMessage>
+                  </FormControl>
+                </GuidedPopover>
+                <FormControl>
+                  <FormLabel>Suggested Topics</FormLabel>
+                  {isFetching && (
+                    <>
+                      <Skeleton h="20px" w="250px" />
+                    </>
+                  )}
+                  <HStack>
+                    {suggestions && !isFetching && suggestions.length > 0 ? (
+                      suggestions.map((suggestion) => (
+                        <Tag
+                          key={suggestion.courseName}
+                          cursor="pointer"
+                          onClick={() =>
+                            setFieldValue("name", suggestion.courseName)
+                          }
+                        >
+                          ({suggestion.frequency}) {suggestion.courseName}
+                        </Tag>
+                      ))
+                    ) : (
+                      <Text opacity={0.5}>No suggestions at the moment</Text>
+                    )}
+                  </HStack>
+                  <FormHelperText>
+                    Based on what your friends are learning
+                  </FormHelperText>
+                  <Box w="40%" mt={4}>
+                    {suggestions && suggestions.length > 0 && (
+                      <VictoryChart polar>
+                        <VictoryArea
+                          style={{
+                            data: {
+                              stroke: "white",
+                              color: "white",
+                              fill: "white",
+                            },
+                          }}
+                          data={addElipsisToLongNames(suggestions)}
+                          x="courseName"
+                          y="frequency"
+                        />
+                        <VictoryPolarAxis
+                          style={{
+                            axisLabel: {
+                              stroke: "white",
+                              color: "white",
+                              fill: "white",
+                            },
+                            tickLabels: {
+                              color: "white",
+                              fill: "white",
+                            },
+                            grid: {
+                              stroke: "white",
+                              color: "white",
+                              fill: "white",
+                            },
+                            axis: {
+                              stroke: "white",
+                              color: "white",
+                            },
+                          }}
+                        />
+                      </VictoryChart>
+                    )}
+                  </Box>
+                </FormControl>
+                <Flex gap={2}>
+                  <GuidedPopover
+                    content={currStep.content}
+                    title={currStep.title}
+                    isOpen={stepNum === 1}
+                    prevStep={prevStep}
+                    onClose={nextStep}
+                  >
+                    <Button
+                      w="100%"
+                      type="button"
+                      onClick={() => setOpenCode(!openCode)}
+                    >
+                      I have a course code
+                    </Button>
+                  </GuidedPopover>
+                  <GuidedPopover
+                    content={currStep.content}
+                    title={currStep.title}
+                    isOpen={stepNum === 2}
+                    prevStep={prevStep}
+                    onClose={nextStep}
+                  >
+                    <Button
+                      w="100%"
+                      colorScheme="green"
+                      type="submit"
+                      isDisabled={openCode}
+                      isLoading={createCourse.isLoading}
+                      test-id="new-course-btn"
+                    >
+                      Generate Course!
+                    </Button>
+                  </GuidedPopover>
+                </Flex>
               </Flex>
             </Form>
           )}
         </Formik>
+        {openCode && <CourseCode />}
       </Container>
     </>
   );

@@ -1,54 +1,83 @@
-import { Box, Grid, Heading } from "@chakra-ui/react";
-import React from "react";
+import { Badge, Box, Grid, Heading, Text } from "@chakra-ui/react";
+import React, { useEffect } from "react";
+import { useTour } from "../../hooks/useTour";
+import { IResource } from "../../types/resource";
+import GuidedPopover from "../GuidedPopover/GuidedPopover";
 import DocsCard from "./DocsCard";
 import VideoCard from "./VideoCard";
 
 interface Props {
   title: string;
-  kind: "video" | "documentation" | "both";
+  data: IResource[];
+  courseId: string;
+  courseName: string;
 }
 
-const ResourceGroup = ({ title, kind }: Props) => {
+const ResourceGroup = ({ title, data, courseId, courseName }: Props) => {
+  const { currStep, prevStep, nextStep, stepNum } = useTour(
+    [
+      {
+        title: "Video Tutorials!",
+        content:
+          "These are the videos that were generated. Try to watch them all!",
+      },
+      {
+        title: "In progress status",
+        content: "Clicking a video will automatically mark it as In Progress.",
+      },
+      {
+        title: "Finished status",
+        content: (
+          <Text>
+            Click on this <Badge colorScheme="blue">In progress</Badge> badge to
+            mark the video as <Badge colorScheme={"green"}>Completed</Badge>.
+          </Text>
+        ),
+      },
+    ],
+    "hub"
+  );
+
   return (
     <Box>
-      <Heading as="h2" fontSize="xl" mb={3}>
-        {title}
-      </Heading>
-      {/* See https://chakra-ui.com/docs/styled-system/responsive-styles */}
-      <Grid
-        templateColumns={["1fr", "1fr", "repeat(2, 1fr)", "repeat(3, 1fr)"]}
-        gap="1em"
+      <GuidedPopover
+        content={currStep.content}
+        title={currStep.title}
+        isOpen={stepNum === 0}
+        prevStep={prevStep}
+        onClose={nextStep}
       >
-        {kind === "video" && (
-          <>
-            <VideoCard
-              title="React Beginners Tutorial"
-              src="https://assets-global.website-files.com/61a0a53beeb118af7ddb4c55/61c0ba0267c18ebf1fd19b2f_maxresdefault-1-1-1024x576.jpeg"
-              status="completed"
-              href=""
-            />
-            <VideoCard
-              title="React Beginners Tutorial"
-              src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/youtube-thumbnail-design-template-f41731052ef38859a77214e2be972d69_screen.jpg?ts=1630950507"
-              status="in progress"
-              href=""
-            />
-            <VideoCard
-              title="React Beginners Tutorial"
-              src="https://assets-global.website-files.com/61a0a53beeb118af7ddb4c55/61c0ba0267c18ebf1fd19b2f_maxresdefault-1-1-1024x576.jpeg"
-              href=""
-              status="not started"
-            />
-          </>
-        )}
-        {kind === "documentation" && (
-          <>
-            <DocsCard title="React beginner tutorial" href="yes" />
-            <DocsCard title="React beginner tutorial" href="yes" />
-            <DocsCard title="React beginner tutorial" href="yes" />
-          </>
-        )}
-      </Grid>
+        <Heading as="h2" fontSize="xl" mb={3}>
+          {title}
+        </Heading>
+      </GuidedPopover>
+      <GuidedPopover
+        content={currStep.content}
+        title={currStep.title}
+        isOpen={stepNum === 1 || stepNum === 2}
+        prevStep={prevStep}
+        onClose={nextStep}
+      >
+        {/* See https://chakra-ui.com/docs/styled-system/responsive-styles */}
+        <Grid
+          templateColumns={["1fr", "1fr", "repeat(2, 1fr)", "repeat(3, 1fr)"]}
+          gap="1em"
+        >
+          {data &&
+            data.map((resource) => (
+              <VideoCard
+                key={resource.objectId}
+                objectId={resource.objectId}
+                title={resource.title}
+                src={resource.thumbnail}
+                status={resource.status}
+                href={resource.url}
+                courseId={courseId}
+                courseName={courseName}
+              />
+            ))}
+        </Grid>
+      </GuidedPopover>
     </Box>
   );
 };
