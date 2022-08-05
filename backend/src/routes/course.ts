@@ -21,6 +21,7 @@ import {
 import { getAuthUser } from "../middleware/getAuthUser";
 import { RequestWUser } from "../types/user";
 import { BadRequestError } from "../utils/errors";
+import { getInfiniteQueryParams } from "../utils/infiniteQuery";
 import { parseObjectsToJson } from "../utils/parseToJason";
 
 const course = express.Router();
@@ -54,18 +55,7 @@ course.post("/new", async (req: RequestWUser, res, next) => {
 
 course.get("/me", async (req: RequestWUser, res, next) => {
   const { user } = req;
-  const { limit, skip, query } = req.query;
-
-  if (
-    !limit ||
-    typeof limit !== "string" ||
-    !skip ||
-    typeof skip !== "string" ||
-    typeof query !== "string"
-  ) {
-    next(new BadRequestError("Missing parameters"));
-    return;
-  }
+  const { limit, skip, query } = getInfiniteQueryParams(req);
 
   try {
     const courses = await getUserCoursesWithLimits(
@@ -143,20 +133,9 @@ course.delete("/:courseId", async (req: RequestWUser, res, next) => {
 
 course.get("/featured/get", async (req: RequestWUser, res, next) => {
   const { user } = req;
-  const { limit, skip, query } = req.query;
-
-  if (
-    !limit ||
-    typeof limit !== "string" ||
-    !skip ||
-    typeof skip !== "string" ||
-    typeof query !== "string"
-  ) {
-    next(new BadRequestError("Missing parameters"));
-    return;
-  }
-
   try {
+    const { limit, skip, query } = getInfiniteQueryParams(req);
+
     const featuredCourses = await getAllFeaturedCourses(
       parseInt(limit),
       parseInt(skip),

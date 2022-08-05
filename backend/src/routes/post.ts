@@ -8,6 +8,7 @@ import {
 } from "../post/post";
 import { RequestWUser } from "../types/user";
 import { BadRequestError } from "../utils/errors";
+import { getInfiniteQueryParams } from "../utils/infiniteQuery";
 
 const post = express.Router();
 
@@ -34,19 +35,9 @@ post.post("/", async (req: RequestWUser, res, next) => {
 
 post.get("/from/:id", async (req: RequestWUser, res, next) => {
   const { id } = req.params;
-  const { limit, skip } = req.query;
-
-  if (
-    !limit ||
-    typeof limit !== "string" ||
-    !skip ||
-    typeof skip !== "string"
-  ) {
-    next(new BadRequestError("Missing parameters"));
-    return;
-  }
-
   try {
+    const { limit, skip, query } = getInfiniteQueryParams(req);
+
     const posts = await getPostsByUser(id, parseInt(limit), parseInt(skip));
     res.send(posts);
   } catch (err) {
@@ -56,18 +47,9 @@ post.get("/from/:id", async (req: RequestWUser, res, next) => {
 
 post.get("/me", async (req: RequestWUser, res, next) => {
   const { user } = req;
-  const { limit, skip } = req.query;
-  if (
-    !limit ||
-    typeof limit !== "string" ||
-    !skip ||
-    typeof skip !== "string"
-  ) {
-    next(new BadRequestError("Missing parameters"));
-    return;
-  }
-
   try {
+    const { limit, skip } = getInfiniteQueryParams(req);
+
     const posts = await getPostsByUser(
       user.id,
       parseInt(limit),
@@ -81,19 +63,10 @@ post.get("/me", async (req: RequestWUser, res, next) => {
 
 post.get("/following", async (req: RequestWUser, res, next) => {
   const { user } = req;
-  const { limit, skip } = req.query;
-
-  if (
-    !limit ||
-    typeof limit !== "string" ||
-    !skip ||
-    typeof skip !== "string"
-  ) {
-    next(new BadRequestError("Missing parameters"));
-    return;
-  }
 
   try {
+    const { limit, skip } = getInfiniteQueryParams(req);
+
     const posts = await getFollowingPosts(
       user,
       parseInt(limit),
