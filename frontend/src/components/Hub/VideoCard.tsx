@@ -6,12 +6,10 @@ import Tooltip from "../Popover/Tooltip";
 import { useMutation, useQueryClient } from "react-query";
 import axios from "axios";
 import { baseURL } from "../../utils/constants";
-import { IResourceStatus } from "../../types/resource";
 import { useParams, useSearchParams } from "react-router-dom";
 import { getConfig, useSession } from "../../utils/auth";
-import { StringSchema } from "yup";
+import { ResourceStatus } from "../../types/enums";
 
-type ResourceStatus = "completed" | "in progress" | "not started";
 interface Props {
   objectId: string;
   src: string;
@@ -23,9 +21,9 @@ interface Props {
 }
 
 const getBadgeColor = (status: ResourceStatus) => {
-  if (status === "completed") return "green";
-  if (status === "in progress") return "blue";
-  if (status === "not started") return "gray";
+  if (status === ResourceStatus.Completed) return "green";
+  if (status === ResourceStatus.InProgress) return "blue";
+  if (status === ResourceStatus.NotStarted) return "gray";
   return "gray";
 };
 
@@ -50,7 +48,7 @@ const VideoCard = ({
   const { user } = useSession();
 
   const updateVideoStatus = useMutation(
-    async (status: IResourceStatus) => {
+    async (status: ResourceStatus) => {
       if (!user) throw new Error("No user");
       const res = await axios.put(
         `${baseURL}/resources/updateStatus/${objectId}`,
@@ -69,8 +67,19 @@ const VideoCard = ({
     }
   );
 
-  const handleUpdateVideoStatus = (status: IResourceStatus) => {
+  const handleUpdateVideoStatus = (status: ResourceStatus) => {
     updateVideoStatus.mutate(status);
+  };
+
+  const getStatusText = (status: ResourceStatus) => {
+    switch (status) {
+      case ResourceStatus.NotStarted:
+        return "Not Started";
+      case ResourceStatus.InProgress:
+        return "In Progress";
+      case ResourceStatus.Completed:
+        return "Completed";
+    }
   };
 
   return (
@@ -86,7 +95,8 @@ const VideoCard = ({
         target="_blank"
         rel="noreferrer"
         onClick={() =>
-          status === "not started" && handleUpdateVideoStatus("in progress")
+          status === ResourceStatus.NotStarted &&
+          handleUpdateVideoStatus(ResourceStatus.InProgress)
         }
       >
         <Tooltip
@@ -128,7 +138,7 @@ const VideoCard = ({
         <Tooltip
           space={-10}
           render={
-            status !== "completed" ? (
+            status !== ResourceStatus.Completed ? (
               <Box
                 backgroundColor={backgroundColor}
                 borderColor={borderColor}
@@ -148,10 +158,11 @@ const VideoCard = ({
             colorScheme={badgeColor}
             cursor="pointer"
             onClick={() =>
-              status !== "completed" && handleUpdateVideoStatus("completed")
+              status !== ResourceStatus.Completed &&
+              handleUpdateVideoStatus(ResourceStatus.Completed)
             }
           >
-            {status}
+            {getStatusText(status)}
           </Badge>
         </Tooltip>
       </Box>

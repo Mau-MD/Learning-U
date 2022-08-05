@@ -1,10 +1,11 @@
-import { IResource, IResourceStatus } from "../types/resource";
+import { IResource } from "../types/resource";
 import Parse from "parse/node";
 import { updateFeedback } from "../feedback/feedback";
 import { createPost } from "../post/post";
 import { getCourseByUserAndId } from "../course/course";
 import { createStatus, setStatus } from "../following/status";
 import { getRandomEmoji } from "../utils/emojiPicker";
+import { ResourceStatus } from "../types/enums";
 
 const SCORE_PER_COMPLETED = 0.1;
 export const createResource = (resource: IResource) => {
@@ -73,7 +74,7 @@ export const getResourcesFromCourseAndDifficulty = async (
 export const updateResourceStatus = async (
   resourceName: string,
   resourceId: string,
-  status: IResourceStatus,
+  status: ResourceStatus,
   courseName: string,
   courseId: string,
   user: Parse.User<Parse.Attributes>
@@ -83,7 +84,7 @@ export const updateResourceStatus = async (
   Resource.set("status", status);
 
   try {
-    if (status === "completed") {
+    if (status === ResourceStatus.Completed) {
       const resource = await findResourceById(resourceId);
       updateFeedback(resource[0].get("videoId"), SCORE_PER_COMPLETED);
 
@@ -96,7 +97,7 @@ export const updateResourceStatus = async (
       await post.save();
     }
 
-    if (status === "in progress") {
+    if (status === ResourceStatus.InProgress) {
       await setStatus(user, `${getRandomEmoji()} Studying ${courseName}`);
     }
 

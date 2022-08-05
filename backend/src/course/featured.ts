@@ -7,6 +7,7 @@ import {
   getVideoDetailByIds,
 } from "../rating/youtube";
 import { createResource } from "../resources/resources";
+import { ResourceStatus } from "../types/enums";
 import { parseObjectToJson } from "../utils/parseToJason";
 import { cloneCourse } from "./clone";
 import { createCourse, getCourseByUserAndId } from "./course";
@@ -95,10 +96,9 @@ export const createCourseFromScratch = async (
 
     for (const [idx, details] of videoDetails.data.items.entries()) {
       const video = createResource({
-        type: "video",
         level: idx < 3 ? 1 : 2,
         videoId: details.id,
-        status: "not started",
+        status: ResourceStatus.NotStarted,
         title: details.snippet.title,
         description: details.snippet.description,
         url: `https://youtube.com/video/${details.id}`,

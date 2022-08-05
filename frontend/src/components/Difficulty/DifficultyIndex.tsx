@@ -10,13 +10,14 @@ import axios from "axios";
 import { FALLBACK_IMG } from "../Dashboard/DashboardIndex";
 import { useTour } from "../../hooks/useTour";
 import GuidedPopover from "../GuidedPopover/GuidedPopover";
+import { CourseDifficulty } from "../../types/enums";
 
 const DifficultyIndex = () => {
   const [searchParams] = useSearchParams();
   const { id } = useParams();
   const name = searchParams.get("name");
 
-  const { user, isFetching } = useSession();
+  const { user } = useSession();
   const { currStep, prevStep, nextStep, stepNum } = useTour(
     [
       {
@@ -81,7 +82,7 @@ const DifficultyIndex = () => {
             phrase="You can do it!"
             courseId={id || ""}
             courseTitle={name || ""}
-            difficulty={1}
+            difficulty={CourseDifficulty.Beginner}
           />
 
           <DifficultyCard
@@ -92,7 +93,7 @@ const DifficultyIndex = () => {
             courseId={id || ""}
             courseTitle={name || ""}
             phrase="Let's go"
-            difficulty={2}
+            difficulty={CourseDifficulty.Advanced}
           />
         </Box>
       </GuidedPopover>

@@ -1,11 +1,10 @@
-import { CourseDifficulty, ICourse } from "./course";
+import { ICourse } from "./course";
 import Parse from "parse/node";
 import { DbObject } from "./global";
-
-export type IResourceStatus = "not started" | "in progress" | "completed";
+import { CourseDifficulty, ResourceStatus } from "./enums";
 
 export interface IResource {
-  status: "not started" | "in progress" | "completed";
+  status: ResourceStatus;
   level: CourseDifficulty;
   feedback: number;
   title: string;

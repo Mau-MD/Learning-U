@@ -42,7 +42,7 @@ resources.put(
     const { resourceId } = req.params;
     const { status, courseName, courseId, resourceName } = req.body;
 
-    if (!status || !courseName || !courseId || !resourceName) {
+    if (status === undefined || !courseName || !courseId || !resourceName) {
       next(new BadRequestError("Missing params"));
       return;
     }

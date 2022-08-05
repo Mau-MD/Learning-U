@@ -1,3 +1,4 @@
+import { ResourceStatus } from "../types/enums";
 import { IResource } from "../types/resource";
 
 export const calculateCourseCompletition = (resources: IResource[]) => {
@@ -5,8 +6,8 @@ export const calculateCourseCompletition = (resources: IResource[]) => {
   let totalInProgress = 0;
 
   for (const resource of resources) {
-    if (resource.status === "completed") totalCompleted++;
-    if (resource.status === "in progress") totalInProgress++;
+    if (resource.status === ResourceStatus.Completed) totalCompleted++;
+    if (resource.status === ResourceStatus.InProgress) totalInProgress++;
   }
 
   return ((totalCompleted + 0.5 * totalInProgress) / resources.length) * 100;

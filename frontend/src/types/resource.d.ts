@@ -1,12 +1,10 @@
-import { ICourse } from "./course";
 import Parse from "parse/node";
-
-export type IResourceStatus = "not started" | "in progress" | "completed";
+import { CourseDifficulty } from "../types/course";
 
 export interface IResource {
   objectId: string;
-  status: "not started" | "in progress" | "completed";
-  level: 1 | 2;
+  status: ResourceStatus;
+  level: CourseDifficulty;
   feedback: number;
   title: string;
   description: string;

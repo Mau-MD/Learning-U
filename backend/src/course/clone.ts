@@ -1,6 +1,7 @@
 import Parse from "parse/node";
 import { updateFeedback } from "../feedback/feedback";
 import { createResource, getResourcesFromCourse } from "../resources/resources";
+import { ResourceStatus } from "../types/enums";
 import { parseObjectsToJson } from "../utils/parseToJason";
 import { createCourse } from "./course";
 /*
@@ -40,8 +41,8 @@ export const cloneCourse = async (
 
     for (const resource of resources) {
       const newResource = createResource({
-        type: resource.type,
-        status: "not started",
+        status: ResourceStatus.NotStarted,
+        channel: resource.channel,
         videoId: resource.videoId,
         url: resource.url,
         level: resource.level,

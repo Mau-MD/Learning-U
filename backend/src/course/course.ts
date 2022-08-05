@@ -13,7 +13,7 @@ import {
 import { createResource } from "../resources/resources";
 import { getImagesByQuery } from "../unsplash/unsplash";
 import { updateFeedback } from "../feedback/feedback";
-import { CourseDifficulty } from "../types/course";
+import { CourseDifficulty, ResourceStatus } from "../types/enums";
 
 const VIDEOS_PER_QUERY = 100;
 const SCORE_PER_DISLIKED_VIDEO = -2;
@@ -172,7 +172,7 @@ export const saveResources = async (
       const video = createResource({
         level,
         videoId: resource.id,
-        status: "not started",
+        status: ResourceStatus.NotStarted,
         title: resource.snippet.title,
         description: resource.snippet.description,
         url: `https://youtube.com/video/${resource.id}`,
@@ -279,8 +279,8 @@ const calculateCourseCompletition = (
   let totalInProgress = 0;
 
   for (const resource of resources) {
-    if (resource.get("status") === "completed") totalCompleted++;
-    if (resource.get("status") === "in progress") totalInProgress++;
+    if (resource.get("status") === ResourceStatus.Completed) totalCompleted++;
+    if (resource.get("status") === ResourceStatus.InProgress) totalInProgress++;
   }
 
   return ((totalCompleted + 0.5 * totalInProgress) / resources.length) * 100;

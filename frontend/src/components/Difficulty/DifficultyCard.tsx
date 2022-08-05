@@ -11,9 +11,9 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React from "react";
-import { createSearchParams } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import useThemeColor from "../../hooks/useThemeColor";
+import { CourseDifficulty } from "../../types/enums";
 import { scrollWithOffset } from "../../utils/scrollWithOffset";
 
 interface Props {
@@ -23,7 +23,7 @@ interface Props {
   courseId: string;
   phrase: string;
   courseTitle: string;
-  difficulty: 1 | 2;
+  difficulty: CourseDifficulty;
   isLoading: boolean;
 }
 
