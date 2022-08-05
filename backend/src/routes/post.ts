@@ -8,7 +8,10 @@ import {
 } from "../post/post";
 import { RequestWUser } from "../types/user";
 import { BadRequestError } from "../utils/errors";
-import { getInfiniteQueryParams } from "../utils/infiniteQuery";
+import {
+  getInfiniteQueryParams,
+  getInfiniteQueryWithSearchParams,
+} from "../utils/infiniteQuery";
 
 const post = express.Router();
 
@@ -36,7 +39,7 @@ post.post("/", async (req: RequestWUser, res, next) => {
 post.get("/from/:id", async (req: RequestWUser, res, next) => {
   const { id } = req.params;
   try {
-    const { limit, skip, query } = getInfiniteQueryParams(req);
+    const { limit, skip, query } = getInfiniteQueryWithSearchParams(req);
 
     const posts = await getPostsByUser(id, parseInt(limit), parseInt(skip));
     res.send(posts);

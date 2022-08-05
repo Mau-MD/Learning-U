@@ -21,7 +21,10 @@ import {
 import { getAuthUser } from "../middleware/getAuthUser";
 import { RequestWUser } from "../types/user";
 import { BadRequestError } from "../utils/errors";
-import { getInfiniteQueryParams } from "../utils/infiniteQuery";
+import {
+  getInfiniteQueryParams,
+  getInfiniteQueryWithSearchParams,
+} from "../utils/infiniteQuery";
 import { parseObjectsToJson } from "../utils/parseToJason";
 
 const course = express.Router();
@@ -55,7 +58,7 @@ course.post("/new", async (req: RequestWUser, res, next) => {
 
 course.get("/me", async (req: RequestWUser, res, next) => {
   const { user } = req;
-  const { limit, skip, query } = getInfiniteQueryParams(req);
+  const { limit, skip, query } = getInfiniteQueryWithSearchParams(req);
 
   try {
     const courses = await getUserCoursesWithLimits(
@@ -134,7 +137,7 @@ course.delete("/:courseId", async (req: RequestWUser, res, next) => {
 course.get("/featured/get", async (req: RequestWUser, res, next) => {
   const { user } = req;
   try {
-    const { limit, skip, query } = getInfiniteQueryParams(req);
+    const { limit, skip, query } = getInfiniteQueryWithSearchParams(req);
 
     const featuredCourses = await getAllFeaturedCourses(
       parseInt(limit),
