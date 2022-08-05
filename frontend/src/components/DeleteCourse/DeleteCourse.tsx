@@ -145,7 +145,7 @@ const DeleteCourse = ({ isOpen, onClose, courseId }: Props) => {
                   key={resource.objectId}
                   title={resource.title}
                   objectId={resource.videoId}
-                  src={resource.type === "video" ? resource.thumbnail : ""}
+                  src={resource.thumbnail}
                   onClick={(objectId) => handleToggleSelectedResource(objectId)}
                   active={
                     !!selectedResources.find(

@@ -136,7 +136,7 @@ const CloneModal = ({
                   key={resource.objectId}
                   title={resource.title}
                   objectId={resource.videoId}
-                  src={resource.type === "video" ? resource.thumbnail : ""}
+                  src={resource.thumbnail}
                 />
               ))
             )}
