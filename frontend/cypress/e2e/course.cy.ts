@@ -1,6 +1,19 @@
 describe("course", () => {
+  beforeEach(() => {
+    window.localStorage.setItem(
+      "learning-u-tour",
+      JSON.stringify({
+        dashboard: true,
+        "new-course": true,
+        difficulty: true,
+        undefined: true,
+        featured: true,
+        hub: true,
+      })
+    );
+  });
   it("Should create a new course", () => {
-    cy.login("Test", "mauricio15");
+    cy.login("Test", "test1234");
     cy.get("[test-id='create-course-btn'").click();
     cy.url().should("include", "new");
     cy.get("[test-id='new-course-input'").type("React");

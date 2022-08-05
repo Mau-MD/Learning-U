@@ -3,7 +3,7 @@ import { uuid } from "../support/commands";
 
 describe("auth", () => {
   it("Should login a user", () => {
-    cy.login("Test", "mauricio15");
+    cy.login("Test", "test1234");
   });
   it("Should register a user", () => {
     const username = uuid();
