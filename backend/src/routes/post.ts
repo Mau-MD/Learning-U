@@ -39,7 +39,7 @@ post.post("/", async (req: RequestWUser, res, next) => {
 post.get("/from/:id", async (req: RequestWUser, res, next) => {
   const { id } = req.params;
   try {
-    const { limit, skip, query } = getInfiniteQueryWithSearchParams(req);
+    const { limit, skip } = getInfiniteQueryParams(req);
 
     const posts = await getPostsByUser(id, parseInt(limit), parseInt(skip));
     res.send(posts);
